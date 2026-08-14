@@ -157,6 +157,30 @@
     .application-number small { color: #9fb2bd; display: block; font-size: 9px; }
     .application-number b { font-size: 13px; }
     .application-number span:last-child { margin-left: auto; color: #a5d1d1; font-size: 10px; }
+    .uaepass-card { max-width: 520px; margin: 34px auto; text-align: center; border: 1px solid var(--line); border-radius: 16px; padding: 34px; background: linear-gradient(145deg,#fff,#f6faf9); }
+    .uaepass-logo { width: 74px; height: 74px; margin: 0 auto 16px; border-radius: 20px; display: grid; place-items: center; background: linear-gradient(135deg,#151515 50%,#d13a32 50%); color: #fff; font-weight: 800; font-size: 13px; box-shadow: 0 8px 20px rgba(13,41,60,.16); }
+    .uaepass-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 19px; }
+    .uaepass-card p { margin: 0 auto 20px; max-width: 390px; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .privacy-note { margin-top: 16px; color: var(--muted); font-size: 9px; }
+    .identity-upload { display: none; margin: 20px 0; border-top: 1px solid var(--line); padding-top: 20px; }
+    .identity-upload.visible { display: block; }
+    .extracted-identity { display: none; margin-top: 12px; padding: 15px; border: 1px solid #cce7d6; background: #f1faf5; border-radius: 11px; }
+    .extracted-identity.visible { display: block; }
+    .extract-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; text-align: left; }
+    .extract-grid small { display: block; color: var(--muted); font-size: 8px; margin-bottom: 3px; }
+    .extract-grid b { font-size: 10px; color: var(--navy); }
+    .document-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+    .document-tile { border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .document-tile.required { border-top: 3px solid var(--teal); }
+    .document-tile h4 { margin: 0 0 4px; font-size: 12px; color: var(--navy); }
+    .document-tile p { margin: 0 0 12px; min-height: 29px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .mini-upload { width: 100%; border: 1px dashed #9cb9ba; background: #f7fbfb; color: var(--teal); border-radius: 8px; padding: 10px; font-size: 10px; font-weight: 700; }
+    .upload-status { display: none; margin-top: 9px; color: var(--success); font-size: 9px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .upload-status.visible { display: block; }
+    .medicine-actions { margin-left: auto; display: flex; gap: 6px; }
+    .icon-btn { border: 1px solid var(--line); background: #fff; color: var(--muted); border-radius: 6px; padding: 5px 8px; font-size: 9px; font-weight: 700; }
+    .icon-btn.danger { color: var(--danger); }
+    .empty-medicines { display: none; padding: 24px; text-align: center; color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 11px; margin-top: 16px; }
     .toast { position: fixed; right: 24px; bottom: 24px; padding: 13px 16px; background: var(--navy); color: #fff; border-radius: 9px; font-size: 11px; box-shadow: var(--shadow); transform: translateY(80px); opacity: 0; transition: .3s; z-index: 10; }
     .toast.show { transform: none; opacity: 1; }
     @media (max-width: 800px) {
@@ -167,6 +191,7 @@
       .hero { align-items: start; }
       .secure-pill { display: none; }
       .choice-grid, .identity-grid, .form-grid { grid-template-columns: 1fr; }
+      .document-grid, .extract-grid { grid-template-columns: 1fr; }
       .span-2 { grid-column: auto; }
       .summary-grid { grid-template-columns: repeat(2,1fr); }
       .decision-strip { grid-template-columns: 1fr; }
@@ -201,108 +226,77 @@
     <div class="workspace">
       <aside class="steps">
         <div class="steps-title">Your application</div>
-        <div class="step active" data-step="1"><span class="step-num">1</span><span>Applicant</span></div>
-        <div class="step" data-step="2"><span class="step-num">2</span><span>Documents & medicine</span></div>
-        <div class="step" data-step="3"><span class="step-num">3</span><span>Patient details</span></div>
-        <div class="step" data-step="4"><span class="step-num">4</span><span>Review</span></div>
-        <div class="step" data-step="5"><span class="step-num">5</span><span>AI decision</span></div>
+        <div class="step active" data-step="1"><span class="step-num">1</span><span>UAE PASS</span></div>
+        <div class="step" data-step="2"><span class="step-num">2</span><span>Applicant</span></div>
+        <div class="step" data-step="3"><span class="step-num">3</span><span>Patient identity</span></div>
+        <div class="step" data-step="4"><span class="step-num">4</span><span>Documents & medicines</span></div>
+        <div class="step" data-step="5"><span class="step-num">5</span><span>Review</span></div>
+        <div class="step" data-step="6"><span class="step-num">6</span><span>AI decision</span></div>
         <div class="ai-side"><b><span class="spark">✦</span> EDE AI Assistant</b><p>Checks each medicine against EDE rules. Final decisions can be reviewed by an authorised officer.</p></div>
       </aside>
 
       <section class="panel">
         <div class="page active" id="page-1">
-          <div class="panel-head"><div><h2>Tell us about the patient</h2><p>This determines the correct medicine supply limits.</p></div><span class="step-badge">Step 1 of 5</span></div>
-          <div class="content">
-            <div class="ai-callout"><div class="ai-icon">✦</div><div><b>Smart applicant classification</b><p>I’ll classify this application as Resident or Traveller using your answers. You can review the result before continuing.</p></div></div>
-            <div class="question"><span class="label">Who are you applying for? <span class="req">*</span></span>
-              <div class="choice-grid" data-choice="applyingFor">
-                <label class="choice selected"><input type="radio" name="applyingFor" value="myself" checked><span class="radio-dot"></span><span><b>Myself</b><small>I am the patient</small></span></label>
-                <label class="choice"><input type="radio" name="applyingFor" value="other"><span class="radio-dot"></span><span><b>Someone else</b><small>Relative, guardian or caregiver</small></span></label>
-              </div>
-            </div>
-            <div class="question"><span class="label">Is the patient a UAE resident? <span class="req">*</span></span>
-              <div class="choice-grid" data-choice="resident">
-                <label class="choice selected"><input type="radio" name="resident" value="yes" checked><span class="radio-dot"></span><span><b>Yes</b><small>Patient has UAE residence</small></span></label>
-                <label class="choice"><input type="radio" name="resident" value="no"><span class="radio-dot"></span><span><b>No</b><small>Patient is visiting the UAE</small></span></label>
-              </div>
-            </div>
-            <div class="classification"><span class="class-icon">✓</span><span><small>AI classification</small><b id="classValue">Resident applicant</b></span><span id="classRule">BR-01 applied</span></div>
-          </div>
-          <div class="footer-actions"><button class="btn btn-ghost" onclick="saveDraft()">Save draft</button><button class="btn btn-primary" onclick="go(2)">Continue to documents →</button></div>
+          <div class="panel-head"><div><h2>Sign in with UAE PASS</h2><p>Verify your identity to begin the application.</p></div><span class="step-badge">Step 1 of 6</span></div>
+          <div class="content"><div class="uaepass-card"><div class="uaepass-logo">UAE<br>PASS</div><h3>Your secure digital identity</h3><p>UAE PASS securely confirms your applicant details and helps pre-fill this service. You will return here immediately after verification.</p><button class="btn btn-primary" id="signInButton" onclick="signIn(this)">Sign in with UAE PASS →</button><div class="privacy-note">🔒 EDE does not store your UAE PASS credentials</div></div></div>
         </div>
 
         <div class="page" id="page-2">
-          <div class="panel-head"><div><h2>Upload your prescription</h2><p>AI reads your document and prepares the medicine details.</p></div><span class="step-badge">Step 2 of 5</span></div>
+          <div class="panel-head"><div><h2>Tell us about the patient</h2><p>This determines identity requirements and medicine supply limits.</p></div><span class="step-badge">Step 2 of 6</span></div>
           <div class="content">
-            <div class="ai-callout"><div class="ai-icon">▣</div><div><b>Document intelligence</b><p>Upload a prescription to simulate OCR extraction. Always confirm the extracted information before submission.</p></div></div>
-            <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" hidden>
-            <div class="upload-zone" onclick="document.getElementById('fileInput').click()"><div class="upload-symbol">↥</div><b>Drop prescription here or browse</b><p>PDF, JPG or PNG · maximum 40 MB · demo files remain in your browser</p></div>
-            <div class="file-card" id="fileCard"><span class="file-icon">PDF</span><span><span class="file-name" id="fileName">prescription.pdf</span><span class="file-meta">Encrypted · ready for analysis</span></span><span class="file-ok">✓ Uploaded</span></div>
-            <div class="extracting" id="extracting"><b style="font-size:11px;color:#4a267d">✦ AI is extracting medicine details…</b><div class="scan-line"></div></div>
-            <div class="medicine-card" id="medicineCard" style="display:none">
-              <div class="medicine-title">Medicine 1 <span class="ai-tag">✦ AI extracted</span></div>
-              <div class="form-grid">
-                <div class="field span-2"><label>Medicine name <span class="confidence">98% confidence</span></label><input id="medName" value="Lipitor 20 mg"></div>
-                <div class="field"><label>Active ingredient <span class="confidence">96% confidence</span></label><input id="ingredient" value="Atorvastatin"></div>
-                <div class="field"><label>Dispensing mode</label><select id="mode"></select></div>
-                <div class="field"><label>Quantity</label><input id="quantity" type="number" min="1" value="90"></div>
-                <div class="field"><label>Unit</label><select id="unit"><option>Tablets</option><option>Capsules</option><option>Vials</option><option>Ampoules</option><option>Millilitres</option></select></div>
-                <div class="field"><label>Prescribed duration (days)</label><input id="duration" type="number" min="1" value="90"></div>
-                <div class="field"><label>Product form</label><select id="form"><option>Tablet</option><option>Capsule</option><option>Liquid</option><option>Injectable</option><option>Vial</option><option>Ampoule</option></select></div>
-                <div class="field"><label>Registry match</label><select id="registered"><option value="yes">Matched in EDE registry</option><option value="no">No record found</option></select></div>
-                <div class="field"><label>Prescription issue date</label><input id="prescriptionDate" type="date"></div>
-              </div>
-            </div>
-            <button class="add-med" id="addMed" style="display:none" onclick="addControlledMedicine()">＋ Add another medicine (demo controlled medicine)</button>
-            <div class="medicine-card" id="medicine2" style="display:none">
-              <div class="medicine-title">Medicine 2 <span class="ai-tag">Manual review expected</span></div>
-              <div class="form-grid">
-                <div class="field span-2"><label>Medicine name</label><input value="Clonazepam 0.5 mg" disabled></div>
-                <div class="field"><label>Active ingredient</label><input value="Clonazepam" disabled></div>
-                <div class="field"><label>Dispensing mode</label><input value="Controlled Drug (CD)" disabled></div>
-                <div class="field"><label>Quantity</label><input value="30 tablets" disabled></div>
-                <div class="field"><label>Duration</label><input value="30 days" disabled></div>
-                <div class="field"><label>Required documents</label><input value="Prescription + medical report" disabled></div>
-              </div>
-            </div>
+            <div class="identity-banner">✓ Signed in with UAE PASS as Sara Ahmed Al Mansoori</div>
+            <div class="ai-callout"><div class="ai-icon">✦</div><div><b>Smart applicant classification</b><p>I’ll classify this application as Resident or Traveller using your answers.</p></div></div>
+            <div class="question"><span class="label">Who are you applying for? <span class="req">*</span></span><div class="choice-grid" data-choice="applyingFor"><label class="choice selected"><input type="radio" name="applyingFor" value="myself" checked><span class="radio-dot"></span><span><b>Myself</b><small>I am the patient</small></span></label><label class="choice"><input type="radio" name="applyingFor" value="other"><span class="radio-dot"></span><span><b>Someone else</b><small>Relative, guardian or caregiver</small></span></label></div></div>
+            <div class="question"><span class="label">Is the patient a UAE resident? <span class="req">*</span></span><div class="choice-grid" data-choice="resident"><label class="choice selected"><input type="radio" name="resident" value="yes" checked><span class="radio-dot"></span><span><b>Yes</b><small>Patient has UAE residence</small></span></label><label class="choice"><input type="radio" name="resident" value="no"><span class="radio-dot"></span><span><b>No</b><small>Patient is visiting the UAE</small></span></label></div></div>
+            <div class="classification"><span class="class-icon">✓</span><span><small>AI classification</small><b id="classValue">Resident applicant</b></span><span id="classRule">BR-01 applied</span></div>
           </div>
-          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(1)">← Back</button><button class="btn btn-primary" onclick="ensureMedicine()">Confirm medicines →</button></div>
+          <div class="footer-actions"><button class="btn btn-ghost" onclick="saveDraft()">Save draft</button><button class="btn btn-primary" onclick="continueApplicant()">Continue to identity →</button></div>
         </div>
 
         <div class="page" id="page-3">
-          <div class="panel-head"><div><h2>Confirm patient details</h2><p>Identity information has been securely retrieved from UAE PASS.</p></div><span class="step-badge">Step 3 of 5</span></div>
+          <div class="panel-head"><div><h2>Confirm patient identity</h2><p id="identitySubtitle">Your identity is already available from UAE PASS.</p></div><span class="step-badge">Step 3 of 6</span></div>
           <div class="content">
-            <div class="identity-banner">✓ Identity retrieved and pre-filled from UAE PASS</div>
-            <div class="identity-grid">
-              <div class="field"><label>Patient full name</label><input id="patientName" value="Sara Ahmed Al Mansoori"></div>
-              <div class="field"><label>Date of birth</label><input type="date" value="1991-05-14"></div>
-              <div class="field"><label>Emirates ID number</label><input value="784-1991-1234567-1"></div>
-              <div class="field"><label>Nationality</label><select><option>United Arab Emirates</option><option>Other</option></select></div>
-              <div class="field"><label>Email address</label><input type="email" value="sara.a@example.ae"></div>
-              <div class="field"><label>Mobile number</label><input value="+971 50 123 4567"></div>
+            <div id="selfIdentity"><div class="identity-banner">✓ Patient identity pre-filled from your UAE PASS profile</div></div>
+            <div class="identity-upload" id="otherIdentity">
+              <div class="ai-callout"><div class="ai-icon">▣</div><div><b id="identityDocTitle">Upload patient Emirates ID</b><p id="identityDocHelp">Upload the front or a clear PDF. AI will extract the patient details for you to confirm.</p></div></div>
+              <input type="file" id="identityFile" accept=".pdf,.png,.jpg,.jpeg" hidden>
+              <div class="upload-zone" onclick="document.getElementById('identityFile').click()"><div class="upload-symbol">↥</div><b id="identityUploadLabel">Upload Emirates ID</b><p>PDF, JPG or PNG · maximum 40 MB</p></div>
+              <div class="extracting" id="identityExtracting"><b style="font-size:11px;color:#4a267d">✦ AI is reading the identity document…</b><div class="scan-line"></div></div>
             </div>
-            <div class="ai-callout" style="margin-top:22px;margin-bottom:0"><div class="ai-icon">✓</div><div><b>Identity match ready</b><p>The patient name and date of birth match the signed-in identity. Any edits may route the application to officer review under BR-20.</p></div></div>
+            <div class="extracted-identity" id="identityResult"><div class="identity-banner" style="margin-bottom:14px">✓ Patient details extracted — please confirm</div><div class="extract-grid"><span><small>Document number</small><b id="extractedNumber">784-2014-7654321-8</b></span><span><small>Full name</small><b id="extractedName">Omar Khalid Al Nuaimi</b></span><span><small>Date of birth</small><b id="extractedDob">22 September 2014</b></span><span><small>Nationality</small><b id="extractedNationality">United Arab Emirates</b></span></div></div>
+            <div class="identity-grid" style="margin-top:20px"><div class="field"><label>Patient full name</label><input id="patientName" value="Sara Ahmed Al Mansoori"></div><div class="field"><label>Date of birth</label><input id="patientDob" type="date" value="1991-05-14"></div><div class="field"><label id="documentNumberLabel">Emirates ID number</label><input id="patientDocumentNumber" value="784-1991-1234567-1"></div><div class="field"><label>Nationality</label><input id="patientNationality" value="United Arab Emirates"></div></div>
           </div>
-          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(2)">← Back</button><button class="btn btn-primary" onclick="go(4)">Review application →</button></div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(2)">← Back</button><button class="btn btn-primary" onclick="continueIdentity()">Continue to documents →</button></div>
         </div>
 
         <div class="page" id="page-4">
-          <div class="panel-head"><div><h2>Review your application</h2><p>Check all information before the AI eligibility assessment.</p></div><span class="step-badge">Step 4 of 5</span></div>
+          <div class="panel-head"><div><h2>Documents and medicines</h2><p>Upload supporting documents, then confirm every extracted medicine.</p></div><span class="step-badge">Step 4 of 6</span></div>
           <div class="content">
-            <div class="review-section"><div class="review-title">Applicant & patient <button onclick="go(1)">Edit</button></div><div class="summary-grid"><span><small>Classification</small><b id="reviewClass">Resident</b></span><span><small>Applying for</small><b id="reviewFor">Myself</b></span><span><small>Patient</small><b>Sara Ahmed Al Mansoori</b></span><span><small>Emirates ID</small><b>784-1991-•••••••-1</b></span><span><small>Nationality</small><b>United Arab Emirates</b></span><span><small>Identity</small><b style="color:var(--success)">✓ Matched</b></span></div></div>
-            <div class="review-section"><div class="review-title">Medicine details <button onclick="go(2)">Edit</button></div><div class="summary-grid" id="reviewMeds"></div></div>
-            <div class="review-section"><div class="review-title">AI pre-submission checks <span style="color:var(--purple)">✦ Live</span></div><div class="checklist">
-              <div class="check-row"><span class="check">✓</span> Identity validation succeeded</div>
-              <div class="check-row"><span class="check">✓</span> Required prescription uploaded</div>
-              <div class="check-row"><span class="check">✓</span> No active application found</div>
-              <div class="check-row"><span class="check">✓</span> No application submitted within the previous 30 days</div>
-            </div></div>
-            <label class="terms"><input id="terms" type="checkbox"> <span>I confirm the information is accurate and accept the general terms and conditions for this service.</span></label>
+            <div class="ai-callout"><div class="ai-icon">▣</div><div><b>Document intelligence</b><p>AI extracts medicines from the prescription. You remain in control: edit, delete, or add medicines before submission.</p></div></div>
+            <div class="document-grid">
+              <div class="document-tile required"><h4>Prescription <span class="req">*</span></h4><p>Valid prescription from a medical professional.</p><input type="file" id="prescriptionFile" accept=".pdf,.png,.jpg,.jpeg" hidden><button class="mini-upload" onclick="document.getElementById('prescriptionFile').click()">↥ Upload prescription</button><div class="upload-status" id="prescriptionStatus"></div></div>
+              <div class="document-tile"><h4>Medical report</h4><p>Required for controlled medicines; must be issued within 365 days.</p><input type="file" id="medicalFile" accept=".pdf,.png,.jpg,.jpeg" hidden><button class="mini-upload" onclick="document.getElementById('medicalFile').click()">↥ Upload medical report</button><div class="upload-status" id="medicalStatus"></div></div>
+              <div class="document-tile"><h4>Additional documents</h4><p>Doctor declaration, supporting letter, or other evidence if required.</p><input type="file" id="additionalFile" accept=".pdf,.png,.jpg,.jpeg" multiple hidden><button class="mini-upload" onclick="document.getElementById('additionalFile').click()">＋ Add documents</button><div class="upload-status" id="additionalStatus"></div></div>
+            </div>
+            <div class="extracting" id="extracting"><b style="font-size:11px;color:#4a267d">✦ AI is extracting medicine details…</b><div class="scan-line"></div></div>
+            <div id="medicineList"></div><div class="empty-medicines" id="emptyMedicines">No medicines added yet. Upload a prescription or add one manually.</div>
+            <button class="add-med" onclick="addMedicine()">＋ Add another medicine</button>
           </div>
-          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(3)">← Back</button><button class="btn btn-primary" onclick="submitApplication()">Submit for AI assessment ✦</button></div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(3)">← Back</button><button class="btn btn-primary" onclick="confirmMedicines()">Confirm medicines →</button></div>
         </div>
 
         <div class="page" id="page-5">
+          <div class="panel-head"><div><h2>Review your application</h2><p>Check all information before the AI eligibility assessment.</p></div><span class="step-badge">Step 5 of 6</span></div>
+          <div class="content">
+            <div class="review-section"><div class="review-title">Applicant & patient <button onclick="go(2)">Edit</button></div><div class="summary-grid"><span><small>Classification</small><b id="reviewClass">Resident</b></span><span><small>Applying for</small><b id="reviewFor">Myself</b></span><span><small>Patient</small><b id="reviewPatient">Sara Ahmed Al Mansoori</b></span><span><small>Identity document</small><b id="reviewDocument">784-1991-•••••••-1</b></span><span><small>Nationality</small><b id="reviewNationality">United Arab Emirates</b></span><span><small>Identity</small><b style="color:var(--success)">✓ Confirmed</b></span></div></div>
+            <div class="review-section"><div class="review-title">Medicine details <button onclick="go(4)">Edit</button></div><div class="summary-grid" id="reviewMeds"></div></div>
+            <div class="review-section"><div class="review-title">AI pre-submission checks <span style="color:var(--purple)">✦ Live</span></div><div class="checklist"><div class="check-row"><span class="check">✓</span> UAE PASS applicant verification succeeded</div><div class="check-row"><span class="check">✓</span> Patient identity document confirmed</div><div class="check-row"><span class="check">✓</span> Required prescription uploaded</div><div class="check-row"><span class="check">✓</span> No active or recent application found</div></div></div>
+            <label class="terms"><input id="terms" type="checkbox"> <span>I confirm the information is accurate and accept the general terms and conditions for this service.</span></label>
+          </div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(4)">← Back</button><button class="btn btn-primary" onclick="submitApplication()">Submit for AI assessment ✦</button></div>
+        </div>
+
+        <div class="page" id="page-6">
           <div class="panel-head"><div><h2>Application decision</h2><p>Transparent eligibility results for every medicine.</p></div><span class="step-badge">Complete</span></div>
           <div class="content">
             <div class="decision-head"><div class="decision-icon" id="decisionIcon">◐</div><h3 id="decisionTitle">Mixed application</h3><p id="decisionText">Eligible medicines can be permitted immediately, while medicines requiring human review are securely routed to an EDE officer.</p></div>
@@ -328,11 +322,10 @@
       ["Pharmacy Only (P)", true, false], ["General sale / hypermarket only", true, false],
       ["General Sale Supermarket GS(s)", true, false], ["Health Care Professional's Only", true, false], ["N/A", true, false]
     ];
-    const modeSelect = document.getElementById("mode");
-    modes.forEach((m, i) => modeSelect.add(new Option(m[0], i)));
-    modeSelect.value = 11;
-    document.getElementById("prescriptionDate").value = new Date().toISOString().slice(0,10);
-    let secondMedicine = false;
+    let medicines = [];
+    let medicineId = 0;
+    let identityUploaded = false;
+    let prescriptionUploaded = false;
 
     document.querySelectorAll(".choice-grid").forEach(group => group.addEventListener("change", e => {
       group.querySelectorAll(".choice").forEach(c => c.classList.toggle("selected", c.contains(e.target)));
@@ -345,6 +338,63 @@
       document.getElementById("classRule").textContent = resident ? "BR-01 applied" : "BR-02 applied";
     }
 
+    function signIn(button) {
+      button.textContent = "Verifying securely…";
+      button.disabled = true;
+      setTimeout(() => { button.textContent = "✓ Verified"; toast("UAE PASS verification successful"); go(2); }, 850);
+    }
+
+    function continueApplicant() {
+      const other = document.querySelector('[name="applyingFor"]:checked').value === "other";
+      const resident = document.querySelector('[name="resident"]:checked').value === "yes";
+      document.getElementById("selfIdentity").style.display = other ? "none" : "block";
+      document.getElementById("otherIdentity").classList.toggle("visible", other);
+      document.getElementById("identityResult").classList.remove("visible");
+      identityUploaded = !other;
+      document.getElementById("identitySubtitle").textContent = other ? `Upload the patient's ${resident ? "Emirates ID" : "passport"} for secure extraction.` : "Your identity is already available from UAE PASS.";
+      document.getElementById("identityDocTitle").textContent = resident ? "Upload patient Emirates ID" : "Upload patient passport";
+      document.getElementById("identityUploadLabel").textContent = resident ? "Upload Emirates ID" : "Upload passport";
+      document.getElementById("identityDocHelp").textContent = `Upload a clear image or PDF. AI will extract the ${resident ? "Emirates ID number" : "passport number"}, name, date of birth, and nationality.`;
+      document.getElementById("documentNumberLabel").textContent = resident ? "Emirates ID number" : "Passport number";
+      if (!other) {
+        document.getElementById("patientName").value = "Sara Ahmed Al Mansoori";
+        document.getElementById("patientDob").value = "1991-05-14";
+        document.getElementById("patientDocumentNumber").value = "784-1991-1234567-1";
+        document.getElementById("patientNationality").value = "United Arab Emirates";
+      }
+      go(3);
+    }
+
+    document.getElementById("identityFile").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!validFile(file)) return;
+      const resident = document.querySelector('[name="resident"]:checked').value === "yes";
+      const loader = document.getElementById("identityExtracting");
+      loader.classList.add("visible");
+      setTimeout(() => {
+        loader.classList.remove("visible");
+        identityUploaded = true;
+        const details = resident
+          ? {number:"784-2014-7654321-8", name:"Omar Khalid Al Nuaimi", dob:"2014-09-22", dobLabel:"22 September 2014", nationality:"United Arab Emirates"}
+          : {number:"P78420591", name:"Maya Elena Santos", dob:"1988-02-11", dobLabel:"11 February 1988", nationality:"Philippines"};
+        document.getElementById("extractedNumber").textContent = details.number;
+        document.getElementById("extractedName").textContent = details.name;
+        document.getElementById("extractedDob").textContent = details.dobLabel;
+        document.getElementById("extractedNationality").textContent = details.nationality;
+        document.getElementById("patientDocumentNumber").value = details.number;
+        document.getElementById("patientName").value = details.name;
+        document.getElementById("patientDob").value = details.dob;
+        document.getElementById("patientNationality").value = details.nationality;
+        document.getElementById("identityResult").classList.add("visible");
+        toast("Patient identity extracted — please confirm");
+      }, 1100);
+    });
+
+    function continueIdentity() {
+      if (!identityUploaded) return toast("Please upload the patient's identity document");
+      go(4);
+    }
+
     function go(step) {
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById("page-" + step).classList.add("active");
@@ -354,72 +404,106 @@
         s.classList.toggle("done", n < step);
         s.querySelector(".step-num").textContent = n < step ? "✓" : n;
       });
-      if (step === 4) populateReview();
+      if (step === 5) populateReview();
       window.scrollTo({top: 100, behavior: "smooth"});
     }
 
-    document.getElementById("fileInput").addEventListener("change", e => {
+    document.getElementById("prescriptionFile").addEventListener("change", e => {
       const file = e.target.files[0];
-      if (!file) return;
-      if (file.size > 40 * 1024 * 1024) return toast("File exceeds the 40 MB limit");
-      document.getElementById("fileName").textContent = file.name;
-      document.getElementById("fileCard").classList.add("visible");
+      if (!validFile(file)) return;
+      prescriptionUploaded = true;
+      showUpload("prescriptionStatus", file.name);
       document.getElementById("extracting").classList.add("visible");
       setTimeout(() => {
         document.getElementById("extracting").classList.remove("visible");
-        document.getElementById("medicineCard").style.display = "block";
-        document.getElementById("addMed").style.display = "block";
+        if (!medicines.length) addMedicine({name:"Lipitor 20 mg", ingredient:"Atorvastatin", mode:11, quantity:90, unit:"Tablets", duration:90, form:"Tablet", registered:"yes", extracted:true});
         toast("AI extraction complete — please confirm the details");
       }, 1200);
     });
 
-    function ensureMedicine() {
-      if (document.getElementById("medicineCard").style.display === "none") {
-        document.getElementById("medicineCard").style.display = "block";
-        document.getElementById("addMed").style.display = "block";
-        toast("Demo medicine loaded");
-        return;
-      }
-      go(3);
+    document.getElementById("medicalFile").addEventListener("change", e => {
+      const file = e.target.files[0]; if (validFile(file)) showUpload("medicalStatus", file.name);
+    });
+    document.getElementById("additionalFile").addEventListener("change", e => {
+      const files = [...e.target.files]; if (!files.length) return;
+      showUpload("additionalStatus", `${files.length} document${files.length > 1 ? "s" : ""} added`);
+    });
+
+    function validFile(file) {
+      if (!file) return false;
+      if (file.size > 40 * 1024 * 1024) { toast("File exceeds the 40 MB limit"); return false; }
+      return true;
     }
-    function addControlledMedicine() {
-      secondMedicine = true;
-      document.getElementById("medicine2").style.display = "block";
-      document.getElementById("addMed").style.display = "none";
-      toast("Controlled medicine added");
+    function showUpload(id, name) {
+      const el = document.getElementById(id); el.textContent = `✓ ${name}`; el.classList.add("visible");
     }
 
+    function addMedicine(data = {}) {
+      const med = {id:++medicineId, name:"", ingredient:"", mode:11, quantity:1, unit:"Tablets", duration:30, form:"Tablet", registered:"yes", extracted:false, ...data};
+      medicines.push(med);
+      renderMedicines();
+      if (!data.extracted) setTimeout(() => document.querySelector(`[data-med-id="${med.id}"] .med-name`).focus(), 0);
+    }
+    function deleteMedicine(id) {
+      medicines = medicines.filter(m => m.id !== id);
+      renderMedicines();
+      toast("Medicine removed");
+    }
+    function editMedicine(id) {
+      document.querySelector(`[data-med-id="${id}"] .med-name`).focus();
+      toast("Medicine fields are ready to edit");
+    }
+    function syncMedicine(id, field, value) {
+      const med = medicines.find(m => m.id === id);
+      if (med) med[field] = ["mode","quantity","duration"].includes(field) ? +value : value;
+    }
+    function renderMedicines() {
+      const modeOptions = modes.map((m,i) => `<option value="${i}">${esc(m[0])}</option>`).join("");
+      document.getElementById("medicineList").innerHTML = medicines.map((m,index) => `<div class="medicine-card" data-med-id="${m.id}">
+        <div class="medicine-title">Medicine ${index + 1}${m.extracted ? '<span class="ai-tag">✦ AI extracted</span>' : '<span class="ai-tag">Manually added</span>'}<span class="medicine-actions"><button class="icon-btn" onclick="editMedicine(${m.id})">Edit</button><button class="icon-btn danger" onclick="deleteMedicine(${m.id})">Delete</button></span></div>
+        <div class="form-grid">
+          <div class="field span-2"><label>Medicine name ${m.extracted ? '<span class="confidence">98% confidence</span>' : ""}</label><input class="med-name" value="${attr(m.name)}" oninput="syncMedicine(${m.id},'name',this.value)" placeholder="Enter medicine name"></div>
+          <div class="field"><label>Active ingredient</label><input value="${attr(m.ingredient)}" oninput="syncMedicine(${m.id},'ingredient',this.value)" placeholder="Enter active ingredient"></div>
+          <div class="field"><label>Dispensing mode</label><select onchange="syncMedicine(${m.id},'mode',this.value)">${modeOptions.replace(`value="${m.mode}"`,`value="${m.mode}" selected`)}</select></div>
+          <div class="field"><label>Quantity</label><input type="number" min="1" value="${m.quantity}" oninput="syncMedicine(${m.id},'quantity',this.value)"></div>
+          <div class="field"><label>Unit</label><select onchange="syncMedicine(${m.id},'unit',this.value)">${["Tablets","Capsules","Vials","Ampoules","Millilitres"].map(x=>`<option${x===m.unit?" selected":""}>${x}</option>`).join("")}</select></div>
+          <div class="field"><label>Prescribed duration (days)</label><input type="number" min="1" value="${m.duration}" oninput="syncMedicine(${m.id},'duration',this.value)"></div>
+          <div class="field"><label>Product form</label><select onchange="syncMedicine(${m.id},'form',this.value)">${["Tablet","Capsule","Liquid","Injectable","Vial","Ampoule"].map(x=>`<option${x===m.form?" selected":""}>${x}</option>`).join("")}</select></div>
+          <div class="field"><label>Registry match</label><select onchange="syncMedicine(${m.id},'registered',this.value)"><option value="yes"${m.registered==="yes"?" selected":""}>Matched in EDE registry</option><option value="no"${m.registered==="no"?" selected":""}>No record found</option></select></div>
+        </div></div>`).join("");
+      document.getElementById("emptyMedicines").style.display = medicines.length ? "none" : "block";
+    }
+    function confirmMedicines() {
+      if (!prescriptionUploaded) return toast("Please upload a prescription");
+      if (!medicines.length) return toast("Add at least one medicine");
+      if (medicines.some(m => !m.name.trim())) return toast("Enter a name for every medicine");
+      go(5);
+    }
     function populateReview() {
       const resident = document.querySelector('[name="resident"]:checked').value === "yes";
       const applying = document.querySelector('[name="applyingFor"]:checked').value;
       document.getElementById("reviewClass").textContent = resident ? "Resident" : "Traveller";
       document.getElementById("reviewFor").textContent = applying === "myself" ? "Myself" : "Someone else";
-      const selectedMode = modes[+modeSelect.value][0];
-      let html = `<span><small>Medicine 1</small><b>${esc(document.getElementById("medName").value)}</b></span>
-        <span><small>Dispensing mode</small><b>${esc(selectedMode)}</b></span>
-        <span><small>Supply</small><b>${esc(document.getElementById("quantity").value)} ${esc(document.getElementById("unit").value)} · ${esc(document.getElementById("duration").value)} days</b></span>`;
-      if (secondMedicine) html += `<span><small>Medicine 2</small><b>Clonazepam 0.5 mg</b></span><span><small>Dispensing mode</small><b>Controlled Drug (CD)</b></span><span><small>Supply</small><b>30 tablets · 30 days</b></span>`;
-      document.getElementById("reviewMeds").innerHTML = html;
+      document.getElementById("reviewPatient").textContent = document.getElementById("patientName").value;
+      document.getElementById("reviewDocument").textContent = document.getElementById("patientDocumentNumber").value;
+      document.getElementById("reviewNationality").textContent = document.getElementById("patientNationality").value;
+      document.getElementById("reviewMeds").innerHTML = medicines.map((m,i) => `<span><small>Medicine ${i+1}</small><b>${esc(m.name)}</b></span><span><small>Dispensing mode</small><b>${esc(modes[m.mode][0])}</b></span><span><small>Supply</small><b>${m.quantity} ${esc(m.unit)} · ${m.duration} days</b></span>`).join("");
     }
 
-    function evaluateFirst() {
-      const selectedMode = modes[+modeSelect.value];
+    function evaluateMedicine(med) {
+      const selectedMode = modes[med.mode];
       const reasons = [];
-      const duration = +document.getElementById("duration").value;
-      const quantity = +document.getElementById("quantity").value;
-      const form = document.getElementById("form").value;
       if (!selectedMode[1]) reasons.push("Dispensing mode requires mandatory officer review (BR-03, BR-21)");
-      if (duration > 90) reasons.push("Duration exceeds 90 days (BR-06)");
-      if (quantity > 180) reasons.push("Quantity exceeds 180 units (BR-07)");
-      if (document.getElementById("registered").value === "no") reasons.push("Medicine is unmatched in the EDE registry (BR-09)");
-      if (["Injectable","Vial","Ampoule"].includes(form)) reasons.push("Product form requires officer review (BR-11)");
-      return { name: document.getElementById("medName").value || "Medicine 1", reasons, auto: reasons.length === 0 };
+      if (med.duration > 90) reasons.push("Duration exceeds 90 days (BR-06)");
+      if (med.quantity > 180) reasons.push("Quantity exceeds 180 units (BR-07)");
+      if (med.registered === "no") reasons.push("Medicine is unmatched in the EDE registry (BR-09)");
+      if (["Injectable","Vial","Ampoule"].includes(med.form)) reasons.push("Product form requires officer review (BR-11)");
+      return { name: med.name, reasons, auto: reasons.length === 0 };
     }
 
     function submitApplication() {
       if (!document.getElementById("terms").checked) return toast("Please accept the terms and conditions");
-      const results = [evaluateFirst()];
-      if (secondMedicine) results.push({name:"Clonazepam 0.5 mg", auto:false, reasons:["Controlled medicines cannot be auto-approved (BR-21)","Prescription and medical report require officer validation (BR-17)"]});
+      const results = medicines.map(evaluateMedicine);
       const autos = results.filter(r => r.auto).length;
       const reviews = results.length - autos;
       document.getElementById("autoCount").textContent = autos;
@@ -434,7 +518,7 @@
         : "Eligible medicines can be permitted immediately, while medicines requiring human review are securely routed to an EDE officer.";
       document.getElementById("processingLabel").textContent = reviews === 0 ? "Permit ready" : autos === 0 ? "Officer review in progress" : "Partial permit ready · review in progress";
       document.getElementById("decisionList").innerHTML = results.map(r => `<div class="decision-med"><span class="med-symbol">${r.auto ? "✓" : "!"}</span><span><b>${esc(r.name)}</b><small>${r.auto ? "All auto-approval gates passed" : "Human-in-the-loop safeguards applied"}</small>${r.reasons.length ? `<ul class="reasons">${r.reasons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>` : ""}</span><span class="outcome ${r.auto ? "auto" : "hitl"}">${r.auto ? "AUTO-APPROVED" : "OFFICER REVIEW"}</span></div>`).join("");
-      go(5);
+      go(6);
     }
 
     function saveDraft() { toast("Draft saved securely"); }
@@ -449,10 +533,16 @@
       toast("Prototype permit downloaded");
     }
     function restart() {
-      secondMedicine = false;
+      medicines = [];
+      medicineId = 0;
+      identityUploaded = false;
+      prescriptionUploaded = false;
       document.getElementById("terms").checked = false;
-      document.getElementById("medicine2").style.display = "none";
-      document.getElementById("addMed").style.display = document.getElementById("medicineCard").style.display === "none" ? "none" : "block";
+      const signInButton = document.getElementById("signInButton");
+      signInButton.disabled = false;
+      signInButton.textContent = "Sign in with UAE PASS →";
+      document.querySelectorAll(".upload-status").forEach(el => el.classList.remove("visible"));
+      renderMedicines();
       go(1);
     }
     function toast(message) {
@@ -461,6 +551,8 @@
       clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
     }
     function esc(value) { const d = document.createElement("div"); d.textContent = value; return d.innerHTML; }
+    function attr(value) { return esc(value).replace(/"/g,"&quot;"); }
+    renderMedicines();
   </script>
 </body>
 </html>
