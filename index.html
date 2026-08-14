@@ -253,7 +253,7 @@
     </div>
     <div class="header-actions"><span>Help & support</span><button class="lang">العربية</button><div class="avatar">SA</div></div>
   </header>
-  <nav id="mainNav"><button onclick="showDashboard(this)">Dashboard</button><button class="active" onclick="showApplication(this)">New application</button><button onclick="showDashboard(this)">My applications</button><button onclick="showDashboard(this)">Certificates</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
+  <nav id="mainNav" style="display:none"><button onclick="showDashboard(this)">Dashboard</button><button onclick="startApplication(this)">New application</button><button onclick="showDashboard(this)">My applications</button><button onclick="showDashboard(this)">Certificates</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
 
   <main class="shell portal-view active" id="applicationView">
     <div class="breadcrumb">Home &nbsp;/&nbsp; Services &nbsp;/&nbsp; <b>Personal medicine permit</b></div>
@@ -353,21 +353,21 @@
   </main>
 
   <main class="shell portal-view" id="dashboardView">
-    <section class="dashboard-hero"><div><div class="eyebrow" style="color:#89c3c3">Applicant dashboard</div><h1>Welcome back, Sara</h1><p>Track applications, download permits, or start a new personal medicine import request.</p></div><button class="btn btn-primary" onclick="showApplication()">＋ New application</button></section>
-    <div class="kpi-grid"><div class="kpi-card"><strong>3</strong><small>Total applications</small></div><div class="kpi-card"><strong>1</strong><small>Awaiting officer review</small></div><div class="kpi-card"><strong>2</strong><small>Permits issued</small></div><div class="kpi-card"><strong>0</strong><small>Actions required</small></div></div>
-    <section class="table-card"><div class="table-head"><h3>My recent applications</h3><button class="btn btn-secondary" onclick="showApplication()">New application</button></div><div style="overflow-x:auto"><table><thead><tr><th>Application</th><th>Submitted</th><th>Patient</th><th>Medicines</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td><b>EDE-PMU-2026-0814027</b></td><td>14 Aug 2026</td><td>Sara Ahmed Al Mansoori</td><td>3</td><td><span class="status review">PARTIAL · IN REVIEW</span></td><td><button class="icon-btn" onclick="showApplication();go(6)">View details</button></td></tr><tr><td><b>EDE-PMU-2026-0621182</b></td><td>21 Jun 2026</td><td>Sara Ahmed Al Mansoori</td><td>1</td><td><span class="status approved">PERMIT ISSUED</span></td><td><button class="icon-btn" onclick="toast('Permit download started')">Download</button></td></tr><tr><td><b>EDE-PMU-2026-0310044</b></td><td>10 Mar 2026</td><td>Omar Khalid Al Nuaimi</td><td>2</td><td><span class="status approved">PERMIT ISSUED</span></td><td><button class="icon-btn" onclick="toast('Permit download started')">Download</button></td></tr></tbody></table></div></section>
+    <section class="dashboard-hero"><div><div class="eyebrow" style="color:#89c3c3">Applicant dashboard</div><h1>Welcome back, Sara</h1><p>Track applications, download permits, or start a new personal medicine import request.</p></div><button class="btn btn-primary" onclick="startApplication()">＋ New application</button></section>
+    <div class="kpi-grid"><div class="kpi-card"><strong>3</strong><small>Total applications</small></div><div class="kpi-card"><strong id="reviewKpi">1</strong><small>Awaiting officer review</small></div><div class="kpi-card"><strong id="permitKpi">2</strong><small>Permits issued</small></div><div class="kpi-card"><strong>0</strong><small>Actions required</small></div></div>
+    <section class="table-card"><div class="table-head"><h3>My recent applications</h3><button class="btn btn-secondary" onclick="startApplication()">New application</button></div><div style="overflow-x:auto"><table><thead><tr><th>Application</th><th>Submitted</th><th>Patient</th><th>Medicines</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td><b>EDE-PMU-2026-0814027</b></td><td>14 Aug 2026</td><td>Sara Ahmed Al Mansoori</td><td>3</td><td><span class="status review" id="dashboardApplicationStatus">PARTIAL · IN REVIEW</span></td><td id="dashboardApplicationAction"><button class="icon-btn" onclick="showApplication();go(6)">View details</button></td></tr><tr><td><b>EDE-PMU-2026-0621182</b></td><td>21 Jun 2026</td><td>Sara Ahmed Al Mansoori</td><td>1</td><td><span class="status approved">PERMIT ISSUED</span></td><td><button class="icon-btn" onclick="toast('Permit download started')">Download</button></td></tr><tr><td><b>EDE-PMU-2026-0310044</b></td><td>10 Mar 2026</td><td>Omar Khalid Al Nuaimi</td><td>2</td><td><span class="status approved">PERMIT ISSUED</span></td><td><button class="icon-btn" onclick="toast('Permit download started')">Download</button></td></tr></tbody></table></div></section>
   </main>
 
   <main class="portal-view" id="officerView">
     <div class="officer-shell">
       <div class="hero" style="margin-bottom:20px"><div><div class="eyebrow">EDE internal · Human in the loop</div><h1>Officer review portal</h1><p class="subtitle">Review AI-routed medicines, supporting evidence, and the business rules that triggered human oversight.</p></div><button class="btn btn-secondary" onclick="showDashboard()">Exit officer portal</button></div>
       <div class="officer-layout">
-        <aside class="queue"><div class="table-head"><h3>Review queue</h3><span class="status review">3 PENDING</span></div><div class="queue-item active" onclick="selectCase(this,'EDE-PMU-2026-0814027','Sara Ahmed Al Mansoori','Clonazepam 0.5 mg','Controlled Drug (CD)','BR-21 · Controlled medicines cannot be auto-approved')"><b>EDE-PMU-2026-0814027</b><small>Sara Ahmed Al Mansoori · 1 medicine flagged</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813988','Maya Elena Santos','Adalimumab 40 mg','Prescription Only Medicine (POM)','BR-11 · Injectable product form requires officer review')"><b>EDE-PMU-2026-0813988</b><small>Maya Elena Santos · Injectable medicine</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813761','Omar Khalid Al Nuaimi','Unmatched medicine','N/A','BR-09 · Product not matched in the EDE registry')"><b>EDE-PMU-2026-0813761</b><small>Omar Khalid Al Nuaimi · Registry mismatch</small></div></aside>
-        <section class="case-detail"><div class="case-header"><div><h2 id="caseNumber">EDE-PMU-2026-0814027</h2><p>Submitted 14 Aug 2026 · AI confidence 98%</p></div><span class="status review">OFFICER REVIEW</span></div><div class="case-body">
+        <aside class="queue"><div class="table-head"><h3>Review queue</h3><span class="status review" id="pendingCount">3 PENDING</span></div><div class="queue-item active" onclick="selectCase(this,'EDE-PMU-2026-0814027','Sara Ahmed Al Mansoori','Clonazepam 0.5 mg','Controlled Drug (CD)','BR-21 · Controlled medicines cannot be auto-approved')"><b>EDE-PMU-2026-0814027</b><small>Sara Ahmed Al Mansoori · 1 medicine flagged</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813988','Maya Elena Santos','Adalimumab 40 mg','Prescription Only Medicine (POM)','BR-11 · Injectable product form requires officer review')"><b>EDE-PMU-2026-0813988</b><small>Maya Elena Santos · Injectable medicine</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813761','Omar Khalid Al Nuaimi','Unmatched medicine','N/A','BR-09 · Product not matched in the EDE registry')"><b>EDE-PMU-2026-0813761</b><small>Omar Khalid Al Nuaimi · Registry mismatch</small></div></aside>
+        <section class="case-detail"><div class="case-header"><div><h2 id="caseNumber">EDE-PMU-2026-0814027</h2><p>Submitted 14 Aug 2026 · AI confidence 98%</p></div><span class="status review" id="officerCaseStatus">OFFICER REVIEW</span></div><div class="case-body">
           <div class="case-grid"><div class="case-stat"><small>Patient</small><b id="casePatient">Sara Ahmed Al Mansoori</b></div><div class="case-stat"><small>Classification</small><b>Resident</b></div><div class="case-stat"><small>Identity validation</small><b style="color:var(--success)">✓ Matched</b></div><div class="case-stat"><small>Medicine</small><b id="caseMedicine">Clonazepam 0.5 mg</b></div><div class="case-stat"><small>Dispensing mode</small><b id="caseMode">Controlled Drug (CD)</b></div><div class="case-stat"><small>Requested supply</small><b>30 tablets · 30 days</b></div></div>
           <div class="review-section"><div class="review-title">AI routing explanation <span style="color:var(--purple)">✦ Auditable</span></div><div style="padding:12px 15px"><div class="rule-alert" id="caseRule"><b>BR-21</b> · Controlled medicines cannot be auto-approved</div><div class="check-row" style="margin-top:12px"><span class="check">✓</span> Prescription issued within 90 days</div><div class="check-row" style="margin-top:8px"><span class="check">✓</span> Medical report issued within 365 days</div><div class="check-row" style="margin-top:8px"><span class="check">✓</span> Quantity and duration within Resident limits</div></div></div>
           <div class="review-section"><div class="review-title">Supporting documents</div><div class="checklist"><div class="check-row"><span class="file-icon">PDF</span> Prescription_Sara_2026.pdf <button class="icon-btn" style="margin-left:auto" onclick="toast('Opening prescription preview')">View</button></div><div class="check-row"><span class="file-icon">PDF</span> Medical_Report_2026.pdf <button class="icon-btn" style="margin-left:auto" onclick="toast('Opening medical report preview')">View</button></div></div></div>
-          <div class="field"><label>Officer notes</label><input id="officerNotes" placeholder="Add a note for the audit trail or applicant"></div><div class="officer-actions"><button class="btn btn-secondary" onclick="officerAction('Correction requested')">Request correction</button><button class="btn" style="background:#fbeaea;color:var(--danger)" onclick="officerAction('Application rejected')">Reject</button><button class="btn btn-primary" onclick="officerAction('Medicine approved and permit issued')">Approve medicine</button></div>
+          <div class="field"><label>Officer notes</label><input id="officerNotes" placeholder="Add a note for the audit trail or applicant"></div><div class="officer-actions"><button class="btn btn-secondary" onclick="officerAction('correction')">Request correction</button><button class="btn" style="background:#fbeaea;color:var(--danger)" onclick="officerAction('reject')">Reject</button><button class="btn btn-primary" onclick="officerAction('approve')">Approve medicine</button></div>
         </div></section>
       </div>
     </div>
@@ -385,10 +385,19 @@
       ["Pharmacy Only (P)", true, false], ["General sale / hypermarket only", true, false],
       ["General Sale Supermarket GS(s)", true, false], ["Health Care Professional's Only", true, false], ["N/A", true, false]
     ];
+    const registryProducts = [
+      {name:"Lipitor 20 mg", ingredient:"Atorvastatin"},
+      {name:"Panadol Extra", ingredient:"Paracetamol / Caffeine"},
+      {name:"Clonazepam 0.5 mg", ingredient:"Clonazepam"},
+      {name:"Adalimumab 40 mg", ingredient:"Adalimumab"},
+      {name:"Augmentin 625 mg", ingredient:"Amoxicillin / Clavulanic acid"},
+      {name:"Ventolin Inhaler", ingredient:"Salbutamol"}
+    ];
     let medicines = [];
     let medicineId = 0;
     let identityUploaded = false;
     let prescriptionUploaded = false;
+    let isAuthenticated = false;
 
     document.querySelectorAll(".choice-grid").forEach(group => group.addEventListener("change", e => {
       group.querySelectorAll(".choice").forEach(c => c.classList.toggle("selected", c.contains(e.target)));
@@ -401,8 +410,19 @@
       window.scrollTo({top:0, behavior:"smooth"});
     }
     function showApplication(button) { activateView("applicationView", button || document.querySelectorAll("#mainNav button")[1]); }
-    function showDashboard(button) { activateView("dashboardView", button || document.querySelectorAll("#mainNav button")[0]); }
-    function showOfficerPortal(button) { activateView("officerView", button || document.querySelector(".officer-link")); }
+    function startApplication(button) {
+      if (!isAuthenticated) return showApplication(button);
+      showApplication(button);
+      go(2);
+    }
+    function showDashboard(button) {
+      if (!isAuthenticated) return showApplication();
+      activateView("dashboardView", button || document.querySelectorAll("#mainNav button")[0]);
+    }
+    function showOfficerPortal(button) {
+      if (!isAuthenticated) return toast("Sign in with UAE PASS first");
+      activateView("officerView", button || document.querySelector(".officer-link"));
+    }
 
     function updateClassification() {
       const resident = document.querySelector('[name="resident"]:checked').value === "yes";
@@ -415,9 +435,11 @@
       button.disabled = true;
       setTimeout(() => {
         button.textContent = "✓ Verified";
+        isAuthenticated = true;
+        document.getElementById("mainNav").style.display = "flex";
         document.getElementById("securePill").style.display = "block";
         toast("UAE PASS verification successful");
-        go(2);
+        showDashboard();
       }, 850);
     }
 
@@ -517,7 +539,7 @@
     }
 
     function addMedicine(data = {}) {
-      const med = {id:++medicineId, name:"", ingredient:"", mode:11, quantity:1, unit:"Tablets", duration:30, form:"Tablet", registered:"yes", extracted:false, editing:true, ...data};
+      const med = {id:++medicineId, name:"", ingredient:"", mode:11, quantity:1, unit:"Tablets", duration:30, form:"Tablet", registered:"no", extracted:false, editing:true, ...data};
       medicines.push(med);
       renderMedicines();
       if (med.editing) setTimeout(() => document.querySelector(`[data-med-id="${med.id}"] .med-name`).focus(), 0);
@@ -541,19 +563,34 @@
       const med = medicines.find(m => m.id === id);
       if (med) med[field] = ["mode","quantity","duration"].includes(field) ? +value : value;
     }
+    function searchRegistry(id, field, value, input) {
+      const med = medicines.find(m => m.id === id);
+      if (!med) return;
+      med[field] = value;
+      const normalized = value.trim().toLowerCase();
+      const product = registryProducts.find(item => item.name.toLowerCase() === normalized || item.ingredient.toLowerCase() === normalized);
+      med.registered = product ? "yes" : "no";
+      if (field === "name" && product && !med.ingredient) {
+        med.ingredient = product.ingredient;
+        input.closest(".form-grid").querySelector(".ingredient-search").value = product.ingredient;
+      }
+      const status = input.closest(".form-grid").querySelector(".registry-status");
+      status.value = product ? "Matched in EDE Register" : "No record found";
+      status.style.color = product ? "var(--success)" : "var(--warning)";
+    }
     function renderMedicines() {
       const modeOptions = modes.map((m,i) => `<option value="${i}">${esc(m[0])}</option>`).join("");
       document.getElementById("medicineList").innerHTML = medicines.map((m,index) => `<div class="medicine-card" data-med-id="${m.id}">
         <div class="medicine-title">Medicine ${index + 1}${m.extracted ? '<span class="ai-tag">✦ AI extracted</span>' : '<span class="ai-tag">Manually added</span>'}<span class="medicine-actions"><button class="icon-btn" onclick="editMedicine(${m.id})">${m.editing ? "Done editing" : "Edit"}</button><button class="icon-btn danger" onclick="deleteMedicine(${m.id})">Delete</button></span></div>
         <div class="form-grid">
-          <div class="field span-2"><label>Medicine name ${m.extracted ? '<span class="confidence">98% confidence</span>' : ""}</label><input class="med-name" value="${attr(m.name)}" oninput="syncMedicine(${m.id},'name',this.value)" placeholder="Enter medicine name" ${m.editing?"":"disabled"}></div>
-          <div class="field"><label>Active ingredient</label><input value="${attr(m.ingredient)}" oninput="syncMedicine(${m.id},'ingredient',this.value)" placeholder="Enter active ingredient" ${m.editing?"":"disabled"}></div>
+          <div class="field span-2"><label>Search medicine in EDE Register ${m.extracted ? '<span class="confidence">98% confidence</span>' : ""}</label><input class="med-name" list="medicineRegistry-${m.id}" value="${attr(m.name)}" oninput="searchRegistry(${m.id},'name',this.value,this)" placeholder="Search or type medicine name" ${m.editing?"":"disabled"}><datalist id="medicineRegistry-${m.id}">${registryProducts.map(item=>`<option value="${attr(item.name)}">${esc(item.ingredient)}</option>`).join("")}</datalist></div>
+          <div class="field"><label>Search active ingredient</label><input class="ingredient-search" list="ingredientRegistry-${m.id}" value="${attr(m.ingredient)}" oninput="searchRegistry(${m.id},'ingredient',this.value,this)" placeholder="Search or type active ingredient" ${m.editing?"":"disabled"}><datalist id="ingredientRegistry-${m.id}">${registryProducts.map(item=>`<option value="${attr(item.ingredient)}">${esc(item.name)}</option>`).join("")}</datalist></div>
           <div class="field"><label>Dispensing mode</label><select onchange="syncMedicine(${m.id},'mode',this.value)" ${m.editing?"":"disabled"}>${modeOptions.replace(`value="${m.mode}"`,`value="${m.mode}" selected`)}</select></div>
           <div class="field"><label>Quantity</label><input type="number" min="1" value="${m.quantity}" oninput="syncMedicine(${m.id},'quantity',this.value)" ${m.editing?"":"disabled"}></div>
           <div class="field"><label>Unit</label><select onchange="syncMedicine(${m.id},'unit',this.value)" ${m.editing?"":"disabled"}>${["Tablets","Capsules","Vials","Ampoules","Millilitres"].map(x=>`<option${x===m.unit?" selected":""}>${x}</option>`).join("")}</select></div>
           <div class="field"><label>Prescribed duration (days)</label><input type="number" min="1" value="${m.duration}" oninput="syncMedicine(${m.id},'duration',this.value)" ${m.editing?"":"disabled"}></div>
           <div class="field"><label>Product form</label><select onchange="syncMedicine(${m.id},'form',this.value)" ${m.editing?"":"disabled"}>${["Tablet","Capsule","Liquid","Injectable","Vial","Ampoule"].map(x=>`<option${x===m.form?" selected":""}>${x}</option>`).join("")}</select></div>
-          <div class="field"><label>Registry match</label><select onchange="syncMedicine(${m.id},'registered',this.value)" ${m.editing?"":"disabled"}><option value="yes"${m.registered==="yes"?" selected":""}>Matched in EDE registry</option><option value="no"${m.registered==="no"?" selected":""}>No record found</option></select></div>
+          <div class="field"><label>Registry match</label><input class="registry-status" value="${m.registered==="yes"?"Matched in EDE Register":"No record found"}" style="color:${m.registered==="yes"?"var(--success)":"var(--warning)"};font-weight:700" disabled></div>
         </div></div>`).join("");
       document.getElementById("emptyMedicines").style.display = medicines.length ? "none" : "block";
     }
@@ -622,14 +659,10 @@
       identityUploaded = false;
       prescriptionUploaded = false;
       document.getElementById("terms").checked = false;
-      const signInButton = document.getElementById("signInButton");
-      signInButton.disabled = false;
-      signInButton.innerHTML = '<svg class="fingerprint" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 15c0-5 3.4-9 8-9s8 4 8 9"/><path d="M5 15C5 8.3 9.7 3 16 3s11 5.3 11 12"/><path d="M11 16c0-3.1 2.2-5.5 5-5.5s5 2.4 5 5.5c0 6-1.7 9.6-4.2 13"/><path d="M8 19c.4 5-1.5 7.5-2.2 8.5M14 16c0 6-1 9-2.8 12.5M18 16c0 5.5-1.2 9-3.2 13"/></svg><span>Sign in with UAE PASS</span>';
-      document.getElementById("securePill").style.display = "none";
       document.querySelectorAll(".upload-status").forEach(el => el.classList.remove("visible"));
       renderMedicines();
       showApplication();
-      go(1);
+      go(2);
     }
     function selectCase(item, number, patient, medicine, mode, rule) {
       document.querySelectorAll(".queue-item").forEach(row => row.classList.remove("active"));
@@ -640,10 +673,37 @@
       document.getElementById("caseMode").textContent = mode;
       document.getElementById("caseRule").textContent = rule;
       document.getElementById("officerNotes").value = "";
+      const status = document.getElementById("officerCaseStatus");
+      status.className = "status review";
+      status.textContent = "OFFICER REVIEW";
+      document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = false);
     }
-    function officerAction(message) {
+    function officerAction(action) {
       const note = document.getElementById("officerNotes").value.trim();
-      toast(message + (note ? " · note saved" : ""));
+      if (action !== "approve") {
+        const message = action === "correction" ? "Correction requested" : "Application rejected";
+        toast(message + (note ? " · note saved" : ""));
+        return;
+      }
+      const status = document.getElementById("officerCaseStatus");
+      status.className = "status approved";
+      status.textContent = "APPLICATION COMPLETED";
+      document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = true);
+      const selected = document.querySelector(".queue-item.active");
+      if (selected) selected.remove();
+      const remaining = document.querySelectorAll(".queue-item").length;
+      document.getElementById("pendingCount").textContent = `${remaining} PENDING`;
+      if (document.getElementById("caseNumber").textContent === "EDE-PMU-2026-0814027") {
+        const dashboardStatus = document.getElementById("dashboardApplicationStatus");
+        dashboardStatus.className = "status approved";
+        dashboardStatus.textContent = "COMPLETED · PERMIT ISSUED";
+        document.getElementById("dashboardApplicationAction").innerHTML = '<button class="icon-btn" onclick="downloadPermit()">Download permit</button>';
+        document.getElementById("reviewKpi").textContent = "0";
+        document.getElementById("permitKpi").textContent = "3";
+        document.getElementById("processingLabel").textContent = "Application completed · all permits issued";
+        document.getElementById("decisionTitle").textContent = "Application completed";
+      }
+      toast("Application completed and permit issued" + (note ? " · note saved" : ""));
     }
     function toast(message) {
       const el = document.getElementById("toast");
