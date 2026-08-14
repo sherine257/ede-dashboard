@@ -448,7 +448,13 @@
       URL.revokeObjectURL(a.href);
       toast("Prototype permit downloaded");
     }
-    function restart() { secondMedicine = false; document.getElementById("terms").checked = false; go(1); }
+    function restart() {
+      secondMedicine = false;
+      document.getElementById("terms").checked = false;
+      document.getElementById("medicine2").style.display = "none";
+      document.getElementById("addMed").style.display = document.getElementById("medicineCard").style.display === "none" ? "none" : "block";
+      go(1);
+    }
     function toast(message) {
       const el = document.getElementById("toast");
       el.textContent = message; el.classList.add("show");
