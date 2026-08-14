@@ -187,7 +187,8 @@
     .portal-view { display: none; }
     .portal-view.active { display: block; }
     .dashboard-hero { background: var(--navy); border-radius: 16px; color: #fff; padding: 30px; display: flex; justify-content: space-between; align-items: center; gap: 24px; overflow: hidden; position: relative; }
-    .dashboard-hero:after { content:"EDE"; position:absolute; right:20px; top:-25px; font-size:130px; font-weight:800; color:rgba(255,255,255,.035); }
+    .dashboard-hero:after { content:"EDE"; position:absolute; right:20px; top:-25px; font-size:130px; font-weight:800; color:rgba(255,255,255,.035); pointer-events:none; }
+    .dashboard-hero > * { position:relative; z-index:1; }
     .dashboard-hero h1 { color:#fff; font-size:27px; margin:4px 0 7px; }
     .dashboard-hero p { color:#b7c6ce; font-size:11px; margin:0; }
     .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:20px 0; }
@@ -253,7 +254,7 @@
     </div>
     <div class="header-actions"><span>Help & support</span><button class="lang">العربية</button><div class="avatar">SA</div></div>
   </header>
-  <nav id="mainNav" style="display:none"><button onclick="showDashboard(this)">Dashboard</button><button onclick="startApplication(this)">New application</button><button onclick="showDashboard(this)">My applications</button><button onclick="showDashboard(this)">Certificates</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
+  <nav id="mainNav" style="display:none"><button onclick="showDashboard(this)">Dashboard</button><button onclick="startApplication(this)">New application</button><button onclick="showDashboard(this)">Certificates</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
 
   <main class="shell portal-view active" id="applicationView">
     <div class="breadcrumb">Home &nbsp;/&nbsp; Services &nbsp;/&nbsp; <b>Personal medicine permit</b></div>
@@ -386,12 +387,12 @@
       ["General Sale Supermarket GS(s)", true, false], ["Health Care Professional's Only", true, false], ["N/A", true, false]
     ];
     const registryProducts = [
-      {name:"Lipitor 20 mg", ingredient:"Atorvastatin"},
-      {name:"Panadol Extra", ingredient:"Paracetamol / Caffeine"},
-      {name:"Clonazepam 0.5 mg", ingredient:"Clonazepam"},
-      {name:"Adalimumab 40 mg", ingredient:"Adalimumab"},
-      {name:"Augmentin 625 mg", ingredient:"Amoxicillin / Clavulanic acid"},
-      {name:"Ventolin Inhaler", ingredient:"Salbutamol"}
+      {name:"Lipitor 20 mg", ingredient:"Atorvastatin", mode:11},
+      {name:"Panadol Extra", ingredient:"Paracetamol / Caffeine", mode:12},
+      {name:"Clonazepam 0.5 mg", ingredient:"Clonazepam", mode:1},
+      {name:"Adalimumab 40 mg", ingredient:"Adalimumab", mode:11},
+      {name:"Augmentin 625 mg", ingredient:"Amoxicillin / Clavulanic acid", mode:11},
+      {name:"Ventolin Inhaler", ingredient:"Salbutamol", mode:11}
     ];
     let medicines = [];
     let medicineId = 0;
@@ -570,10 +571,16 @@
       const normalized = value.trim().toLowerCase();
       const product = registryProducts.find(item => item.name.toLowerCase() === normalized || item.ingredient.toLowerCase() === normalized);
       med.registered = product ? "yes" : "no";
-      if (field === "name" && product && !med.ingredient) {
+      med.mode = product ? product.mode : 19;
+      if (field === "name" && product) {
         med.ingredient = product.ingredient;
         input.closest(".form-grid").querySelector(".ingredient-search").value = product.ingredient;
       }
+      if (field === "ingredient" && product && !med.name) {
+        med.name = product.name;
+        input.closest(".form-grid").querySelector(".med-name").value = product.name;
+      }
+      input.closest(".form-grid").querySelector(".mode-field").value = med.mode;
       const status = input.closest(".form-grid").querySelector(".registry-status");
       status.value = product ? "Matched in EDE Register" : "No record found";
       status.style.color = product ? "var(--success)" : "var(--warning)";
@@ -585,7 +592,7 @@
         <div class="form-grid">
           <div class="field span-2"><label>Search medicine in EDE Register ${m.extracted ? '<span class="confidence">98% confidence</span>' : ""}</label><input class="med-name" list="medicineRegistry-${m.id}" value="${attr(m.name)}" oninput="searchRegistry(${m.id},'name',this.value,this)" placeholder="Search or type medicine name" ${m.editing?"":"disabled"}><datalist id="medicineRegistry-${m.id}">${registryProducts.map(item=>`<option value="${attr(item.name)}">${esc(item.ingredient)}</option>`).join("")}</datalist></div>
           <div class="field"><label>Search active ingredient</label><input class="ingredient-search" list="ingredientRegistry-${m.id}" value="${attr(m.ingredient)}" oninput="searchRegistry(${m.id},'ingredient',this.value,this)" placeholder="Search or type active ingredient" ${m.editing?"":"disabled"}><datalist id="ingredientRegistry-${m.id}">${registryProducts.map(item=>`<option value="${attr(item.ingredient)}">${esc(item.name)}</option>`).join("")}</datalist></div>
-          <div class="field"><label>Dispensing mode</label><select onchange="syncMedicine(${m.id},'mode',this.value)" ${m.editing?"":"disabled"}>${modeOptions.replace(`value="${m.mode}"`,`value="${m.mode}" selected`)}</select></div>
+          <div class="field"><label>Dispensing mode <span class="confidence">EDE Register</span></label><select class="mode-field" disabled>${modeOptions.replace(`value="${m.mode}"`,`value="${m.mode}" selected`)}</select></div>
           <div class="field"><label>Quantity</label><input type="number" min="1" value="${m.quantity}" oninput="syncMedicine(${m.id},'quantity',this.value)" ${m.editing?"":"disabled"}></div>
           <div class="field"><label>Unit</label><select onchange="syncMedicine(${m.id},'unit',this.value)" ${m.editing?"":"disabled"}>${["Tablets","Capsules","Vials","Ampoules","Millilitres"].map(x=>`<option${x===m.unit?" selected":""}>${x}</option>`).join("")}</select></div>
           <div class="field"><label>Prescribed duration (days)</label><input type="number" min="1" value="${m.duration}" oninput="syncMedicine(${m.id},'duration',this.value)" ${m.editing?"":"disabled"}></div>
