@@ -1,0 +1,17 @@
+How to open the EDE dashboard
+
+Do not use the GitHub "Raw" link. GitHub shows the file as text, so the dashboard will not run there.
+
+1. Download DT_Projects_Dashboard_SharePoint.html to your computer
+   (GitHub: open the file, click the Download raw file button).
+
+2. Open the downloaded file in Chrome or Edge:
+   - Right-click the file
+   - Open with → Google Chrome
+   or drag the file onto a Chrome window.
+
+3. SharePoint will usually not display this HTML as a live page.
+   Download it from SharePoint, then open it in Chrome as above.
+
+After you edit projects, click "Save HTML for SharePoint", then upload
+that new file and replace the old copy so teammates can download it.
