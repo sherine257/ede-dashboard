@@ -12,32 +12,30 @@ python3 -m http.server 8000
 
 Then visit `http://localhost:8000`.
 
+## SharePoint (team sharing)
+
+Edits are **not** stored inside SharePoint automatically. The browser saves a private copy on the machine that made the change.
+
+To share updates with the team:
+
+1. Make your project edits as usual.
+2. Click **Save HTML for SharePoint**. This downloads `DT_Projects_Dashboard_SharePoint.html` with the current project data baked into the file.
+3. Upload that file to SharePoint and **replace** the previous HTML file (same name, overwrite).
+4. Ask teammates to open the new file (or refresh). They will see the file version, not an old copy from their browser.
+
+If someone still sees old data, they should click **Reset to file data**. That discards their private browser copy and reloads the HTML they opened.
+
+Contract file attachments stay in the originating browser and are not included in the SharePoint HTML.
+
 ## Features
 
-- Portfolio value, progress, status, and KPI health summaries
-- Search and filters by status and vendor
-- Contract detail views with scope, risks, milestones, and source notes
+- Portfolio Dashboard, Project Register, and Delivery Tracking
+- Search, filters, KPI cards, and chart drill-downs
 - Add, edit, duplicate, and delete project records
-- Add and edit measurable KPIs for each project
-- Track projects, open milestone tasks, coordinators, budgets, and contract references
-- Upload contract documents to browser storage and download them from project details
-- Browser persistence via `localStorage`
-- JSON import/export for backup and handoff
+- JSON and CSV export, JSON import
+- Print / PDF
+- Save HTML for SharePoint so teammates see the same project data
 
 ## Data note
 
-The initial portfolio was extracted from the supplied contracts and proposals. Records based only on proposals are explicitly identified in their source notes. Placeholder dates, progress values, and operational KPI actuals must be validated by the project owners before formal reporting.
-
-The application is client-side only. Project data remains in the current browser profile, and uploaded contract files remain in that browser's IndexedDB. Use **Export data** to create a JSON backup; file binaries are not included in that export.
-
-## Live team sharing
-
-Static hosting can share the dashboard interface, but it cannot synchronize edits between users. For live collaboration, connect the application to a shared database and object store such as Supabase:
-
-1. Host `index.html` on GitHub Pages, Azure Static Web Apps, or an internal web server.
-2. Store project records in a secured shared database instead of `localStorage`.
-3. Store contract files in private object storage with authenticated access.
-4. Add organizational sign-in and role-based permissions.
-5. Keep an audit log of edits, uploads, and management decisions.
-
-Until a shared backend is configured, teammates can exchange JSON exports through **Export data** and **Import data**, but those updates are not real-time.
+The portfolio was built from DT project records, contracts, and proposals. Placeholder dates, progress values, and operational KPI actuals must be validated by the project owners before formal reporting.
