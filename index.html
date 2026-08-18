@@ -309,6 +309,22 @@
     .case-stat b { font-size:10px; color:var(--navy); }
     .rule-alert { border-left:3px solid var(--warning); background:#fff8ed; padding:12px 14px; margin:8px 0; border-radius:0 8px 8px 0; font-size:9px; color:#6f4a1b; }
     .officer-actions { display:flex; gap:9px; justify-content:flex-end; padding-top:18px; border-top:1px solid var(--line); margin-top:18px; }
+    .officer-actions .ai-pick { box-shadow: 0 0 0 2px var(--purple); position: relative; }
+    .ai-suggest { border:1px solid #d9caf4; background:#f8f4ff; border-radius:12px; padding:14px 16px; margin-bottom:16px; }
+    .ai-suggest.reject { border-color:#f0c4cc; background:#fff6f7; }
+    .ai-suggest.approve { border-color:#c5ddd4; background:#f3faf7; }
+    .ai-suggest-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+    .ai-suggest-head b { display:block; font-size:12px; color:var(--navy); }
+    .ai-suggest-head small { display:block; font-size:9px; color:var(--muted); margin-top:2px; }
+    .ai-suggest-badge { margin-left:auto; border-radius:12px; padding:5px 10px; font-size:10px; font-weight:800; letter-spacing:.4px; }
+    .ai-suggest-badge.approve { background:#e7f5ed; color:var(--success); }
+    .ai-suggest-badge.reject { background:#fde8ec; color:var(--danger); }
+    .ai-suggest p { margin:0 0 8px; font-size:11px; line-height:1.55; color:var(--ink); }
+    .ai-suggest ul { margin:0; padding-left:16px; color:#4a267d; font-size:10px; line-height:1.55; }
+    .ai-suggest.reject ul { color:#7a2436; }
+    .ai-suggest-note { margin-top:10px; font-size:9px; color:var(--muted); }
+    .check-row.fail .check { background:var(--danger); }
+    .check-row.fail { color:var(--danger); }
     .site-footer {
       background: var(--navy); color: #94b1c2; padding: 14px 28px;
       display: flex; justify-content: space-between; gap: 12px; font-size: 11px;
@@ -524,13 +540,53 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     <div class="officer-shell">
       <div class="hero" style="margin-bottom:20px"><div><div class="eyebrow">EDE internal · Human in the loop</div><h1>Officer review portal</h1><p class="subtitle">Review AI-routed medicines, supporting evidence, and the business rules that triggered human oversight.</p></div><button class="btn btn-secondary" onclick="showDashboard()">Exit officer portal</button></div>
       <div class="officer-layout">
-        <aside class="queue"><div class="table-head"><h3>Review queue</h3><span class="status review" id="pendingCount">3 PENDING</span></div><div class="queue-item active" onclick="selectCase(this,'EDE-PMU-2026-0814027','Sara Ahmed Al Mansoori','Clonazepam 0.5 mg','Controlled Drug (CD)','BR-21 · Controlled medicines cannot be auto-approved')"><b>EDE-PMU-2026-0814027</b><small>Sara Ahmed Al Mansoori · 1 medicine flagged</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813988','Maya Elena Santos','Adalimumab 40 mg','Prescription Only Medicine (POM)','BR-11 · Injectable product form requires officer review')"><b>EDE-PMU-2026-0813988</b><small>Maya Elena Santos · Injectable medicine</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813761','Omar Khalid Al Nuaimi','Unmatched medicine','N/A','BR-09 · Product not matched in the EDE registry')"><b>EDE-PMU-2026-0813761</b><small>Omar Khalid Al Nuaimi · Registry mismatch</small></div></aside>
-        <section class="case-detail"><div class="case-header"><div><h2 id="caseNumber">EDE-PMU-2026-0814027</h2><p>Submitted 14 Aug 2026 · AI confidence 98%</p></div><span class="status review" id="officerCaseStatus">OFFICER REVIEW</span></div><div class="case-body">
-          <div class="case-grid"><div class="case-stat"><small>Patient</small><b id="casePatient">Sara Ahmed Al Mansoori</b></div><div class="case-stat"><small>Classification</small><b>Resident</b></div><div class="case-stat"><small>Identity validation</small><b style="color:var(--success)">✓ Matched</b></div><div class="case-stat"><small>Medicine</small><b id="caseMedicine">Clonazepam 0.5 mg</b></div><div class="case-stat"><small>Dispensing mode</small><b id="caseMode">Controlled Drug (CD)</b></div><div class="case-stat"><small>Requested supply</small><b>30 tablets · 30 days</b></div></div>
-          <div class="review-section"><div class="review-title">AI routing explanation <span style="color:var(--purple)">✦ Auditable</span></div><div style="padding:12px 15px"><div class="rule-alert" id="caseRule"><b>BR-21</b> · Controlled medicines cannot be auto-approved</div><div class="check-row" style="margin-top:12px"><span class="check">✓</span> Prescription issued within 90 days</div><div class="check-row" style="margin-top:8px"><span class="check">✓</span> Medical report issued within 365 days</div><div class="check-row" style="margin-top:8px"><span class="check">✓</span> Quantity and duration within Resident limits</div></div></div>
-          <div class="review-section"><div class="review-title">Supporting documents</div><div class="checklist"><div class="check-row"><span class="file-icon">PDF</span> Prescription_Sara_2026.pdf <button class="icon-btn" style="margin-left:auto" onclick="toast('Opening prescription preview')">View</button></div><div class="check-row"><span class="file-icon">PDF</span> Medical_Report_2026.pdf <button class="icon-btn" style="margin-left:auto" onclick="toast('Opening medical report preview')">View</button></div></div></div>
-          <div class="field"><label>Officer notes</label><input id="officerNotes" placeholder="Add a note for the audit trail or applicant"></div><div class="officer-actions"><button class="btn btn-secondary" onclick="officerAction('correction')">Request correction</button><button class="btn" style="background:#fbeaea;color:var(--danger)" onclick="officerAction('reject')">Reject</button><button class="btn btn-primary" onclick="officerAction('approve')">Approve medicine</button></div>
-        </div></section>
+        <aside class="queue">
+          <div class="table-head"><h3>Review queue</h3><span class="status review" id="pendingCount">3 PENDING</span></div>
+          <div id="officerQueue"></div>
+        </aside>
+        <section class="case-detail">
+          <div class="case-header">
+            <div><h2 id="caseNumber">EDE-PMU-2026-0814027</h2><p id="caseMeta">Submitted 14 Aug 2026 · AI confidence 98%</p></div>
+            <span class="status review" id="officerCaseStatus">OFFICER REVIEW</span>
+          </div>
+          <div class="case-body">
+            <div class="ai-suggest approve" id="officerAiSuggest">
+              <div class="ai-suggest-head">
+                <div class="ai-icon">✦</div>
+                <div><b>AI recommendation</b><small>Based on triggered business rules and DCPU FAQs</small></div>
+                <span class="ai-suggest-badge approve" id="aiSuggestBadge">APPROVE</span>
+              </div>
+              <p id="aiSuggestSummary"></p>
+              <ul id="aiSuggestReasons"></ul>
+              <div class="ai-suggest-note" id="aiSuggestNote">The officer remains the final decision maker.</div>
+            </div>
+            <div class="case-grid">
+              <div class="case-stat"><small>Patient</small><b id="casePatient">Sara Ahmed Al Mansoori</b></div>
+              <div class="case-stat"><small>Classification</small><b id="caseClass">Resident</b></div>
+              <div class="case-stat"><small>Identity validation</small><b id="caseIdentity" style="color:var(--success)">✓ Matched</b></div>
+              <div class="case-stat"><small>Medicine</small><b id="caseMedicine">Clonazepam 0.5 mg</b></div>
+              <div class="case-stat"><small>Dispensing mode</small><b id="caseMode">Controlled Drug (CD)</b></div>
+              <div class="case-stat"><small>Requested supply</small><b id="caseSupply">30 tablets · 30 days</b></div>
+            </div>
+            <div class="review-section">
+              <div class="review-title">AI routing explanation <span style="color:var(--purple)">✦ Auditable</span></div>
+              <div style="padding:12px 15px">
+                <div class="rule-alert" id="caseRule"></div>
+                <div id="caseChecks"></div>
+              </div>
+            </div>
+            <div class="review-section">
+              <div class="review-title">Supporting documents</div>
+              <div class="checklist" id="caseDocs"></div>
+            </div>
+            <div class="field"><label>Officer notes</label><input id="officerNotes" placeholder="Add a note for the audit trail or applicant"></div>
+            <div class="officer-actions">
+              <button class="btn btn-secondary" id="btnCorrection" onclick="officerAction('correction')">Request correction</button>
+              <button class="btn" id="btnReject" style="background:#fbeaea;color:var(--danger)" onclick="officerAction('reject')">Reject</button>
+              <button class="btn btn-primary" id="btnApprove" onclick="officerAction('approve')">Approve medicine</button>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </main>
@@ -559,6 +615,60 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       {name:"Augmentin 625 mg", ingredient:"Amoxicillin / Clavulanic acid", mode:11},
       {name:"Ventolin Inhaler", ingredient:"Salbutamol", mode:11}
     ];
+    const officerCases = [
+      {
+        id: "EDE-PMU-2026-0814027",
+        submitted: "14 Aug 2026",
+        patient: "Sara Ahmed Al Mansoori",
+        classification: "Resident",
+        medicine: "Clonazepam 0.5 mg",
+        mode: "Controlled Drug (CD)",
+        supply: "30 tablets · 30 days",
+        durationDays: 30,
+        quantity: 30,
+        registered: true,
+        flag: "1 medicine flagged",
+        rule: "BR-21 · Controlled medicines cannot be auto-approved",
+        rules: ["BR-21", "BR-01"],
+        prescription: { ok: true, name: "Prescription_Sara_2026.pdf" },
+        medicalReport: { ok: true, name: "Medical_Report_2026.pdf" }
+      },
+      {
+        id: "EDE-PMU-2026-0813988",
+        submitted: "14 Aug 2026",
+        patient: "Maya Elena Santos",
+        classification: "Traveller",
+        medicine: "Adalimumab 40 mg",
+        mode: "Prescription Only Medicine (POM)",
+        supply: "2 pens · 120 days",
+        durationDays: 120,
+        quantity: 2,
+        registered: true,
+        flag: "Injectable medicine · duration exceeded",
+        rule: "BR-11 · Injectable product form requires officer review",
+        rules: ["BR-11", "BR-06", "BR-02"],
+        prescription: { ok: true, name: "Prescription_Maya_2026.pdf" },
+        medicalReport: { ok: true, name: "Medical_Report_Maya_2026.pdf" }
+      },
+      {
+        id: "EDE-PMU-2026-0813761",
+        submitted: "13 Aug 2026",
+        patient: "Omar Khalid Al Nuaimi",
+        classification: "Resident",
+        medicine: "Unmatched medicine",
+        mode: "N/A",
+        supply: "60 tablets · 30 days",
+        durationDays: 30,
+        quantity: 60,
+        registered: false,
+        flag: "Registry mismatch",
+        rule: "BR-09 · Product not matched in the EDE registry",
+        rules: ["BR-09"],
+        prescription: { ok: true, name: "Prescription_Omar_2026.pdf" },
+        medicalReport: { ok: false, name: "" }
+      }
+    ];
+    let activeOfficerCaseId = officerCases[0].id;
     let medicines = [];
     let medicineId = 0;
     let identityUploaded = false;
@@ -839,46 +949,134 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       showApplication();
       go(2);
     }
-    function selectCase(item, number, patient, medicine, mode, rule) {
-      document.querySelectorAll(".queue-item").forEach(row => row.classList.remove("active"));
-      item.classList.add("active");
-      document.getElementById("caseNumber").textContent = number;
-      document.getElementById("casePatient").textContent = patient;
-      document.getElementById("caseMedicine").textContent = medicine;
-      document.getElementById("caseMode").textContent = mode;
-      document.getElementById("caseRule").textContent = rule;
-      document.getElementById("officerNotes").value = "";
+    function officerAiSuggestion(c) {
+      const reasons = [];
+      let decision = "approve";
+      reasons.push("Triggered rules: " + c.rules.join(", ") + " — " + c.rule);
+      if (!c.prescription.ok) {
+        decision = "reject";
+        reasons.push("Reject: a medical prescription issued within the last 3 months is mandatory if a permit is required.");
+      } else {
+        reasons.push("Prescription is present and within 3 months.");
+      }
+      if (!c.medicalReport.ok) {
+        decision = "reject";
+        reasons.push("Reject: a medical report issued within the last 1 year is mandatory if a permit is required" + (c.rules.includes("BR-09") ? " (also required for unlisted medicines)." : "."));
+      } else {
+        reasons.push("Medical report is present and within 1 year.");
+      }
+      const residentCd = c.classification === "Resident" && /Controlled|CD/.test(c.mode);
+      const travellerOver = c.classification === "Traveller" && c.durationDays > 90;
+      const residentCdOver = residentCd && c.durationDays > 30;
+      if (travellerOver || residentCdOver || c.quantity > 180) {
+        decision = "reject";
+        if (travellerOver) reasons.push("Reject under BR-06 / traveller FAQ: personal-use supply cannot exceed three (3) months.");
+        if (residentCdOver) reasons.push("Reject under BR-01 / resident FAQ: controlled medicines are limited to one (1) month and need electronic approval.");
+        if (c.quantity > 180) reasons.push("Reject under BR-07: quantity exceeds 180 units.");
+      } else if (residentCd) {
+        reasons.push("Resident controlled-medicine limit is met (maximum one month). BR-21 only blocked auto-approval, so an officer may approve.");
+      } else if (c.classification === "Traveller") {
+        reasons.push("Traveller quantity is within the three-month personal-use limit.");
+      }
+      if (c.rules.includes("BR-11") && decision === "approve") {
+        reasons.push("BR-11 requires officer review of injectables. Documents are complete, so AI suggests Approve after clinical check.");
+      }
+      if (c.rules.includes("BR-09") && decision === "approve") {
+        reasons.push("BR-09 unmatched product: FAQ allows this if a valid prescription and medical report are submitted. Both are present, so AI suggests Approve.");
+      }
+      if (c.rules.includes("BR-21") && decision === "approve") {
+        reasons.push("Recommend Approve. Controlled medicine was routed to HITL by BR-21, but identity, documents and the 1-month resident limit are satisfied.");
+      }
+      return {
+        decision,
+        label: decision === "approve" ? "APPROVE" : "REJECT",
+        summary: decision === "approve"
+          ? "AI suggests Approve. The case needed officer review because of the triggered BR, but FAQ limits and mandatory documents are satisfied."
+          : "AI suggests Reject. The triggered BR plus FAQ checks show a missing mandatory document or a quantity/duration that exceeds the allowed limit.",
+        reasons,
+        note: decision === "approve"
+          ? `AI recommendation: Approve ${c.medicine} under ${c.rules.join(", ")}. Documents valid; supply ${c.supply} within ${c.classification} FAQ limit.`
+          : `AI recommendation: Reject ${c.medicine} under ${c.rules.join(", ")}. ${!c.medicalReport.ok ? "Medical report missing/expired. " : ""}${!c.prescription.ok ? "Prescription missing/expired. " : ""}${travellerOver || residentCdOver ? "Supply exceeds FAQ limit. " : ""}`
+      };
+    }
+    function renderOfficerQueue() {
+      const wrap = document.getElementById("officerQueue");
+      wrap.innerHTML = officerCases.map(c => `<div class="queue-item${c.id===activeOfficerCaseId?" active":""}" onclick="selectCase('${c.id}')"><b>${esc(c.id)}</b><small>${esc(c.patient)} · ${esc(c.flag)}</small></div>`).join("") || `<div class="queue-item"><small>No cases pending</small></div>`;
+      document.getElementById("pendingCount").textContent = `${officerCases.length} PENDING`;
+    }
+    function selectCase(id) {
+      const c = officerCases.find(item => item.id === id) || officerCases[0];
+      if (!c) return;
+      activeOfficerCaseId = c.id;
+      renderOfficerQueue();
+      document.getElementById("caseNumber").textContent = c.id;
+      document.getElementById("caseMeta").textContent = `Submitted ${c.submitted} · AI confidence 98%`;
+      document.getElementById("casePatient").textContent = c.patient;
+      document.getElementById("caseClass").textContent = c.classification;
+      document.getElementById("caseMedicine").textContent = c.medicine;
+      document.getElementById("caseMode").textContent = c.mode;
+      document.getElementById("caseSupply").textContent = c.supply;
+      document.getElementById("caseRule").innerHTML = `<b>${esc(c.rules[0])}</b> · ${esc(c.rule.replace(/^BR-\d+\s·\s/, ""))}`;
+      const checks = [
+        [c.prescription.ok, "Prescription issued within 90 days"],
+        [c.medicalReport.ok, "Medical report issued within 365 days"],
+        [!(c.classification === "Traveller" && c.durationDays > 90) && !(c.classification === "Resident" && /Controlled|CD/.test(c.mode) && c.durationDays > 30), c.classification === "Resident" ? "Quantity and duration within Resident limits" : "Quantity and duration within Traveller limits"],
+        [c.registered, "Matched in EDE Register"]
+      ];
+      document.getElementById("caseChecks").innerHTML = checks.map(([ok, label]) => `<div class="check-row${ok?"":" fail"}" style="margin-top:8px"><span class="check">${ok?"✓":"!"}</span> ${esc(label)}</div>`).join("");
+      const docs = [];
+      if (c.prescription.name) docs.push(c.prescription);
+      if (c.medicalReport.name) docs.push(c.medicalReport);
+      if (!c.medicalReport.ok) docs.push({ name: "Medical report not uploaded", ok: false });
+      document.getElementById("caseDocs").innerHTML = docs.map(d => `<div class="check-row${d.ok===false?" fail":""}"><span class="file-icon">${d.ok===false?"—":"PDF"}</span> ${esc(d.name)} <button class="icon-btn" style="margin-left:auto" onclick="toast('${d.ok===false?"No medical report on file":"Opening document preview"}')">${d.ok===false?"Missing":"View"}</button></div>`).join("");
+      const suggestion = officerAiSuggestion(c);
+      const box = document.getElementById("officerAiSuggest");
+      box.className = "ai-suggest " + suggestion.decision;
+      document.getElementById("aiSuggestBadge").className = "ai-suggest-badge " + suggestion.decision;
+      document.getElementById("aiSuggestBadge").textContent = suggestion.label;
+      document.getElementById("aiSuggestSummary").textContent = suggestion.summary;
+      document.getElementById("aiSuggestReasons").innerHTML = suggestion.reasons.map(r => `<li>${esc(r)}</li>`).join("");
+      document.getElementById("officerNotes").value = suggestion.note;
       const status = document.getElementById("officerCaseStatus");
       status.className = "status review";
       status.textContent = "OFFICER REVIEW";
-      document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = false);
+      document.querySelectorAll(".officer-actions button").forEach(button => { button.disabled = false; button.classList.remove("ai-pick"); });
+      document.getElementById(suggestion.decision === "approve" ? "btnApprove" : "btnReject").classList.add("ai-pick");
     }
     function officerAction(action) {
       const note = document.getElementById("officerNotes").value.trim();
-      if (action !== "approve") {
-        const message = action === "correction" ? "Correction requested" : "Application rejected";
-        toast(message + (note ? " · note saved" : ""));
+      const caseId = activeOfficerCaseId;
+      if (action === "correction") {
+        toast("Correction requested" + (note ? " · AI rationale saved" : ""));
         return;
       }
+      const decided = officerCases.find(c => c.id === caseId);
+      officerCases.splice(officerCases.findIndex(c => c.id === caseId), 1);
       const status = document.getElementById("officerCaseStatus");
-      status.className = "status approved";
-      status.textContent = "APPLICATION COMPLETED";
-      document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = true);
-      const selected = document.querySelector(".queue-item.active");
-      if (selected) selected.remove();
-      const remaining = document.querySelectorAll(".queue-item").length;
-      document.getElementById("pendingCount").textContent = `${remaining} PENDING`;
-      if (document.getElementById("caseNumber").textContent === "EDE-PMU-2026-0814027") {
-        const dashboardStatus = document.getElementById("dashboardApplicationStatus");
-        dashboardStatus.className = "status approved";
-        dashboardStatus.textContent = "COMPLETED · PERMIT ISSUED";
-        document.getElementById("dashboardApplicationAction").innerHTML = '<button class="icon-btn" onclick="downloadPermit()">Download permit</button>';
-        document.getElementById("reviewKpi").textContent = "0";
-        document.getElementById("permitKpi").textContent = "3";
-        document.getElementById("processingLabel").textContent = "Application completed · all permits issued";
-        document.getElementById("decisionTitle").textContent = "Application completed";
+      if (action === "approve") {
+        status.className = "status approved";
+        status.textContent = "APPLICATION COMPLETED";
+        if (caseId === "EDE-PMU-2026-0814027") {
+          const dashboardStatus = document.getElementById("dashboardApplicationStatus");
+          dashboardStatus.className = "status approved";
+          dashboardStatus.textContent = "COMPLETED · PERMIT ISSUED";
+          document.getElementById("dashboardApplicationAction").innerHTML = '<button class="icon-btn" onclick="downloadPermit()">Download permit</button>';
+          document.getElementById("reviewKpi").textContent = "0";
+          document.getElementById("permitKpi").textContent = "3";
+          document.getElementById("processingLabel").textContent = "Application completed · all permits issued";
+          document.getElementById("decisionTitle").textContent = "Application completed";
+        }
+        toast("Approved" + (decided ? " · " + decided.medicine : "") + (note ? " · note saved" : ""));
+      } else {
+        status.className = "status review";
+        status.textContent = "REJECTED";
+        toast("Rejected" + (decided ? " · " + decided.medicine : "") + (note ? " · note saved" : ""));
       }
-      toast("Application completed and permit issued" + (note ? " · note saved" : ""));
+      if (officerCases.length) selectCase(officerCases[0].id);
+      else {
+        renderOfficerQueue();
+        document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = true);
+      }
     }
     function currentStepFromDom() {
       const active = document.querySelector(".page.active");
@@ -1017,6 +1215,8 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     document.getElementById("edeLogo").src = window._EDE_LOGO_SRC || "";
     document.getElementById("edeEmblem").src = window._EDE_EMBLEM_SRC || "";
     renderMedicines();
+    renderOfficerQueue();
+    selectCase(activeOfficerCaseId);
     appendChat("bot", "Hello, I am the EDE AI Assistant. I answer from the official personal medications FAQs — whether you need a permit, quantity limits, documents, UAE PASS, packaging, and how to submit. Tap a question or type your own.");
     refreshChatChips();
   </script>
