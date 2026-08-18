@@ -310,19 +310,29 @@
     .rule-alert { border-left:3px solid var(--warning); background:#fff8ed; padding:12px 14px; margin:8px 0; border-radius:0 8px 8px 0; font-size:9px; color:#6f4a1b; }
     .officer-actions { display:flex; gap:9px; justify-content:flex-end; padding-top:18px; border-top:1px solid var(--line); margin-top:18px; }
     .officer-actions .ai-pick { box-shadow: 0 0 0 2px var(--purple); position: relative; }
+    .officer-actions .ai-pick.approve-pick { box-shadow: 0 0 0 2px var(--success); }
+    .officer-actions .ai-pick.reject-pick { box-shadow: 0 0 0 2px var(--danger); }
+    .officer-actions .ai-pick.correction-pick { box-shadow: 0 0 0 2px var(--warning); }
     .ai-suggest { border:1px solid #d9caf4; background:#f8f4ff; border-radius:12px; padding:14px 16px; margin-bottom:16px; }
     .ai-suggest.reject { border-color:#f0c4cc; background:#fff6f7; }
     .ai-suggest.approve { border-color:#c5ddd4; background:#f3faf7; }
+    .ai-suggest.correction { border-color:#ead7a8; background:#fff8e8; }
     .ai-suggest-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
     .ai-suggest-head b { display:block; font-size:12px; color:var(--navy); }
     .ai-suggest-head small { display:block; font-size:9px; color:var(--muted); margin-top:2px; }
-    .ai-suggest-badge { margin-left:auto; border-radius:12px; padding:5px 10px; font-size:10px; font-weight:800; letter-spacing:.4px; }
+    .ai-suggest-badge { margin-left:auto; border-radius:12px; padding:5px 10px; font-size:10px; font-weight:800; letter-spacing:.4px; white-space:nowrap; }
     .ai-suggest-badge.approve { background:#e7f5ed; color:var(--success); }
     .ai-suggest-badge.reject { background:#fde8ec; color:var(--danger); }
+    .ai-suggest-badge.correction { background:#fff1dc; color:var(--warning); }
     .ai-suggest p { margin:0 0 8px; font-size:11px; line-height:1.55; color:var(--ink); }
     .ai-suggest ul { margin:0; padding-left:16px; color:#4a267d; font-size:10px; line-height:1.55; }
     .ai-suggest.reject ul { color:#7a2436; }
+    .ai-suggest.correction ul { color:#7a5a12; }
     .ai-suggest-note { margin-top:10px; font-size:9px; color:var(--muted); }
+    .ai-apply { margin-top:10px; border:0; border-radius:8px; padding:8px 12px; font-size:11px; font-weight:800; background:var(--purple); color:#fff; }
+    .ai-suggest.approve .ai-apply { background:var(--success); }
+    .ai-suggest.reject .ai-apply { background:var(--danger); }
+    .ai-suggest.correction .ai-apply { background:var(--warning); color:#fff; }
     .check-row.fail .check { background:var(--danger); }
     .check-row.fail { color:var(--danger); }
     .site-footer {
@@ -558,7 +568,8 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
               </div>
               <p id="aiSuggestSummary"></p>
               <ul id="aiSuggestReasons"></ul>
-              <div class="ai-suggest-note" id="aiSuggestNote">The officer remains the final decision maker.</div>
+              <div class="ai-suggest-note" id="aiSuggestNote">Approve only if every business rule is met. Missing documents → Send for Correction. Any unmet BR → Reject or Send for Correction. The officer remains the final decision maker.</div>
+              <button class="ai-apply" id="aiApplyBtn" type="button" onclick="applyOfficerAiSuggestion()">Apply AI suggestion</button>
             </div>
             <div class="case-grid">
               <div class="case-stat"><small>Patient</small><b id="casePatient">Sara Ahmed Al Mansoori</b></div>
@@ -950,54 +961,68 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       go(2);
     }
     function officerAiSuggestion(c) {
-      const reasons = [];
-      let decision = "approve";
-      reasons.push("Triggered rules: " + c.rules.join(", ") + " — " + c.rule);
-      if (!c.prescription.ok) {
-        decision = "reject";
-        reasons.push("Reject: a medical prescription issued within the last 3 months is mandatory if a permit is required.");
-      } else {
-        reasons.push("Prescription is present and within 3 months.");
-      }
-      if (!c.medicalReport.ok) {
-        decision = "reject";
-        reasons.push("Reject: a medical report issued within the last 1 year is mandatory if a permit is required" + (c.rules.includes("BR-09") ? " (also required for unlisted medicines)." : "."));
-      } else {
-        reasons.push("Medical report is present and within 1 year.");
-      }
+      const missingDocs = [];
+      const brFails = [];
+      const met = [];
+
+      if (!c.prescription.ok) missingDocs.push("Prescription missing or older than 3 months — mandatory if a permit is required.");
+      else met.push("Document rule met: prescription issued within 3 months.");
+
+      if (!c.medicalReport.ok) missingDocs.push("Medical report missing or older than 1 year — mandatory if a permit is required" + (c.rules.includes("BR-09") ? " (including unlisted medicines)." : "."));
+      else met.push("Document rule met: medical report issued within 1 year.");
+
       const residentCd = c.classification === "Resident" && /Controlled|CD/.test(c.mode);
-      const travellerOver = c.classification === "Traveller" && c.durationDays > 90;
-      const residentCdOver = residentCd && c.durationDays > 30;
-      if (travellerOver || residentCdOver || c.quantity > 180) {
+      if (c.classification === "Traveller" && c.durationDays > 90) brFails.push("BR-06 / traveller FAQ not met: personal-use supply cannot exceed three (3) months.");
+      else if (c.classification === "Traveller") met.push("BR-02 met: traveller supply within 3 months.");
+
+      if (residentCd && c.durationDays > 30) brFails.push("BR-01 not met: resident controlled medicines are limited to one (1) month.");
+      else if (residentCd) met.push("BR-01 met: resident controlled supply within 1 month.");
+
+      if (c.quantity > 180) brFails.push("BR-07 not met: quantity exceeds 180 units.");
+
+      if (c.rules.includes("BR-09") && !c.registered && c.prescription.ok && c.medicalReport.ok) {
+        met.push("BR-09 met for officer approval: unmatched product has a valid prescription and medical report.");
+      }
+
+      if (c.rules.includes("BR-11") && !brFails.length && !missingDocs.length) {
+        met.push("BR-11 officer-review rule met: injectable product has complete documents and quantity within limit.");
+      }
+      if (c.rules.includes("BR-21") && !brFails.length && !missingDocs.length) {
+        met.push("BR-21 officer-review rule met: controlled medicine documents and 1-month limit are satisfied.");
+      }
+
+      let decision, label, summary;
+      if (!missingDocs.length && !brFails.length) {
+        decision = "approve";
+        label = "APPROVE";
+        summary = "AI suggests Approve. All applicable business rules and mandatory documents are met.";
+      } else if (missingDocs.length && !brFails.length) {
+        decision = "correction";
+        label = "SEND FOR CORRECTION";
+        summary = "AI suggests Send for Correction. A required document is missing, so the applicant should upload it before a decision.";
+      } else if (missingDocs.length && brFails.length) {
+        decision = "correction";
+        label = "SEND FOR CORRECTION";
+        summary = "AI suggests Send for Correction. Documents are incomplete and at least one business rule is not met. The applicant can correct this before a final reject.";
+      } else {
         decision = "reject";
-        if (travellerOver) reasons.push("Reject under BR-06 / traveller FAQ: personal-use supply cannot exceed three (3) months.");
-        if (residentCdOver) reasons.push("Reject under BR-01 / resident FAQ: controlled medicines are limited to one (1) month and need electronic approval.");
-        if (c.quantity > 180) reasons.push("Reject under BR-07: quantity exceeds 180 units.");
-      } else if (residentCd) {
-        reasons.push("Resident controlled-medicine limit is met (maximum one month). BR-21 only blocked auto-approval, so an officer may approve.");
-      } else if (c.classification === "Traveller") {
-        reasons.push("Traveller quantity is within the three-month personal-use limit.");
+        label = "REJECT";
+        summary = "AI suggests Reject. Documents are present, but one or more business rules are not met (quantity, duration, or product rule).";
       }
-      if (c.rules.includes("BR-11") && decision === "approve") {
-        reasons.push("BR-11 requires officer review of injectables. Documents are complete, so AI suggests Approve after clinical check.");
-      }
-      if (c.rules.includes("BR-09") && decision === "approve") {
-        reasons.push("BR-09 unmatched product: FAQ allows this if a valid prescription and medical report are submitted. Both are present, so AI suggests Approve.");
-      }
-      if (c.rules.includes("BR-21") && decision === "approve") {
-        reasons.push("Recommend Approve. Controlled medicine was routed to HITL by BR-21, but identity, documents and the 1-month resident limit are satisfied.");
-      }
-      return {
-        decision,
-        label: decision === "approve" ? "APPROVE" : "REJECT",
-        summary: decision === "approve"
-          ? "AI suggests Approve. The case needed officer review because of the triggered BR, but FAQ limits and mandatory documents are satisfied."
-          : "AI suggests Reject. The triggered BR plus FAQ checks show a missing mandatory document or a quantity/duration that exceeds the allowed limit.",
-        reasons,
-        note: decision === "approve"
-          ? `AI recommendation: Approve ${c.medicine} under ${c.rules.join(", ")}. Documents valid; supply ${c.supply} within ${c.classification} FAQ limit.`
-          : `AI recommendation: Reject ${c.medicine} under ${c.rules.join(", ")}. ${!c.medicalReport.ok ? "Medical report missing/expired. " : ""}${!c.prescription.ok ? "Prescription missing/expired. " : ""}${travellerOver || residentCdOver ? "Supply exceeds FAQ limit. " : ""}`
-      };
+
+      const reasons = [
+        "Triggered rules: " + c.rules.join(", ") + " — " + c.rule,
+        ...missingDocs.map(x => "Missing document: " + x),
+        ...brFails.map(x => "Business rule not met: " + x),
+        ...met
+      ];
+      const note = decision === "approve"
+        ? `AI recommendation: Approve ${c.medicine}. All business rules met (${c.rules.join(", ")}). Supply ${c.supply}; documents valid.`
+        : decision === "correction"
+        ? `AI recommendation: Send for correction — ${c.medicine}. ${missingDocs.join(" ")} ${brFails.join(" ")}`.trim()
+        : `AI recommendation: Reject ${c.medicine}. ${brFails.join(" ")}`;
+
+      return { decision, label, summary, reasons, note, action: decision };
     }
     function renderOfficerQueue() {
       const wrap = document.getElementById("officerQueue");
@@ -1040,8 +1065,17 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       const status = document.getElementById("officerCaseStatus");
       status.className = "status review";
       status.textContent = "OFFICER REVIEW";
-      document.querySelectorAll(".officer-actions button").forEach(button => { button.disabled = false; button.classList.remove("ai-pick"); });
-      document.getElementById(suggestion.decision === "approve" ? "btnApprove" : "btnReject").classList.add("ai-pick");
+      document.querySelectorAll(".officer-actions button").forEach(button => { button.disabled = false; button.classList.remove("ai-pick", "approve-pick", "reject-pick", "correction-pick"); });
+      const pickId = suggestion.decision === "approve" ? "btnApprove" : suggestion.decision === "correction" ? "btnCorrection" : "btnReject";
+      const pick = document.getElementById(pickId);
+      pick.classList.add("ai-pick", suggestion.decision + "-pick");
+      const apply = document.getElementById("aiApplyBtn");
+      apply.textContent = suggestion.decision === "approve" ? "Apply suggestion: Approve" : suggestion.decision === "correction" ? "Apply suggestion: Send for correction" : "Apply suggestion: Reject";
+      apply.dataset.action = suggestion.action;
+    }
+    function applyOfficerAiSuggestion() {
+      const action = document.getElementById("aiApplyBtn").dataset.action;
+      if (action) officerAction(action);
     }
     function officerAction(action) {
       const note = document.getElementById("officerNotes").value.trim();
