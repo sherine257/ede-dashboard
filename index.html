@@ -392,7 +392,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
         <div class="step" data-step="6"><span class="step-num">6</span><span>AI decision</span></div>
         <div class="ai-side">
           <b><span class="spark">✦</span> EDE AI Assistant</b>
-          <p>Ask me about documents, medicine limits, or what to do on this step.</p>
+          <p>Official FAQs: permits, quantity limits, documents, UAE PASS, and how to submit.</p>
           <button class="ai-side-btn" type="button" onclick="focusChat()">Chat with assistant</button>
         </div>
       </aside>
@@ -501,7 +501,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
         <div class="ai-typing" id="aiTyping"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span> Assistant is typing…</div>
         <div class="ai-chips" id="aiChips"></div>
         <form class="ai-chat-form" onsubmit="return sendChat(event)">
-          <input id="aiChatInput" type="text" maxlength="400" placeholder="Ask about documents, limits, or this step…" autocomplete="off">
+          <input id="aiChatInput" type="text" maxlength="400" placeholder="Ask a FAQ: permit, limits, documents, UAE PASS…" autocomplete="off">
           <button type="submit">Send</button>
         </form>
       </aside>
@@ -904,12 +904,12 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     }
     function chatSuggestions() {
       const step = currentStepFromDom();
-      if (step === 1) return ["Why do I need UAE PASS?", "Who can use this service?", "What happens after I sign in?"];
-      if (step === 2) return ["Who can I apply for?", "Resident vs traveller limits", "What is classification?"];
-      if (step === 3) return ["What ID do I need?", "Can I apply for a family member?", "Is my data stored?"];
-      if (step === 4) return ["Which documents are required?", "What is a controlled medicine?", "How many days can I import?"];
-      if (step === 5) return ["What happens after I submit?", "Can I still edit details?", "Will an officer review this?"];
-      return ["Why is officer review needed?", "When is the permit ready?", "Can I download a partial permit?"];
+      if (step === 1) return ["Do I need a permit?", "How do I set up UAE PASS?", "I cannot use UAE PASS"];
+      if (step === 2) return ["Do travellers always need approval?", "What are the quantity limits?", "Do transit travellers need approval?"];
+      if (step === 3) return ["What documents are required?", "How do I create an application?", "I cannot use UAE PASS"];
+      if (step === 4) return ["How do I upload the prescription?", "What if my medicine is not listed?", "Packaging requirements"];
+      if (step === 5) return ["What documents are required?", "What are the quantity limits?", "How do I submit?"];
+      return ["Do I need a permit?", "What if my medicine is not listed?", "What are the quantity limits?"];
     }
     function refreshChatChips() {
       currentStep = currentStepFromDom();
@@ -944,68 +944,68 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       const step = currentStepFromDom();
       const medNames = medicines.map(m => m.name).filter(Boolean);
 
-      if (/sign in|uae pass|login|verify/.test(q)) {
-        return { text: isAuthenticated
-          ? "Your UAE PASS session is already verified as Sara Ahmed Al Mansoori. You can continue the application — I will not ask for your UAE PASS password."
-          : "Use Sign in with UAE PASS on this step. EDE never stores your UAE PASS credentials. After verification I can pre-fill your identity and take you to the applicant questions." };
+      if (/elderly|unable to use|cannot use|can'?t use|no (uae )?pass|technical difficult/.test(q)) {
+        return { text: "If you are elderly, or you have technical difficulties and do not have an active UAE PASS account, contact the service support team at info@ede.gov.ae." };
       }
-      if (/who can use|this service|citizens/.test(q)) {
-        return { text: "This service is for UAE citizens, residents and visitors who need to import medicines for personal use. Sign in with UAE PASS, tell me who the patient is, upload a prescription, and I will check each medicine against EDE rules." };
+      if (/download.*uae pass|set up uae pass|app store|play store|visitor account|how do i .*uae pass/.test(q) || (/uae pass/.test(q) && /download|install|setup|set up|create|register/.test(q))) {
+        return { text: "Download the UAE PASS mobile app from the Apple App Store or Google Play Store, then create a visitor or resident account and log in to the official portal with UAE PASS.\n\nVisitor accounts need only a mobile number and email address. No document upload or verification is required.\n\nIf you have issues with the UAE PASS app, contact support@uaepass.ae." };
       }
-      if (/who can i apply|someone else|family|relative|guardian|child/.test(q)) {
-        return { text: "You can apply for yourself or for someone else (a relative, guardian or caregiver). If you choose someone else, I will ask for the patient’s Emirates ID or passport and extract the details for you to confirm." };
+      if (/uae pass|sign in|login|verify/.test(q)) {
+        return { text: (isAuthenticated ? "Your UAE PASS session is already verified. " : "Sign in with UAE PASS to start this service. ") + "Download UAE PASS from the Apple App Store or Google Play Store and create a visitor or resident account. Visitor registration needs only a mobile number and email — no document upload.\n\nUAE PASS app issues: support@uaepass.ae\nIf you cannot use UAE PASS (elderly or technical difficulties): info@ede.gov.ae" };
       }
-      if (/resident|traveller|visitor|limit|how many days|quantity|supply/.test(q)) {
-        return { text: resident
-          ? "This application is classified as Resident (BR-01). Residents can usually request a longer personal supply than visitors. Quantity and duration still cannot exceed the prescription, and controlled medicines have stricter limits and often need officer review."
-          : "This application is classified as Traveller (BR-02). Visitors typically have a shorter permitted supply than residents. Bring a valid prescription, and expect tighter checks on duration and controlled medicines." };
+      if (/transit/.test(q)) {
+        return { text: "No. Transit travellers who remain in the airport transit area and do not enter the country do not require prior approval." };
       }
-      if (/classif/.test(q)) {
-        return { text: `I classify the case from your answers. Right now this is a ${resident ? "Resident" : "Traveller"} applicant${applyingFor === "other" ? " applying for someone else" : " applying for themselves"}.` };
+      if (/not listed|no record|unlisted|not (in|found)|ingredient is not/.test(q)) {
+        return { text: "Medicines that are not listed may still be allowed if you submit a valid prescription and a valid medical report. Each case is subject to regulatory review.\n\nWhen searching, select the medicine name and the active ingredient. If the active ingredient is not found, select “No Record Found” and enter the active ingredient name manually." };
       }
-      if (/emirates id|passport|identity|id do i need|document number/.test(q)) {
-        return { text: applyingFor === "other"
-          ? (resident ? "Upload a clear photo or PDF of the patient’s Emirates ID. I will extract name, date of birth, nationality and ID number for you to confirm." : "Upload a clear photo or PDF of the patient’s passport. I will extract the passport number and personal details for you to confirm.")
-          : "Because you are applying for yourself, identity is pre-filled from UAE PASS. Please confirm the details are correct before continuing." };
+      if (/packag/.test(q)) {
+        return { text: "Yes. All medications must be kept in their original packaging and must clearly display the medicine name and details." };
       }
-      if (/data|privacy|store|credential/.test(q)) {
-        return { text: "EDE does not store UAE PASS credentials. Application data is used to assess this permit request and may be reviewed by an authorised officer if a medicine cannot be auto-approved." };
+      if (/how do i upload|upload the prescription|jpg|png|pdf|jpeg/.test(q)) {
+        return { text: "Upload the prescription through the portal as JPG, PNG or PDF only (not JPEG), then submit the application to complete the process." };
       }
-      if (/prescription|medical report|document|upload|file/.test(q)) {
-        return { text: "A valid prescription is required. Add a medical report if any medicine is controlled or if the product rules ask for it (issued within 365 days). You can also attach extra supporting letters. After you upload a prescription, I extract the medicines — you can edit, delete or add items." };
+      if (/how do i (create|submit)|start service|mohap|how do i .*application/.test(q) || (step === 5 && /submit/.test(q))) {
+        return { text: "To create and submit an application:\n1. Click Start Service\n2. Sign in using UAE PASS\n3. Indicate that you do not have an existing MOHAP Drug Registration System account\n4. Select “Individual” as the account type\n5. Update your account profile\n6. Go to All Applications → New Application → Certificates → Traveller / Personal Medications Permission\n7. Search and select the Medicine Name, then the Active Ingredient Name\n8. If the active ingredient is not found, select “No Record Found” and enter it manually\n9. Upload the prescription (JPG, PNG or PDF only — not JPEG)\n10. Submit the application" };
       }
-      if (/controlled|clonazepam|narcotic|cd\b|officer review|human/.test(q)) {
-        return { text: "Controlled drugs (CD), narcotics and some injectables cannot be auto-approved (for example BR-21). I still extract and check them, then route those items to an EDE officer. Other eligible medicines in the same application can receive a partial permit immediately." };
+      if (/document|prescription|medical report|what (do i|is) required/.test(q)) {
+        return { text: "If a permit is required, these documents are mandatory:\n• A medical prescription issued within the last three (3) months\n• A medical report issued within the last one (1) year\n\nBoth must be issued and stamped by a licensed healthcare provider.\n\nUpload the prescription as JPG, PNG or PDF only (not JPEG)." };
       }
-      if (/what happens|after (i )?submit|next step|what (?:do i|should i) do|this step/.test(q)) {
+      if (/traveller always|travelers always|do travellers|do travelers/.test(q)) {
+        return { text: "No. Travellers do not need to apply if all of the following apply:\n• The medicine is for personal use only\n• The quantity does not exceed three (3) months\n• The medicine is accompanied by a valid prescription or medical report" };
+      }
+      if (/limit|how many|quantity|supply|month|resident|traveller|traveler|visitor/.test(q)) {
+        return { text: "Allowed medication quantity limits:\n\nTravellers may carry medicines for personal use up to a maximum of three (3) months’ supply.\n\nResidents: import of controlled medicines is limited to a maximum of one (1) month’s supply and requires approval through the official electronic system.\n\n" + (resident
+          ? "This application is currently classified as a Resident case, so controlled medicines are limited to one month and need electronic approval."
+          : "This application is currently classified as a Traveller case, so personal-use medicines may be carried up to three months if a valid prescription or medical report is with you.") };
+      }
+      if (/vitamin|non-controlled|always need a permit|do i need a permit|need a permit|permit to bring/.test(q)) {
+        return { text: "Not always.\n\nVitamins or non-controlled medicines: no permit is required. Travellers and residents are strongly advised to carry a valid prescription or medical report to avoid delays or issues at entry points.\n\nControlled medicines: a permit may be required depending on quantity, residency status, and import method." };
+      }
+      if (/controlled|clonazepam|narcotic/.test(q)) {
+        return { text: "A permit may be required for controlled medicines, depending on quantity, residency status, and import method.\n\nResidents may import controlled medicines up to a maximum of one (1) month’s supply and must obtain approval through the official electronic system.\n\nIf a permit is required, upload a prescription issued within the last 3 months and a medical report issued within the last 1 year, both stamped by a licensed healthcare provider." };
+      }
+      if (/who can i apply|someone else|family|relative|guardian/.test(q)) {
+        return { text: "You can complete this personal medications permission for yourself. If you are applying for someone else, confirm their details and upload the required prescription and medical report in their name.\n\nIf the person is elderly or cannot use UAE PASS, they may contact info@ede.gov.ae." };
+      }
+      if (/what happens|next step|this step|what (?:do i|should i) do/.test(q)) {
         const tips = {
-          1: "Sign in with UAE PASS to verify your identity. That unlocks the rest of the form.",
-          2: "Tell me who the patient is and whether they are a UAE resident. I will classify the case, then continue to identity.",
-          3: applyingFor === "other" ? "Upload the patient’s ID so I can extract and confirm their details." : "Confirm the UAE PASS identity details, then continue to documents.",
-          4: "Upload the prescription (required), then review the medicines I extract. Add a medical report if a controlled medicine is included.",
-          5: "Check the summary, accept the terms, and submit for AI assessment.",
-          6: "Eligible medicines can be downloaded now. Items needing human review stay with an officer until completed."
+          1: "Sign in with UAE PASS. Download the app from the Apple App Store or Google Play Store if you do not have it. Visitor accounts need only a mobile number and email.",
+          2: "Say whether you are a traveller or a resident. Travellers often do not need to apply if the medicine is for personal use, the quantity is within 3 months, and a valid prescription or medical report is carried. Residents need electronic approval for controlled medicines (max 1 month).",
+          3: applyingFor === "other" ? "Confirm the patient’s identity so the prescription and medical report can be matched to them." : "Confirm your identity from UAE PASS, then continue to documents.",
+          4: "If a permit is required, upload a prescription issued within 3 months and a medical report issued within 1 year (JPG, PNG or PDF only — not JPEG). Keep medicines in original packaging.",
+          5: "Review the details, then submit. Search the medicine name and active ingredient; if the ingredient is not found, select “No Record Found” and enter it manually.",
+          6: "If your medicine is not listed, it may still be allowed with a valid prescription and medical report, subject to regulatory review."
         };
         return { text: tips[step] || tips[1] };
       }
-      if (/edit|change|wrong/.test(q)) {
-        return { text: "You can edit applicant answers, identity fields and each medicine before submission. On Review, use Edit to jump back. After submission, officer-routed items can only be changed if the officer requests a correction." };
+      if (/hello|hi\b|help|assist|faq/.test(q)) {
+        return { text: "I can answer the official personal-medication FAQs: whether you need a permit, traveller vs resident limits, required documents, UAE PASS setup, unlisted medicines, packaging, and how to submit. Tap a suggested question or type your own." };
       }
-      if (/permit|download|ready|when/.test(q)) {
-        return { text: "If any medicine is auto-approved, a partial permit is available on the decision step. Controlled or unmatched products wait for officer completion. You can download whatever has already been permitted." };
+      if (medNames.length && /medicine list|extracted|lipitor|panadol|adalimumab|ventolin|augmentin/.test(q)) {
+        return { text: `Medicines currently listed on this application: ${medNames.join(", ")}.\n\nIf a name is not in the system, select “No Record Found”, enter the active ingredient manually, and upload a valid prescription and medical report. The case will go for regulatory review.` };
       }
-      if (/lipitor|panadol|adalimumab|ventolin|augmentin|medicine list|extracted/.test(q)) {
-        return { text: medNames.length
-          ? `I currently have ${medNames.length} medicine${medNames.length>1?"s":""} on this application: ${medNames.join(", ")}. You can edit names, quantity, duration or delete a row if something is wrong.`
-          : "No medicines yet. Upload a prescription on Documents & medicines and I will extract the list for you, or add a medicine manually." };
-      }
-      if (/hello|hi\b|help|assist/.test(q)) {
-        return { text: "I am the EDE assistant for personal medicine import permits. Ask me about UAE PASS, who you can apply for, required documents, supply limits, or controlled medicines. You can also tap a suggested question below." };
-      }
-      if (/officer portal|internal/.test(q)) {
-        return { text: "The officer review portal is for EDE reviewers. Applicants stay on this form. After submission, flagged medicines appear in the officer queue automatically." };
-      }
-      return { text: `I can help with this step of the personal medicine import permit. Try asking about documents, resident vs traveller limits, controlled medicines, or what to do next.${medNames.length ? `\n\nMedicines currently listed: ${medNames.join(", ")}.` : ""}` };
+      return { text: "I answer from the official personal medications FAQs.\n\nYou can ask: Do I need a permit? What are the quantity limits? What documents are required? How do I set up UAE PASS? What if my medicine is not listed? Packaging requirements? Or contact info@ede.gov.ae if you cannot use UAE PASS." };
     }
     function toast(message) {
       const el = document.getElementById("toast");
@@ -1017,7 +1017,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     document.getElementById("edeLogo").src = window._EDE_LOGO_SRC || "";
     document.getElementById("edeEmblem").src = window._EDE_EMBLEM_SRC || "";
     renderMedicines();
-    appendChat("bot", "Hello, I am the EDE AI Assistant. I can help you complete this personal medicine import application — documents, limits, controlled medicines, or what to do on this step. Type a question or tap a suggestion.");
+    appendChat("bot", "Hello, I am the EDE AI Assistant. I answer from the official personal medications FAQs — whether you need a permit, quantity limits, documents, UAE PASS, packaging, and how to submit. Tap a question or type your own.");
     refreshChatChips();
   </script>
 </body>
