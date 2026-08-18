@@ -59,7 +59,7 @@
     nav button:hover { color: var(--teal); }
     nav button.active { color: var(--teal); font-weight: 700; border-bottom: 2px solid var(--teal); }
     nav .officer-link { margin-left: auto; color: var(--navy); font-weight: 700; }
-    .shell { max-width: 1260px; margin: 0 auto; padding: 34px 28px 60px; }
+    .shell { max-width: 1480px; margin: 0 auto; padding: 34px 28px 60px; }
     .breadcrumb { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
     .breadcrumb b { color: var(--teal); }
     .hero { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 25px; }
@@ -67,7 +67,7 @@
     h1 { color: var(--navy); margin: 7px 0; font-size: clamp(26px, 3vw, 38px); line-height: 1.15; }
     .subtitle { color: var(--muted); font-size: 14px; margin: 0; max-width: 700px; line-height: 1.6; }
     .secure-pill { white-space: nowrap; color: var(--success); background: #e8f5ed; border: 1px solid #cce7d6; padding: 9px 13px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-    .workspace { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .workspace { display: grid; grid-template-columns: 220px minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
     .steps { background: var(--navy); border-radius: 16px; color: #fff; padding: 25px 18px; position: sticky; top: 18px; box-shadow: var(--shadow); }
     .steps-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: #9db3c1; margin: 0 10px 20px; }
     .step { display: flex; gap: 12px; padding: 12px 10px; border-radius: 9px; margin: 4px 0; color: #aebdc7; font-size: 12px; align-items: center; }
@@ -80,6 +80,57 @@
     .ai-side b { display: flex; gap: 8px; align-items: center; font-size: 12px; }
     .spark { color: #bd98ff; }
     .ai-side p { font-size: 10px; line-height: 1.6; color: #9db3c1; margin: 8px 0 0; }
+    .ai-side-btn {
+      width: 100%; margin-top: 12px; border: 1px solid rgba(189,152,255,.35); background: rgba(189,152,255,.12);
+      color: #e6d9ff; border-radius: 8px; padding: 8px 10px; font-size: 11px; font-weight: 700;
+    }
+    .ai-side-btn:hover { background: rgba(189,152,255,.22); }
+    .ai-chat {
+      background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow);
+      display: flex; flex-direction: column; min-height: 610px; max-height: calc(100vh - 160px);
+      position: sticky; top: 18px; overflow: hidden;
+    }
+    .ai-chat-head {
+      padding: 16px 16px 14px; background: var(--navy); color: #fff;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ai-chat-head .ai-icon { width: 32px; height: 32px; font-size: 14px; }
+    .ai-chat-head b { display: block; font-size: 13px; }
+    .ai-chat-head small { display: block; color: #9fcaca; font-size: 10px; margin-top: 2px; }
+    .ai-chat-close { margin-left: auto; display: none; border: 0; background: rgba(255,255,255,.12); color: #fff; width: 28px; height: 28px; border-radius: 6px; font-size: 16px; }
+    .ai-chat-log { flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 12px; background: #f7faf9; }
+    .ai-msg { max-width: 92%; padding: 10px 12px; border-radius: 12px; font-size: 12px; line-height: 1.55; }
+    .ai-msg.bot { background: #fff; border: 1px solid var(--line); color: var(--ink); border-bottom-left-radius: 4px; }
+    .ai-msg.user { align-self: flex-end; background: var(--teal); color: #fff; border-bottom-right-radius: 4px; }
+    .ai-msg .who { display: block; font-size: 9px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase; margin-bottom: 4px; }
+    .ai-msg.bot .who { color: var(--purple); }
+    .ai-msg.user .who { color: rgba(255,255,255,.75); }
+    .ai-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; background: #f7faf9; }
+    .ai-chip {
+      border: 1px solid #d5c8ee; background: #f8f4ff; color: #4a267d; border-radius: 14px;
+      padding: 6px 10px; font-size: 10px; font-weight: 700;
+    }
+    .ai-chip:hover { background: #efe7fa; }
+    .ai-chat-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); background: #fff; }
+    .ai-chat-form input {
+      flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 12px; outline: 0; color: var(--navy);
+    }
+    .ai-chat-form input:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(123,107,151,.12); }
+    .ai-chat-form button {
+      border: 0; border-radius: 10px; background: var(--purple); color: #fff; padding: 0 14px; font-size: 12px; font-weight: 800;
+    }
+    .ai-chat-form button:hover { background: #5e4d7e; }
+    .ai-typing { display: none; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; padding: 0 16px 8px; background: #f7faf9; }
+    .ai-typing.show { display: flex; }
+    .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); animation: pulse 1s infinite; }
+    .ai-dot:nth-child(2) { animation-delay: .15s; }
+    .ai-dot:nth-child(3) { animation-delay: .3s; }
+    .ai-fab {
+      display: none; position: fixed; right: 22px; bottom: 22px; z-index: 30;
+      width: 56px; height: 56px; border-radius: 50%; border: 0; background: var(--purple); color: #fff;
+      box-shadow: 0 10px 24px rgba(112,70,183,.35); font-size: 22px; font-weight: 800;
+    }
+    .ai-chat-backdrop { display: none; }
     .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; min-height: 610px; }
     .panel-head { padding: 23px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; align-items: center; }
     .panel-head h2 { margin: 0 0 5px; font-size: 20px; color: var(--navy); }
@@ -265,6 +316,17 @@
     .site-footer span:last-child { font-family: Cairo, sans-serif; color: #c6d4dc; }
     .toast { position: fixed; right: 24px; bottom: 24px; padding: 13px 16px; background: var(--navy); color: #fff; border-radius: 9px; font-size: 11px; box-shadow: var(--shadow); transform: translateY(80px); opacity: 0; transition: .3s; z-index: 10; }
     .toast.show { transform: none; opacity: 1; }
+    @media (max-width: 1180px) {
+      .workspace { grid-template-columns: 220px minmax(0, 1fr); }
+      .ai-chat {
+        position: fixed; right: 16px; bottom: 16px; top: auto; left: auto;
+        width: min(380px, calc(100vw - 24px)); min-height: 0; height: min(560px, calc(100vh - 90px));
+        z-index: 45; display: none; max-height: none;
+      }
+      .ai-chat.open { display: flex; }
+      .ai-chat-close { display: grid; place-items: center; }
+      #applicationView.active .ai-fab { display: grid; }
+    }
     @media (max-width: 800px) {
       .ede-header { padding: 0 14px; height: 64px; }
       .ede-logo { height: 38px; }
@@ -273,6 +335,8 @@
       .workspace { grid-template-columns: 1fr; }
       .steps { position: static; display: flex; overflow-x: auto; padding: 12px; }
       .steps-title, .ai-side { display: none; }
+      .ai-fab { display: grid; }
+      .ai-chat { right: 0; bottom: 0; left: 0; width: 100%; height: min(78vh, 640px); border-radius: 16px 16px 0 0; }
       .step { min-width: max-content; }
       .hero { align-items: start; }
       .secure-pill { display: none; }
@@ -326,7 +390,11 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
         <div class="step" data-step="4"><span class="step-num">4</span><span>Documents & medicines</span></div>
         <div class="step" data-step="5"><span class="step-num">5</span><span>Review</span></div>
         <div class="step" data-step="6"><span class="step-num">6</span><span>AI decision</span></div>
-        <div class="ai-side"><b><span class="spark">✦</span> EDE AI Assistant</b><p>Checks each medicine against EDE rules. Final decisions can be reviewed by an authorised officer.</p></div>
+        <div class="ai-side">
+          <b><span class="spark">✦</span> EDE AI Assistant</b>
+          <p>Ask me about documents, medicine limits, or what to do on this step.</p>
+          <button class="ai-side-btn" type="button" onclick="focusChat()">Chat with assistant</button>
+        </div>
       </aside>
 
       <section class="panel">
@@ -422,7 +490,23 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
           <div class="footer-actions"><button class="btn btn-secondary" onclick="restart()">Start another application</button><button class="btn btn-primary" onclick="downloadPermit()">↓ Download available permit</button></div>
         </div>
       </section>
+
+      <aside class="ai-chat" id="aiChat" aria-label="EDE AI Assistant">
+        <div class="ai-chat-head">
+          <div class="ai-icon">✦</div>
+          <div><b>EDE AI Assistant</b><small>Here to help with this application</small></div>
+          <button class="ai-chat-close" type="button" onclick="toggleChat(false)" aria-label="Close chat">×</button>
+        </div>
+        <div class="ai-chat-log" id="aiChatLog"></div>
+        <div class="ai-typing" id="aiTyping"><span class="ai-dot"></span><span class="ai-dot"></span><span class="ai-dot"></span> Assistant is typing…</div>
+        <div class="ai-chips" id="aiChips"></div>
+        <form class="ai-chat-form" onsubmit="return sendChat(event)">
+          <input id="aiChatInput" type="text" maxlength="400" placeholder="Ask about documents, limits, or this step…" autocomplete="off">
+          <button type="submit">Send</button>
+        </form>
+      </aside>
     </div>
+    <button class="ai-fab" id="aiFab" type="button" onclick="toggleChat(true)" aria-label="Open AI assistant">✦</button>
   </main>
 
   <main class="shell portal-view" id="dashboardView">
@@ -480,6 +564,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     let identityUploaded = false;
     let prescriptionUploaded = false;
     let isAuthenticated = false;
+    let currentStep = 1;
 
     document.querySelectorAll(".choice-grid").forEach(group => group.addEventListener("change", e => {
       group.querySelectorAll(".choice").forEach(c => c.classList.toggle("selected", c.contains(e.target)));
@@ -574,6 +659,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     }
 
     function go(step) {
+      currentStep = step;
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
       document.getElementById("page-" + step).classList.add("active");
       document.querySelectorAll(".step").forEach(s => {
@@ -583,6 +669,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
         s.querySelector(".step-num").textContent = n < step ? "✓" : n;
       });
       if (step === 5) populateReview();
+      refreshChatChips();
       window.scrollTo({top: 100, behavior: "smooth"});
     }
 
@@ -793,6 +880,133 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       }
       toast("Application completed and permit issued" + (note ? " · note saved" : ""));
     }
+    function currentStepFromDom() {
+      const active = document.querySelector(".page.active");
+      return active ? +active.id.replace("page-", "") : currentStep;
+    }
+    function toggleChat(forceOpen) {
+      const chat = document.getElementById("aiChat");
+      const open = forceOpen === true ? true : forceOpen === false ? false : !chat.classList.contains("open");
+      chat.classList.toggle("open", open);
+      if (open) document.getElementById("aiChatInput").focus();
+    }
+    function focusChat() {
+      toggleChat(true);
+      document.getElementById("aiChatInput").focus();
+    }
+    function appendChat(role, text) {
+      const log = document.getElementById("aiChatLog");
+      const el = document.createElement("div");
+      el.className = "ai-msg " + (role === "user" ? "user" : "bot");
+      el.innerHTML = `<span class="who">${role === "user" ? "You" : "EDE AI Assistant"}</span>${esc(text).replace(/\n/g, "<br>")}`;
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+    }
+    function chatSuggestions() {
+      const step = currentStepFromDom();
+      if (step === 1) return ["Why do I need UAE PASS?", "Who can use this service?", "What happens after I sign in?"];
+      if (step === 2) return ["Who can I apply for?", "Resident vs traveller limits", "What is classification?"];
+      if (step === 3) return ["What ID do I need?", "Can I apply for a family member?", "Is my data stored?"];
+      if (step === 4) return ["Which documents are required?", "What is a controlled medicine?", "How many days can I import?"];
+      if (step === 5) return ["What happens after I submit?", "Can I still edit details?", "Will an officer review this?"];
+      return ["Why is officer review needed?", "When is the permit ready?", "Can I download a partial permit?"];
+    }
+    function refreshChatChips() {
+      currentStep = currentStepFromDom();
+      const wrap = document.getElementById("aiChips");
+      wrap.innerHTML = chatSuggestions().map(s => `<button type="button" class="ai-chip" onclick="askChip(this)">${esc(s)}</button>`).join("");
+    }
+    function askChip(btn) {
+      document.getElementById("aiChatInput").value = btn.textContent;
+      sendChat({preventDefault(){}});
+    }
+    function sendChat(event) {
+      event.preventDefault();
+      const input = document.getElementById("aiChatInput");
+      const text = input.value.trim();
+      if (!text) return false;
+      appendChat("user", text);
+      input.value = "";
+      document.getElementById("aiTyping").classList.add("show");
+      setTimeout(() => {
+        document.getElementById("aiTyping").classList.remove("show");
+        const reply = assistantReply(text);
+        appendChat("bot", reply.text);
+        if (reply.action) reply.action();
+        refreshChatChips();
+      }, 650);
+      return false;
+    }
+    function assistantReply(text) {
+      const q = text.toLowerCase();
+      const applyingFor = document.querySelector('[name="applyingFor"]:checked')?.value || "myself";
+      const resident = document.querySelector('[name="resident"]:checked')?.value !== "no";
+      const step = currentStepFromDom();
+      const medNames = medicines.map(m => m.name).filter(Boolean);
+
+      if (/sign in|uae pass|login|verify/.test(q)) {
+        return { text: isAuthenticated
+          ? "Your UAE PASS session is already verified as Sara Ahmed Al Mansoori. You can continue the application — I will not ask for your UAE PASS password."
+          : "Use Sign in with UAE PASS on this step. EDE never stores your UAE PASS credentials. After verification I can pre-fill your identity and take you to the applicant questions." };
+      }
+      if (/who can use|this service|citizens/.test(q)) {
+        return { text: "This service is for UAE citizens, residents and visitors who need to import medicines for personal use. Sign in with UAE PASS, tell me who the patient is, upload a prescription, and I will check each medicine against EDE rules." };
+      }
+      if (/who can i apply|someone else|family|relative|guardian|child/.test(q)) {
+        return { text: "You can apply for yourself or for someone else (a relative, guardian or caregiver). If you choose someone else, I will ask for the patient’s Emirates ID or passport and extract the details for you to confirm." };
+      }
+      if (/resident|traveller|visitor|limit|how many days|quantity|supply/.test(q)) {
+        return { text: resident
+          ? "This application is classified as Resident (BR-01). Residents can usually request a longer personal supply than visitors. Quantity and duration still cannot exceed the prescription, and controlled medicines have stricter limits and often need officer review."
+          : "This application is classified as Traveller (BR-02). Visitors typically have a shorter permitted supply than residents. Bring a valid prescription, and expect tighter checks on duration and controlled medicines." };
+      }
+      if (/classif/.test(q)) {
+        return { text: `I classify the case from your answers. Right now this is a ${resident ? "Resident" : "Traveller"} applicant${applyingFor === "other" ? " applying for someone else" : " applying for themselves"}.` };
+      }
+      if (/emirates id|passport|identity|id do i need|document number/.test(q)) {
+        return { text: applyingFor === "other"
+          ? (resident ? "Upload a clear photo or PDF of the patient’s Emirates ID. I will extract name, date of birth, nationality and ID number for you to confirm." : "Upload a clear photo or PDF of the patient’s passport. I will extract the passport number and personal details for you to confirm.")
+          : "Because you are applying for yourself, identity is pre-filled from UAE PASS. Please confirm the details are correct before continuing." };
+      }
+      if (/data|privacy|store|credential/.test(q)) {
+        return { text: "EDE does not store UAE PASS credentials. Application data is used to assess this permit request and may be reviewed by an authorised officer if a medicine cannot be auto-approved." };
+      }
+      if (/prescription|medical report|document|upload|file/.test(q)) {
+        return { text: "A valid prescription is required. Add a medical report if any medicine is controlled or if the product rules ask for it (issued within 365 days). You can also attach extra supporting letters. After you upload a prescription, I extract the medicines — you can edit, delete or add items." };
+      }
+      if (/controlled|clonazepam|narcotic|cd\b|officer review|human/.test(q)) {
+        return { text: "Controlled drugs (CD), narcotics and some injectables cannot be auto-approved (for example BR-21). I still extract and check them, then route those items to an EDE officer. Other eligible medicines in the same application can receive a partial permit immediately." };
+      }
+      if (/what happens|after (i )?submit|next step|what (?:do i|should i) do|this step/.test(q)) {
+        const tips = {
+          1: "Sign in with UAE PASS to verify your identity. That unlocks the rest of the form.",
+          2: "Tell me who the patient is and whether they are a UAE resident. I will classify the case, then continue to identity.",
+          3: applyingFor === "other" ? "Upload the patient’s ID so I can extract and confirm their details." : "Confirm the UAE PASS identity details, then continue to documents.",
+          4: "Upload the prescription (required), then review the medicines I extract. Add a medical report if a controlled medicine is included.",
+          5: "Check the summary, accept the terms, and submit for AI assessment.",
+          6: "Eligible medicines can be downloaded now. Items needing human review stay with an officer until completed."
+        };
+        return { text: tips[step] || tips[1] };
+      }
+      if (/edit|change|wrong/.test(q)) {
+        return { text: "You can edit applicant answers, identity fields and each medicine before submission. On Review, use Edit to jump back. After submission, officer-routed items can only be changed if the officer requests a correction." };
+      }
+      if (/permit|download|ready|when/.test(q)) {
+        return { text: "If any medicine is auto-approved, a partial permit is available on the decision step. Controlled or unmatched products wait for officer completion. You can download whatever has already been permitted." };
+      }
+      if (/lipitor|panadol|adalimumab|ventolin|augmentin|medicine list|extracted/.test(q)) {
+        return { text: medNames.length
+          ? `I currently have ${medNames.length} medicine${medNames.length>1?"s":""} on this application: ${medNames.join(", ")}. You can edit names, quantity, duration or delete a row if something is wrong.`
+          : "No medicines yet. Upload a prescription on Documents & medicines and I will extract the list for you, or add a medicine manually." };
+      }
+      if (/hello|hi\b|help|assist/.test(q)) {
+        return { text: "I am the EDE assistant for personal medicine import permits. Ask me about UAE PASS, who you can apply for, required documents, supply limits, or controlled medicines. You can also tap a suggested question below." };
+      }
+      if (/officer portal|internal/.test(q)) {
+        return { text: "The officer review portal is for EDE reviewers. Applicants stay on this form. After submission, flagged medicines appear in the officer queue automatically." };
+      }
+      return { text: `I can help with this step of the personal medicine import permit. Try asking about documents, resident vs traveller limits, controlled medicines, or what to do next.${medNames.length ? `\n\nMedicines currently listed: ${medNames.join(", ")}.` : ""}` };
+    }
     function toast(message) {
       const el = document.getElementById("toast");
       el.textContent = message; el.classList.add("show");
@@ -803,6 +1017,8 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     document.getElementById("edeLogo").src = window._EDE_LOGO_SRC || "";
     document.getElementById("edeEmblem").src = window._EDE_EMBLEM_SRC || "";
     renderMedicines();
+    appendChat("bot", "Hello, I am the EDE AI Assistant. I can help you complete this personal medicine import application — documents, limits, controlled medicines, or what to do on this step. Type a question or tap a suggestion.");
+    refreshChatChips();
   </script>
 </body>
 </html>
