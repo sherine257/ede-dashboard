@@ -304,7 +304,7 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
     </div>
     <img class="ede-emblem" id="edeEmblem" alt="United Arab Emirates">
   </header>
-  <nav id="mainNav" style="display:none"><button onclick="showDashboard(this)">Dashboard</button><button onclick="startApplication(this)">New application</button><button onclick="showDashboard(this)">Certificates</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
+  <nav id="mainNav" style="display:none"><button onclick="showDashboard(this)">Dashboard</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
 
   <main class="shell portal-view active" id="applicationView">
     <div class="breadcrumb">Home &nbsp;/&nbsp; Services &nbsp;/&nbsp; <b>Personal medicine permit</b></div>
@@ -491,10 +491,10 @@ window._EDE_EMBLEM_SRC='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALcAAADICA
       document.querySelectorAll("#mainNav button").forEach(button => button.classList.toggle("active", button === navButton));
       window.scrollTo({top:0, behavior:"smooth"});
     }
-    function showApplication(button) { activateView("applicationView", button || document.querySelectorAll("#mainNav button")[1]); }
-    function startApplication(button) {
-      if (!isAuthenticated) return showApplication(button);
-      showApplication(button);
+    function showApplication() { activateView("applicationView"); }
+    function startApplication() {
+      if (!isAuthenticated) return showApplication();
+      showApplication();
       go(2);
     }
     function showDashboard(button) {
