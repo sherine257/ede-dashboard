@@ -1,17 +1,15 @@
 How to open the EDE dashboard
 
-Do not use the GitHub "Raw" link. GitHub shows the file as text, so the dashboard will not run there.
+IMPORTANT: Do not open GitHub Raw links. They show code text and the dashboard will not run.
 
-1. Download DT_Projects_Dashboard_SharePoint.html to your computer
-   (GitHub: open the file, click the Download raw file button).
+Best option:
+1. Download DT_Projects_Dashboard_SharePoint.zip
+2. Unzip it
+3. Right-click DT_Projects_Dashboard_SharePoint.html
+4. Open with Google Chrome
 
-2. Open the downloaded file in Chrome or Edge:
-   - Right-click the file
-   - Open with → Google Chrome
-   or drag the file onto a Chrome window.
+ZIP download:
+https://github.com/sherine257/ede-dashboard/raw/cursor/contract-management-system-ac61/DT_Projects_Dashboard_SharePoint.zip
 
-3. SharePoint will usually not display this HTML as a live page.
-   Download it from SharePoint, then open it in Chrome as above.
-
-After you edit projects, use Export to share a JSON backup, or replace
-the SharePoint HTML file with your latest copy so teammates can download it.
+HTML download (use Save As if the browser shows text):
+https://github.com/sherine257/ede-dashboard/raw/cursor/contract-management-system-ac61/DT_Projects_Dashboard_SharePoint.html

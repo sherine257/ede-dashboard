@@ -4,15 +4,11 @@ A self-contained project and contract management dashboard for the Emirates Drug
 
 ## Open the dashboard
 
-Do **not** open the GitHub Raw link in the browser. GitHub serves HTML as plain text, so the dashboard will not run there.
+Do **not** open GitHub Raw HTML links. They show source text and the dashboard will not run.
 
-1. Download `DT_Projects_Dashboard_SharePoint.html`.
-2. Right-click the file → **Open with Google Chrome** (or drag it into Chrome).
-3. SharePoint usually downloads HTML instead of running it. Download the file, then open it in Chrome.
-
-If GitHub Pages is enabled for this repository, the live page is:
-
-https://sherine257.github.io/ede-dashboard/
+1. Download the ZIP: [`DT_Projects_Dashboard_SharePoint.zip`](https://github.com/sherine257/ede-dashboard/raw/cursor/contract-management-system-ac61/DT_Projects_Dashboard_SharePoint.zip)
+2. Unzip it.
+3. Right-click `DT_Projects_Dashboard_SharePoint.html` → **Open with Google Chrome**.
 
 ## Run locally
 
