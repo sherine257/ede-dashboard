@@ -13,5 +13,5 @@ Do not use the GitHub "Raw" link. GitHub shows the file as text, so the dashboar
 3. SharePoint will usually not display this HTML as a live page.
    Download it from SharePoint, then open it in Chrome as above.
 
-After you edit projects, click "Save HTML for SharePoint", then upload
-that new file and replace the old copy so teammates can download it.
+After you edit projects, use Export to share a JSON backup, or replace
+the SharePoint HTML file with your latest copy so teammates can download it.
