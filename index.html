@@ -1,0 +1,1274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="EDE contract and project portfolio management system">
+  <title>EDE | Contract Portfolio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23102f43'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='Arial' font-size='19' font-weight='700' fill='white'%3EEDE%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --navy:#102f43;--navy2:#193e54;--cream:#E8E8E8;--white:#fff;--text:#173044;--muted:#5c6b75;--line:#ccd7d8;--shadow:0 12px 32px rgba(16,47,67,.12);
+      /* Palette matching dashboard */
+      --teal:#2d7d7b;--teal2:#4ea19c;
+      --amber:#c98218;
+      --red:#bd2845;
+      --purple:#7b6b97;
+      --grey:#83929b;
+      --blue:#2d5b88;
+      --green:#2f8264;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--text);font-family:Cairo,Arial,sans-serif;font-size:12px;line-height:1.4}
+    .hidden{display:none!important}
+    button,input,select,textarea{font:inherit}
+    
+    /* Topbar */
+    .topbar{height:58px;padding:0 18px;background:var(--white);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .mark{width:34px;height:34px;border-radius:8px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:800;font-size:12px;letter-spacing:-1px;flex:none}
+    .brand b{display:block;font-size:12.5px;white-space:nowrap}
+    .brand span{font-size:10.5px;color:var(--muted)}
+    .top-actions{display:flex;gap:6px;align-items:center}
+    .btn{border:0;border-radius:6px;padding:6px 11px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:.15s}
+    .btn.primary{background:var(--teal);color:white}
+    .btn.primary:hover{background:#236664}
+    .btn.dark{background:var(--navy);color:white}
+    .btn.light{background:white;color:var(--text);border:1px solid var(--line)}
+    .btn.light:hover{background:#f0f5f4}
+    .btn.danger{background:#fff1f0;color:var(--red);border:1px solid #f3d0cd}
+    .btn.small{padding:4px 7px;font-size:10px}
+    .iconbtn{border:1px solid var(--line);background:white;border-radius:6px;width:26px;height:26px;cursor:pointer;color:var(--muted);font-size:11px}
+    
+    /* Compact Sidebar */
+    .shell{display:grid;grid-template-columns:148px 1fr;min-height:calc(100vh - 58px)}
+    .sidebar{background:var(--navy);padding:14px 6px;color:white;display:flex;flex-direction:column}
+    .nav-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#94b1c2;margin:0 4px 8px;font-weight:800}
+    .nav{width:100%;border:0;background:transparent;font:inherit;display:flex;gap:4px;align-items:center;text-align:left;padding:7px 5px;border-radius:5px;color:#c6d4dc;margin-bottom:3px;cursor:pointer;transition:background .15s,color .15s}
+    .nav.active,.nav:hover{background:rgba(85,166,161,.24);color:white}
+    .nav .nav-bar{color:transparent;font-weight:900;font-size:11px;margin-right:1px;flex:none}
+    .nav.active .nav-bar{color:var(--teal2)}
+    .nav strong{font-size:10.5px;flex:1;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav.active strong{font-weight:800;color:white}
+    .nav-icon{font-size:12px;line-height:1;flex:none}
+    .side-divider{border:0;border-top:1px solid rgba(255,255,255,.12);margin:14px 2px 10px}
+    .side-note{padding:0 4px}
+    .side-title{font-size:9.5px;font-weight:700;color:#c6d4dc;line-height:1.35}
+    .side-save{font-size:9.5px;color:#7ee787;margin-top:5px;display:flex;align-items:center;gap:4px;font-weight:700}
+    
+    /* Main Content */
+    .main{padding:18px 20px 36px;min-width:0}
+    .page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .eyebrow{font-size:9.5px;color:var(--teal);font-weight:800;text-transform:uppercase;letter-spacing:1px}
+    .page-head h1{font-size:20px;margin:2px 0 2px}
+    .page-head p{font-size:11px;color:var(--muted);margin:0}
+    .head-tools{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+    .asof{background:white;border:1px solid var(--line);padding:5px 9px;border-radius:6px;color:var(--muted);font-size:10.5px;font-weight:600}
+    
+    /* Summary KPI Cards */
+    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:12px}
+    .stat{background:white;border:1px solid var(--line);border-radius:9px;padding:12px 14px;position:relative;overflow:hidden}
+    .stat:before{content:"";position:absolute;width:3px;left:0;top:0;bottom:0;background:var(--teal)}
+    .stat:nth-child(2):before{background:#1d6f8a}
+    .stat:nth-child(3):before{background:var(--amber)}
+    .stat:nth-child(4):before{background:var(--purple)}
+    .stat:nth-child(5):before{background:var(--blue)}
+    .stat:nth-child(6):before{background:var(--green)}
+    .stat .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+    .stat strong{font-size:20px;display:block;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .stat small{color:var(--muted);font-size:10px;margin-top:1px;display:block}
+    
+    /* Clickable styling strictly for active clickable cards */
+    .stat.clickable{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+    .stat.clickable:hover,.stat.clickable:focus{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--teal);outline:none}
+    .stat.clickable:after{content:"View linked →";position:absolute;right:7px;bottom:4px;font-size:8.5px;color:var(--teal);font-weight:800;opacity:.85}
+    .stat.active-filter{border:2px solid var(--teal);background:#f2faf9}
+    
+    /* Filter Panel */
+    .filter-chip{border:1px solid var(--teal);background:#e8f5f4;color:var(--teal);border-radius:12px;padding:4px 9px;font-size:10px;font-weight:800;cursor:pointer}
+    .filter-panel{background:white;border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:12px}
+    .search-row{width:100%;margin-bottom:8px}
+    .search{position:relative;width:100%}
+    .search input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--line);border-radius:6px;background:#fafbfb;font-size:11.5px;color:var(--text);transition:border-color .15s,background .15s}
+    .search input:focus{background:white;border-color:var(--teal);outline:none;box-shadow:0 0 0 2px rgba(45,125,123,.12)}
+    .search .search-icon{position:absolute;left:11px;top:8px;font-size:13px;color:var(--muted);pointer-events:none}
+    .filters-row{display:flex;gap:6px;align-items:center;overflow-x:auto;padding-bottom:2px}
+    .filters-row select{padding:7px 22px 7px 8px;border:1px solid var(--line);border-radius:6px;background:#fafbfb;color:var(--text);font-size:11px;font-weight:600;min-width:120px;cursor:pointer}
+    .filters-row select:focus{border-color:var(--teal);outline:none}
+    .btn-clear-all{border:1px solid #d9534f;background:#fff5f5;color:#c9302c;border-radius:6px;padding:6px 10px;font-size:10.5px;font-weight:800;cursor:pointer;white-space:nowrap;transition:background .15s;margin-left:auto}
+    .btn-clear-all:hover{background:#f8d7da}
+
+    /* Analytics Dashboard Visuals */
+    .analytics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .chart-card{background:white;border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+    .chart-card h3{font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin:0 0 2px;font-weight:800}
+    .chart-card>p{font-size:10px;color:var(--muted);margin:0 0 10px}
+    
+    /* Pie Chart for Projects by Status */
+    .pie-wrap{display:flex;align-items:center;gap:16px;min-height:190px;padding:4px 6px}
+    .pie{width:130px;height:130px;border-radius:50%;position:relative;flex:none;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+    .pie:after{content:"";position:absolute;inset:24px;background:white;border-radius:50%}
+    .pie-center{position:absolute;inset:0;z-index:1;display:grid;place-content:center;text-align:center;font-weight:800;font-size:15px;line-height:1.1}
+    .pie-center small{display:block;color:var(--muted);font-size:9.5px;font-weight:600}
+    .legend{display:grid;gap:5px;min-width:0;flex:1}
+    .legend div{display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 6px;border-radius:5px;cursor:pointer;transition:background .12s,opacity .12s}
+    .legend div:hover{background:#f0f5f4}
+    .legend div.sel{background:#e2f2ef;font-weight:800}
+    .legend div.dim{opacity:.35}
+    .legend i{width:9px;height:9px;border-radius:2px;flex:none}
+    .legend span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .legend b{font-size:11px;margin-left:auto;white-space:nowrap}
+    
+    .resource-row{display:grid;grid-template-columns:110px 1fr 50px;gap:7px;align-items:center;margin:6px 0}
+    .resource-row span{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .resource-bar{height:10px;background:#edf0ef;border-radius:3px;overflow:hidden}
+    .resource-bar i{display:block;height:100%;background:var(--blue)}
+    
+    /* Budget Category Breakdown */
+    .cat-budget-wrap{max-height:192px;overflow-y:auto;padding-right:4px}
+    .cat-budget-row{display:grid;grid-template-columns:150px 1fr 85px;gap:8px;align-items:center;padding:5px 7px;border-radius:5px;cursor:pointer;transition:background .12s,opacity .12s;margin-bottom:3px;background:#f9fbfa;border:1px solid #edf2f1}
+    .cat-budget-row:hover{background:#edf7f5}
+    .cat-budget-row.sel{background:#e2f2ef;border-color:var(--teal)}
+    .cat-budget-row.dim{opacity:.34}
+    .cat-budget-name{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+    .cat-budget-row.sel .cat-budget-name{color:var(--teal)}
+    .cat-budget-track{height:9px;background:#e5ebe9;border-radius:4px;overflow:hidden}
+    .cat-budget-track i{display:block;height:100%;border-radius:4px}
+    .cat-budget-values{text-align:right;font-size:10.5px;font-weight:800;white-space:nowrap}
+    .cat-budget-values small{display:inline-block;color:var(--muted);font-weight:600;font-size:9.5px;margin-left:4px}
+    .treemap-caption{font-size:9.5px;color:var(--muted);margin-top:6px}
+
+    /* Heatmap */
+    .heatmap-wrap{overflow:auto}
+    .heatmap{display:grid;gap:3px;min-width:540px}
+    .heat-row{display:grid;grid-template-columns:130px repeat(6,1fr);gap:3px}
+    .heat-cell{min-height:26px;border-radius:3px;display:grid;place-items:center;font-size:10px;background:#f3f4f6}
+    .heat-cell.label{justify-content:start;padding:0 6px;background:transparent;font-weight:700;font-size:10px}
+    .heat-col-head{font-weight:800;font-size:10px;text-align:center;padding:2px}
+    .heat-cell.st-on-track.lvl-1{background:#d8eeeb;color:#18534f;font-weight:700}
+    .heat-cell.st-on-track.lvl-2{background:#8ec8c3;color:#0e3c39;font-weight:800}
+    .heat-cell.st-on-track.lvl-3{background:#2d7d7b;color:#fff;font-weight:800}
+    .heat-cell.st-on-track.lvl-4{background:#1a4f4e;color:#fff;font-weight:800}
+    .heat-cell.st-at-risk.lvl-1{background:#fdf2df;color:#85520a;font-weight:700}
+    .heat-cell.st-at-risk.lvl-2{background:#f8cf89;color:#6d4002;font-weight:800}
+    .heat-cell.st-at-risk.lvl-3{background:#c98218;color:#fff;font-weight:800}
+    .heat-cell.st-at-risk.lvl-4{background:#8c5608;color:#fff;font-weight:800}
+    .heat-cell.st-delayed.lvl-1{background:#fce8ec;color:#7e162b;font-weight:700}
+    .heat-cell.st-delayed.lvl-2{background:#f3a8b7;color:#670c1f;font-weight:800}
+    .heat-cell.st-delayed.lvl-3{background:#bd2845;color:#fff;font-weight:800}
+    .heat-cell.st-delayed.lvl-4{background:#85142a;color:#fff;font-weight:800}
+    .heat-cell.st-on-hold.lvl-1{background:#f2eff7;color:#4c3f63;font-weight:700}
+    .heat-cell.st-on-hold.lvl-2{background:#c7bdda;color:#35294b;font-weight:800}
+    .heat-cell.st-on-hold.lvl-3{background:#7b6b97;color:#fff;font-weight:800}
+    .heat-cell.st-on-hold.lvl-4{background:#4e4166;color:#fff;font-weight:800}
+    .heat-cell.st-not-started.lvl-1{background:#f0f2f4;color:#465259;font-weight:700}
+    .heat-cell.st-not-started.lvl-2{background:#c5ced3;color:#283238;font-weight:800}
+    .heat-cell.st-not-started.lvl-3{background:#83929b;color:#fff;font-weight:800}
+    .heat-cell.st-not-started.lvl-4{background:#4f5a60;color:#fff;font-weight:800}
+    .heat-cell.st-completed.lvl-1{background:#e5edf4;color:#183c5c;font-weight:700}
+    .heat-cell.st-completed.lvl-2{background:#9ab9d4;color:#102c46;font-weight:800}
+    .heat-cell.st-completed.lvl-3{background:#2d5b88;color:#fff;font-weight:800}
+    .heat-cell.st-completed.lvl-4{background:#1b3d5e;color:#fff;font-weight:800}
+
+    /* Gantt */
+    .timeline-card{background:white;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .timeline-header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+    .timeline-header h3{margin:0;font-size:12px}
+    .timeline-header span{font-size:10.5px;color:var(--muted)}
+    .timeline-range{font-size:10.5px;font-weight:700;color:var(--muted);margin-left:5px}
+    .gantt-axis,.gantt-row{display:grid;grid-template-columns:190px 1fr}
+    .gantt-axis{background:#f8faf9;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+    .gantt-project-head{padding:8px 9px;font-size:10px;font-weight:800;text-transform:uppercase}
+    .gantt-months{display:grid;position:relative}
+    .gantt-month{padding:8px 2px;text-align:center;font-size:10px;color:var(--muted);border-left:1px solid #e3e8e6}
+    .gantt-list{max-height:580px;overflow:auto}
+    .gantt-row{min-height:38px;border-bottom:1px solid #edf0ef;cursor:pointer}
+    .gantt-row:hover{background:#f3f8f7}
+    .gantt-name{padding:6px 9px;overflow:hidden}
+    .gantt-name b{display:block;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .gantt-name small{display:block;font-size:9px;color:var(--muted)}
+    .gantt-track{position:relative;background:repeating-linear-gradient(90deg,rgba(246,248,247,.8) 0,rgba(246,248,247,.8) calc(var(--month-width) - 1px),#e1e6e4 calc(var(--month-width) - 1px),#e1e6e4 var(--month-width))}
+    .gantt-baseline{position:absolute;top:7px;height:3px;border-radius:2px;background:#cbd5e1;z-index:1;border-bottom:1px dashed #94a3b8}
+    .gantt-plan{position:absolute;top:11px;height:11px;border-radius:2px;background:#b8d8d4;min-width:4px;overflow:hidden;z-index:2}
+    .gantt-progress{height:100%;background:var(--teal);border-radius:2px}
+    .gantt-plan.critical{background:#f3a8b7}
+    .gantt-plan.critical .gantt-progress{background:var(--red)}
+    .gantt-milestone{position:absolute;top:12px;width:8px;height:8px;border:2px solid #64798b;background:white;transform:translateX(-50%) rotate(45deg);z-index:3}
+    .gantt-milestone.done{background:var(--green);border-color:var(--green)}
+    .gantt-milestone.risk{background:var(--amber);border-color:var(--amber)}
+    .gantt-milestone.delay{background:var(--red);border-color:var(--red)}
+    .gantt-today{position:absolute;top:0;bottom:0;width:2px;background:#ed4161;z-index:4;pointer-events:none}
+    .gantt-today:after{content:"Today";position:absolute;top:1px;left:2px;font-size:7.5px;color:#ed4161;font-weight:800}
+    .gantt-no-date{position:absolute;left:7px;top:11px;font-size:9.5px;color:#9aa4aa;font-style:italic}
+    .gantt-early{position:absolute;left:7px;top:11px;font-size:9.5px;color:var(--muted)}
+    .gantt-legend{display:flex;gap:14px;align-items:center;padding:9px 12px;border-top:1px solid var(--line);font-size:9.5px;color:var(--muted);flex-wrap:wrap}
+    .legend-plan,.legend-critical{display:inline-block;width:14px;height:6px;border-radius:2px;margin-right:3px;background:var(--teal)}
+    .legend-critical{background:var(--red)}
+    .legend-diamond{display:inline-block;width:7px;height:7px;border:2px solid #64798b;transform:rotate(45deg);margin:0 4px 0 2px}
+    
+    /* Tablebox & Register */
+    .tablebox{background:white;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .table-head{padding:9px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+    .table-head b{font-size:11.5px}
+    .table-head span{font-size:10px;color:var(--muted)}
+    .top-scroll{height:12px;overflow-x:auto;overflow-y:hidden;border-bottom:1px solid var(--line);background:#f6f8f7}
+    .top-scroll-inner{height:1px}
+    .table-scroll{overflow-x:auto}
+    table{width:100%;min-width:1340px;border-collapse:collapse}
+    th{font-size:9.5px;text-transform:uppercase;letter-spacing:.3px;color:white;text-align:left;background:#263a5f;padding:8px 6px;white-space:nowrap}
+    th.sortable{cursor:pointer;user-select:none;transition:background .15s}
+    th.sortable:hover{background:#1a2b49}
+    th.sort-asc:after{content:" ▲";font-size:7px;color:#55a6a1}
+    th.sort-desc:after{content:" ▼";font-size:7px;color:#55a6a1}
+    td{padding:8px 6px;border-top:1px solid #e4e9e8;vertical-align:top;font-size:11px}
+    tbody tr.project-row{cursor:pointer}
+    tbody tr.project-row:hover{background:#f0f7f7}
+    .row-num{color:var(--muted);width:20px}
+    .project-cell{display:flex;gap:6px;align-items:flex-start;min-width:150px}
+    .project-icon{width:24px;height:24px;border-radius:5px;display:grid;place-items:center;color:white;font-weight:800;font-size:11px;flex:none}
+    .project-cell b{display:block;max-width:180px;color:var(--teal);font-size:11px}
+    .project-cell small{color:var(--muted);font-size:9px}
+    .status{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:8px;font-size:9.5px;font-weight:800;white-space:nowrap}
+    .status:before{content:"";width:4px;height:4px;border-radius:50%;background:currentColor}
+    .active,.on-track{background:#e5f3ec;color:var(--green)}
+    .at-risk{background:#fff0dc;color:#a86612}
+    .planned{background:#e8f0f5;color:var(--blue)}
+    .completed{background:#eef0f1;color:#68757c}
+    .on-hold,.delayed{background:#f8e5e5;color:var(--red)}
+    .not-started{background:#ecece8;color:#77776d}
+    .bar{width:50px;height:4px;border-radius:2px;background:#e7eceb;overflow:hidden}
+    .bar i{height:100%;background:var(--teal);display:block}
+    .money{font-weight:700;white-space:nowrap;font-size:11px}
+    .priority{font-weight:800;font-size:11px}
+    .priority.high{color:var(--red)}
+    .priority.medium{color:#a87615}
+    .priority.low{color:var(--green)}
+    
+    /* Decision Color Coding */
+    .decision-required{display:inline-block;padding:2px 6px;border-radius:4px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+    .decision-required.financial{background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe}
+    .decision-required.operational{background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
+    .decision-required.technical{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+    .decision-required.financial-operational{background:#ffedd5;color:#c2410c;border:1px solid #fed7aa}
+    .decision-required.default{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+
+    .decision-state{font-size:10px;color:var(--amber);font-style:italic}
+    .decision-state.decided{display:inline-block;background:#e3f1ea;color:var(--green);padding:2px 5px;border-radius:4px;font-style:normal;font-weight:800}
+    .row-actions{display:flex;gap:3px}
+    .row-actions .iconbtn{width:24px;height:24px;font-size:10px}
+    .expand-row td{background:#f7f5ee;padding:9px 16px}
+    .expand-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .expand-block b{display:block;font-size:9.5px;text-transform:uppercase;margin-bottom:3px}
+    .expand-block.risk-block b{color:var(--red)}
+    .expand-block.mitigation-block b{color:var(--green)}
+    .expand-block p{margin:0;color:#49565e;white-space:pre-wrap;font-size:10.5px}
+    .empty{text-align:center;padding:30px;color:var(--muted);font-size:12px}
+    .tag-expiry-danger{background:#fee2e2;color:#b91c1c;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-block;margin-top:2px}
+    .tag-expiry-warn{background:#fef3c7;color:#b45309;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-block;margin-top:2px}
+    .tag-delivered{background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-block;margin-top:2px}
+    .tag-overdue{background:#fee2e2;color:#b91c1c;font-size:9px;font-weight:800;padding:1px 4px;border-radius:3px;display:inline-block;margin-top:2px}
+    .spend-meter{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--muted);margin-top:2px}
+    
+    /* Side Panel */
+    .panel{position:fixed;right:0;top:0;height:100vh;width:min(660px,95vw);background:white;z-index:50;box-shadow:-20px 0 55px rgba(9,36,50,.2);overflow:auto;transform:translateX(102%);transition:.25s}
+    .panel.open{transform:none}
+    .scrim{position:fixed;inset:0;background:rgba(8,29,41,.55);z-index:40;display:none}
+    .scrim.open{display:block}
+    .panel-head{background:var(--navy);color:white;padding:18px 22px;position:sticky;top:0;z-index:2}
+    .panel-head-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+    .panel-head h2{font-size:18px;line-height:1.3;margin:5px 0 2px}
+    .panel-head p{color:#bdd0d9;margin:0;font-size:11px}
+    .close{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:white;border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:14px}
+    .panel-body{padding:20px 22px}
+    .detail-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px}
+    .detail-stat{background:#f7f8f5;border-radius:7px;padding:10px}
+    .detail-stat span{font-size:9.5px;color:var(--muted);text-transform:uppercase;font-weight:700}
+    .detail-stat b{display:block;margin-top:2px;font-size:13px}
+    .detail-stat small{font-size:9.5px;color:var(--muted)}
+    .section{margin:18px 0}
+    .section-title{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:5px;margin-bottom:10px}
+    .section-title b{font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+    .scope{color:#4e606b;line-height:1.5;font-size:11.5px}
+    .kpi{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid #edf0ef}
+    .kpi:last-child{border:0}
+    .kpi-name b{display:block;font-size:12px}
+    .kpi-name small{color:var(--muted);font-size:9.5px}
+    .kpi-value{text-align:right}
+    .kpi-value strong{font-size:14px}
+    .kpi-value small{display:block;color:var(--muted);font-size:9.5px}
+    .kpi-track{height:4px;background:#e7eceb;border-radius:2px;margin-top:5px;overflow:hidden}
+    .kpi-track i{display:block;height:100%;background:var(--teal)}
+    .milestone{display:grid;grid-template-columns:14px 1fr auto;gap:7px;padding:7px 0;border-bottom:1px solid #f4f6f5}
+    .mile-dot{width:9px;height:9px;margin-top:3px;border-radius:50%;border:2px solid var(--teal)}
+    .mile-dot.done{background:var(--green);border-color:var(--green)}
+    .mile-dot.risk{background:var(--amber);border-color:var(--amber)}
+    .mile-dot.delay{background:var(--red);border-color:var(--red)}
+    .milestone small{color:var(--muted);font-size:9.5px}
+    .tag{display:inline-block;background:#edf5f4;color:var(--teal);border-radius:4px;padding:2px 6px;font-size:9.5px;margin:2px;font-weight:600}
+    .risk{padding:9px 11px;background:#fff8ed;border-left:3px solid var(--amber);border-radius:4px;margin-bottom:6px;color:#66523a;font-size:11px}
+    .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .decision{padding:10px;background:#f7f8f5;border:1px solid var(--line);border-radius:6px;white-space:pre-wrap;font-size:10.5px}
+    .decision b{display:block;font-size:9.5px;color:var(--teal);text-transform:uppercase;margin-bottom:4px}
+    .source{font-size:10.5px;color:var(--muted);background:#f7f8f5;border-radius:6px;padding:9px 11px;margin-top:4px}
+    .panel-actions{display:flex;gap:7px;margin-top:20px}
+    
+    /* Modal */
+    .modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;background:rgba(8,29,41,.6);padding:16px}
+    .modal.open{display:flex}
+    .modal-card{background:white;border-radius:10px;width:min(800px,98vw);max-height:92vh;overflow:auto;box-shadow:var(--shadow)}
+    .modal-head{padding:14px 18px;background:var(--navy);color:white;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:2}
+    .modal-head h3{margin:0;font-size:14px}
+    .form{padding:18px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{display:flex;flex-direction:column;gap:4px}
+    .field.full{grid-column:1/-1}
+    .field label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+    .field input,.field select,.field textarea{border:1px solid #d8dfde;border-radius:6px;padding:7px 9px;background:#fafbf9;color:var(--text);font-size:11.5px}
+    .field textarea{min-height:70px;resize:vertical}
+    .file-note{font-size:9.5px;color:var(--muted)}
+    .attachment{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#eef5f4;border:1px solid #d3e5e3;border-radius:6px;padding:8px 10px}
+    .attachment b{display:block;font-size:10.5px}
+    .attachment small{color:var(--muted);font-size:9px}
+    .modal-foot{padding:12px 18px;background:#f7f8f5;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:7px;position:sticky;bottom:0}
+    .repeat-box{border:1px solid var(--line);border-radius:6px;padding:8px;margin-top:4px}
+    .repeat-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:5px;margin-bottom:5px}
+    .repeat-row input{min-width:0;width:100%;border:1px solid var(--line);border-radius:4px;padding:6px;font-size:11px}
+    .notice{padding:8px 10px;background:#edf5f4;color:#315c5b;border-radius:6px;font-size:10.5px;margin-bottom:12px}
+    
+    .lookup{position:relative}
+    .lookup-toggle{width:100%;min-height:34px;border:1px solid #d8dfde;border-radius:6px;padding:7px 9px;background:#fafbf9;color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:6px;text-align:left;cursor:pointer;font-size:11.5px}
+    .lookup-toggle span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .lookup-toggle b{color:var(--teal)}
+    .lookup-menu{display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:white;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:7px;max-height:240px;overflow:auto}
+    .lookup.open .lookup-menu{display:block}
+    .lookup-search{width:100%;padding:6px 8px!important;margin-bottom:5px;background:white!important;font-size:11px}
+    .lookup-option{display:flex;align-items:flex-start;gap:6px;padding:5px;border-radius:4px;font-size:10.5px;cursor:pointer}
+    .lookup-option:hover{background:#edf5f4}
+    .lookup-option input{width:auto!important;margin-top:2px}
+    
+    .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:var(--navy);color:white;padding:8px 14px;border-radius:6px;opacity:0;pointer-events:none;transition:.2s;z-index:100;font-size:11px;font-weight:600}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .chart-filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:7px;padding:7px 10px;margin-bottom:10px}
+    .cfb-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+    .cfb-count{font-size:9.5px;font-weight:700;color:var(--muted)}
+    .cf-chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--teal);background:#e8f5f4;color:#22605e;border-radius:10px;padding:3px 8px;font-size:9.5px;font-weight:800;cursor:pointer}
+    .cf-chip:hover{background:#d7ecea}
+    .cf-clear{margin-left:auto;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:10px;padding:3px 8px;font-size:9.5px;font-weight:800;cursor:pointer}
+    .cf-clear:hover{color:var(--red);border-color:#f0cfcf}
+    .resource-row.clickable{cursor:pointer;border-radius:4px;padding:2px 4px;margin-left:-4px;margin-right:-4px;transition:background .12s,opacity .12s}
+    .resource-row.clickable:hover{background:#f2f8f7}
+    .resource-row.dim{opacity:.34}
+    .resource-row.sel{background:#eef7f6}
+    .resource-row.sel span:first-child{font-weight:800;color:var(--teal)}
+    .heat-cell.clickable{cursor:pointer}
+    .heat-cell.clickable:hover{outline:2px solid var(--teal);outline-offset:-2px}
+    .heat-cell.label.clickable:hover{outline:none;color:var(--teal)}
+    .heat-cell.label.sel-col-label,.heat-cell.label.sel-row-label{color:var(--teal);font-weight:800}
+    .heat-row.hl .heat-cell{box-shadow:inset 0 0 0 1px rgba(45,125,123,.35)}
+    .heat-cell.col-hl{box-shadow:inset 0 0 0 1px rgba(45,125,123,.35)}
+    .heat-cell.cell-sel{outline:2px solid var(--teal);outline-offset:-2px;font-weight:800}
+    
+    .chart-tip{position:fixed;z-index:200;pointer-events:none;background:#102636;color:#fff;border-radius:5px;padding:7px 9px;font-size:9.5px;line-height:1.4;max-width:240px;white-space:pre-line;box-shadow:0 8px 20px rgba(0,0,0,.35);opacity:0;transition:opacity .1s;display:none}
+    .chart-tip.show{opacity:1}
+
+    @media print {
+      body{background:white;color:#000;font-size:9.5px}.topbar,.sidebar,.filter-panel,.top-actions,.panel,.modal,.scrim,#topTableScroll,.top-scroll{display:none!important}
+      .shell{display:block;min-height:auto}.main{padding:0}.stats{grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:10px}.stat{border:1px solid #ccc;padding:6px}
+      .tablebox{border:1px solid #ccc}table{min-width:100%;font-size:8px}th{background:#eee!important;color:#000!important;border:1px solid #ccc}td{border:1px solid #eee;padding:3px}
+      .analytics{grid-template-columns:1fr 1fr;page-break-inside:avoid}.chart-card{border:1px solid #ccc;page-break-inside:avoid}
+    }
+    @media(max-width:1200px){.stats{grid-template-columns:repeat(3,1fr)}.analytics{grid-template-columns:1fr}.shell{grid-template-columns:135px 1fr}}
+    @media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.shell{grid-template-columns:46px 1fr}.sidebar{padding:10px 2px}.nav strong,.nav-label,.side-note,.side-divider{display:none}.nav{justify-content:center}.main{padding:14px 10px}.timeline-row,.timeline-axis{grid-template-columns:140px 1fr}}
+    @media(max-width:720px){.topbar{padding:0 10px}.brand b{white-space:normal;font-size:10px}.brand span,.top-actions .light{display:none}.shell{display:block}.sidebar{display:none}.main{padding:12px 8px}.page-head{display:block}.head-tools{justify-content:flex-start;margin-top:6px}.asof{display:inline-block}.stats{grid-template-columns:1fr 1fr;gap:5px}.stat{padding:8px}.stat strong{font-size:16px}.analytics{grid-template-columns:1fr}.tablebox{overflow:auto}table{min-width:1200px}.detail-stats,.form-grid,.decision-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.repeat-row{grid-template-columns:1fr 1fr}.repeat-row input:first-child{grid-column:1/-1}.timeline-row,.timeline-axis{grid-template-columns:110px 1fr}.filters-row{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="mark">DT</div><div><b>Digital Transformation Department — Projects/Tasks & Contract Portfolio</b><span>Emirates Drug Establishment</span></div></div>
+    <div class="top-actions">
+      <input id="importFile" type="file" accept=".json,application/json" hidden onchange="importData(event)">
+      <button class="btn light" onclick="document.getElementById('importFile').click()">↑ Import</button>
+      <button class="btn light" onclick="exportData()">↓ Export</button>
+      <button class="btn light" onclick="exportCsv()">⤓ Export CSV</button>
+      <button class="btn light" onclick="window.print()">⎙ Print / PDF</button>
+      <button class="btn primary" onclick="openProjectModal()">＋ Add project</button>
+    </div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="nav-label">WORKSPACE</div>
+      <button class="nav active" data-workspace="portfolio" onclick="setWorkspace('portfolio',this)"><span class="nav-bar">▌</span><span class="nav-icon">📊</span> <strong>Portfolio Dashboard</strong></button>
+      <button class="nav" data-workspace="register" onclick="setWorkspace('register',this)"><span class="nav-bar">▌</span><span class="nav-icon">📋</span> <strong>Project Register</strong></button>
+      <button class="nav" data-workspace="delivery" onclick="setWorkspace('delivery',this)"><span class="nav-bar">▌</span><span class="nav-icon">⏱</span> <strong>Delivery Tracking</strong></button>
+      <hr class="side-divider">
+      <div class="side-note">
+        <div class="side-title">Workspace Portfolio Analytics</div>
+        <div class="side-save">🟢 Saved Locally</div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="page-head">
+        <div><div class="eyebrow" id="workspaceEyebrow">Portfolio command center</div><h1 id="workspaceTitle">Portfolio Dashboard</h1><p id="workspaceDescription">Executive view of all projects, budgets, ownership and delivery health.</p></div>
+        <div class="head-tools">
+          <div class="asof" id="reportingDate"></div>
+        </div>
+      </div>
+      <section class="stats" id="summaryCards">
+        <div class="stat"><span class="label" id="stat1Label">Total Projects</span><strong id="stat1Value">—</strong><small id="stat1Note">portfolio records</small></div>
+        <div class="stat clickable" id="openCard" role="button" tabindex="0" onclick="showCardProjects('open')" onkeydown="if(event.key==='Enter'||event.key===' ')showCardProjects('open')"><span class="label" id="stat2Label">Open Projects</span><strong id="stat2Value">—</strong><small id="stat2Note">active initiatives</small></div>
+        <div class="stat clickable" id="riskCard" role="button" tabindex="0" onclick="showCardProjects('risks')" onkeydown="if(event.key==='Enter'||event.key===' ')showCardProjects('risks')"><span class="label" id="stat3Label">Risks</span><strong id="stat3Value">—</strong><small id="stat3Note">At Risk and Delayed</small></div>
+        <div class="stat clickable" id="decisionCard" role="button" tabindex="0" onclick="showCardProjects('decision')" onkeydown="if(event.key==='Enter'||event.key===' ')showCardProjects('decision')"><span class="label" id="stat4Label">Decision required</span><strong id="stat4Value">—</strong><small id="stat4Note">awaiting management decision</small></div>
+        <div class="stat"><span class="label" id="stat5Label">Budget & Spend</span><strong id="stat5Value">—</strong><small id="stat5Note">numeric budget vs spent</small></div>
+        <div class="stat clickable" id="contractsCard" role="button" tabindex="0" onclick="showCardProjects('contracts')" onkeydown="if(event.key==='Enter'||event.key===' ')showCardProjects('contracts')"><span class="label" id="stat6Label">Contracts & Expiries</span><strong id="stat6Value">—</strong><small id="stat6Note">with reference numbers</small></div>
+      </section>
+      
+      <div id="chartFilterContainer" class="hidden"></div>
+
+      <section class="analytics" id="analyticsView">
+        <div class="chart-card"><h3>PROJECTS BY STATUS</h3><p>Delivery distribution across the portfolio</p><div class="pie-wrap"><div class="pie" id="statusPie"><div class="pie-center" id="statusPieCenter"></div></div><div class="legend" id="statusPieLegend"></div></div></div>
+        <div class="chart-card"><h3>BUDGET BY CATEGORY</h3><p>Numeric portfolio budget distribution by domain</p><div id="budgetCategoryList" class="cat-budget-wrap"></div><div id="treemapCaption" class="treemap-caption"></div></div>
+        <div class="chart-card"><h3>VENDOR BUDGET EXPOSURE</h3><p>Concentration of numeric spend across commercial partners</p><div id="vendorBars"></div></div>
+        <div class="chart-card"><h3>FINANCIAL EXECUTION & BURN</h3><p>Approved budget vs actual invoiced spend by status</p><div id="budgetStatus"></div></div>
+        <div class="chart-card" style="grid-column: 1/-1"><h3>STATUS & CATEGORY MATRIX HEATMAP</h3><p>Project volume by category and delivery status</p><div class="heatmap-wrap"><div class="heatmap" id="statusHeatmap"></div></div></div>
+      </section>
+
+      <section class="timeline-card hidden" id="timelineView">
+        <div class="timeline-header"><div><h3>Project delivery timeline</h3><span class="timeline-range" id="timelineRange"></span></div><div class="timeline-tools"><button class="btn light small" onclick="shiftTimeline(-1)">◀ Previous month</button><button class="btn light small" onclick="resetTimeline()">Today</button><button class="btn light small" onclick="shiftTimeline(1)">Next month ▶</button><select id="timelineMonths" onchange="changeTimelineMonths()"><option value="6">6-month view</option><option value="9" selected>9-month view</option><option value="12">12-month view</option></select></div></div>
+        <div id="timelineContent"></div>
+      </section>
+
+      <div id="registerView" class="hidden">
+      <div class="filter-panel">
+        <div class="search-row">
+          <div class="search">
+            <span class="search-icon">⌕</span>
+            <input id="search" type="search" placeholder="Search projects by name, owner, vendor, contract reference or department…" oninput="render()">
+          </div>
+        </div>
+        <div class="filters-row">
+          <select id="statusFilter" onchange="render()"><option value="">All statuses</option><option>On Track</option><option>At Risk</option><option>Delayed</option><option>Not Started</option><option>On Hold</option><option>Completed</option></select>
+          <select id="categoryFilter" onchange="render()"><option value="">All categories</option></select>
+          <select id="coordinatorFilter" onchange="render()"><option value="">All coordinators</option></select>
+          <select id="priorityFilter" onchange="render()"><option value="">All priorities</option><option>High</option><option>Medium</option><option>Low</option></select>
+          <select id="decisionFilter" onchange="render()"><option value="">All decision states</option><option value="pending">Awaiting decision</option><option value="decided">Decision recorded</option><option value="not-required">No decision required</option></select>
+          <button id="cardFilterChip" class="filter-chip hidden" onclick="clearCardFilter()"></button>
+          <button type="button" class="btn-clear-all" onclick="resetAllFilters()">✕ Clear All Filters</button>
+        </div>
+      </div>
+
+      <section class="tablebox">
+        <div class="table-head"><b id="registerTitle">Portfolio project register</b><span id="shownCount"></span></div>
+        <div class="top-scroll" id="topTableScroll"><div class="top-scroll-inner" id="topTableScrollInner"></div></div>
+        <div class="table-scroll" id="tableScroll"><table id="projectTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th class="sortable" onclick="sortTable('name')">Project</th>
+              <th class="sortable" onclick="sortTable('category')">Category</th>
+              <th class="sortable" onclick="sortTable('owner')">Business owner / Depts</th>
+              <th class="sortable" onclick="sortTable('coordinator')">Coordinator</th>
+              <th class="sortable" onclick="sortTable('vendor')">Vendor</th>
+              <th class="sortable" onclick="sortTable('value')">Budget (AED)</th>
+              <th class="sortable" onclick="sortTable('spent')">Actual Spend</th>
+              <th class="sortable" onclick="sortTable('start')">Start Date</th>
+              <th class="sortable" onclick="sortTable('end')">End Date</th>
+              <th class="sortable" onclick="sortTable('status')">Status</th>
+              <th class="sortable" onclick="sortTable('progress')">Progress</th>
+              <th class="sortable" onclick="sortTable('priority')">Priority</th>
+              <th class="sortable" onclick="sortTable('decisionRequired')">Decision state</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="projectRows"></tbody>
+        </table></div>
+        <div id="empty" class="empty hidden">No projects match these filters.</div>
+      </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="scrim" id="scrim" onclick="closePanel()"></div>
+  <aside class="panel" id="panel"></aside>
+
+  <div class="modal" id="projectModal">
+    <div class="modal-card">
+      <div class="modal-head"><h3 id="modalTitle">Add project</h3><button class="close" onclick="closeModal()">×</button></div>
+      <form id="projectForm" onsubmit="saveProject(event)">
+        <div class="form">
+          <div class="notice">Fields marked from proposals should be validated against the final signed contract before formal PMO reporting[cite: 7].</div>
+          <div class="form-grid">
+            <div class="field full"><label>Project name *</label><input id="fName" required></div>
+            <div class="field"><label>Vendor *</label><input id="fVendor" required></div>
+            <div class="field"><label>Contract number / reference</label><input id="fContract" placeholder="Contract, PO or proposal number"></div>
+            <div class="field"><label>Upload contract</label><input id="fContractFile" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"><span class="file-note" id="currentContractFile">PDF, Word, Excel or image. Stored in this browser.</span></div>
+            <div class="field"><label>Category</label><input id="fCategory" placeholder="e.g. Integration, New Digital Service"></div>
+            <div class="field"><label>Status</label><select id="fStatus"><option>On Track</option><option>At Risk</option><option>Delayed</option><option>Not Started</option><option>On Hold</option><option>Completed</option></select></div>
+            <div class="field"><label>Priority</label><select id="fPriority"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+            <div class="field"><label>Business owner(s)</label><input id="fOwner" type="hidden"><div class="lookup" id="ownerLookup"><button type="button" class="lookup-toggle" onclick="toggleLookup('owner')"><span id="ownerLookupLabel">Select business owner(s)</span><b>⌄</b></button><div class="lookup-menu" id="ownerLookupMenu"></div></div></div>
+            <div class="field"><label>Project coordinator</label><input id="fCoordinator" placeholder="Coordinator name"></div>
+            <div class="field"><label>Impacted department(s)</label><input id="fDepartments" type="hidden"><div class="lookup" id="departmentsLookup"><button type="button" class="lookup-toggle" onclick="toggleLookup('departments')"><span id="departmentsLookupLabel">Select impacted department(s)</span><b>⌄</b></button><div class="lookup-menu" id="departmentsLookupMenu"></div></div></div>
+            <div class="field"><label>Decision requirement / approval category</label><select id="fDecisionRequired"><option value="">No decision required</option><option>Financial</option><option>Operational</option><option>Technical</option><option>Financial & Operational</option></select></div>
+            <div class="field"><label>Start date</label><input id="fStart" type="date"></div>
+            <div class="field"><label>Target End date</label><input id="fEnd" type="date"></div>
+            <div class="field"><label>Baseline End date (for schedule slippage tracking)</label><input id="fBaselineEnd" type="date"></div>
+            <div class="field"><label>Budget (AED or TBD/Included)</label><input id="fValue" placeholder="e.g. 985290, TBD, Included"></div>
+            <div class="field"><label>Actual Spend / Invoiced (AED)</label><input id="fSpent" type="number" step="1" placeholder="e.g. 150000"></div>
+            <div class="field"><label>Progress (%)</label><input id="fProgress" type="number" min="0" max="100"></div>
+            <div class="field full"><label>Scope</label><textarea id="fScope"></textarea></div>
+            <div class="field full"><label>Strategic objectives</label><textarea id="fStrategicObjectives" placeholder="Strategic outcomes this project supports"></textarea></div>
+            <div class="field full"><label>Strategic alignment / contribution</label><textarea id="fStrategicAlignment" placeholder="How the project contributes to EDE and DT strategy"></textarea></div>
+            <div class="field full"><label>Risks / dependencies (one per line)</label><textarea id="fRisks"></textarea></div>
+            <div class="field full"><label>Mitigation plan / solution</label><textarea id="fMitigation" placeholder="Actions, owners and target dates"></textarea></div>
+            <div class="field"><label>Management decision outcome</label><textarea id="fDecision" placeholder="Decision or approval outcome"></textarea></div>
+            <div class="field"><label>Decision metadata (Date & Approver)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="fDecisionDate" type="date" placeholder="Decision Date"><input id="fDecisionBy" placeholder="Approved / Decided By"></div></div>
+            <div class="field full"><label>Source / commercial note</label><textarea id="fSource"></textarea></div>
+            <div class="field full"><label>KPIs</label><div class="repeat-box"><div id="kpiEditor"></div><button type="button" class="btn light small" onclick="addKpiRow()">＋ Add KPI</button></div></div>
+            <div class="field full" id="milestoneSection"><label>Project milestones & delivery health</label><div class="repeat-box"><div id="milestoneEditor"></div><button type="button" class="btn light small" onclick="addMilestoneRow()">◆ Add milestone</button></div></div>
+          </div>
+        </div>
+        <div class="modal-foot"><button type="button" id="deleteBtn" class="btn danger hidden" onclick="deleteProject()">Delete project</button><div style="margin-left:auto;display:flex;gap:6px"><button type="button" class="btn light" onclick="closeModal()">Cancel</button><button class="btn primary">Save project</button></div></div>
+      </form>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const KEY='ede-contract-portfolio-v12';
+    const COLORS=['#2d7d7b','#2d5b88','#7b6b97','#c98218','#2f8264','#775f65'];
+    const DEPARTMENTS=['Communications & Promotion Department','Digital Transformation Department','Government Services Department','Legal Affairs Office','Policies & Standards Department','Strategy and Future Department','Support Services Department','Import & Export Department','Inspection & Control Department','Licensing Department','Agricultural Medical Products Registration Department','Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices','Registration & Marketing Authorizations for Veterinary Preparations','Research & Studies Department','Crisis Management & Pharmaceutical Security Center','Director General Office','National Reference Laboratories Department','Partnerships & Strategic Relations Department','Research & Laboratories Regulation Department'];
+    const sheetRows=[
+      ["LIMS","New Digital Service","Research & Laboratories Regulation Department","Eslam Kassab","VIRTUS TRADING LIMITED","985290","","","On Track","","Medium","Payment approval is required, not just confirmation from the business team.","","Financial",""],
+      ["ESB","Integration","","Eslam Kassab","IBM","9000000","2026-06-08","","On Track","","High","Payment approval required for 5%.","","Financial","5% Approved to send email Noora Al remaithi"],
+      ["Inspection System","New Digital Service","Inspection & Control Department","Eslam Kassab","InHouse","-","","","Not Started","","Medium","Should requirements gathering and validation proceed now, or be postponed until reengineering is completed to avoid rework?","Await completion of reengineering and onboarding of the new vendor to avoid duplicated effort.","Operational",""],
+      ["MOCCAE inherited services","New Digital Service","Agricultural Medical Products Registration Department","Eslam Kassab","Black Stone","2567000","","","At Risk","","High","MOCCAE Professional API is expected in Q1 2027; LIMS and DHABI integrations are blocked; data migration remains in progress; vendor development delays and quality issues affect delivery.","","Financial & Operational","Professional API: manual document upload; assess impact if contract is cancelled."],
+      ["Clinical Trial Service","New Digital Service","Research & Laboratories Regulation Department","Maise Dahhan","InHouse","-","","","On Track","","Medium","Critical requirements continue to emerge after BRD v1, causing revisions, rework and potential delays.","","Operational",""],
+      ["EDE Single Sign-On Portal (UAE PASS Integration)","Integration","Digital Transformation Department","Maise Dahhan","InHouse","-","","","On Track","","Medium","","","Operational",""],
+      ["Product Classification Service Enhancement (12 man-days + 8 man-days Customer Pulse)","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","31500","","","Completed","","Medium","","","Not Required",""],
+      ["Appointment Additional Pharmaceutical Facility (56 man-days)","New Digital Service","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","147000","","","Completed","","High","","","Not Required",""],
+      ["36 Free Changes in Registration System Services (support contract)","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","Included","2026-11-15","2026-08-08","On Track","95","Medium","","","Not Required",""],
+      ["Medical Product Exclusive Marketing Approval – Temporary Solution (11 man-days)","New Digital Service","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","28875","2026-05-14","","On Hold","90","High","Pending ministerial decree approval; temporary solution is ready for deployment.","Activate the temporary solution once the required approvals are received.","Operational",""],
+      ["Medical Product Exclusive Marketing Approval – Full Solution (30 man-days)","New Digital Service","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","97125","","","Not Started","","Medium","Growing cross-department backlog requires transparent prioritization and scheduling.","Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","Financial & Operational",""],
+      ["Pricing & Repricing New Procedures (30 man-days)","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","78750","2026-06-24","2026-08-27","On Track","80","High","","","Not Required",""],
+      ["Standalone Service for Request Analysis (24 man-days)","New Digital Service","National Reference Laboratories Department","Sherine Elkhatib","GBM","63000","","","Not Started","","High","Growing cross-department backlog requires transparent prioritization and scheduling.","Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","Financial & Operational",""],
+      ["Changes in Analysis Service Workflow","Enhancement/CR","National Reference Laboratories Department","Sherine Elkhatib","GBM","-","","","Completed","100","High","","","Not Required",""],
+      ["Local Factory Enhancement","Enhancement/CR","Licensing Department","Sherine Elkhatib","GBM","TBD","","","Not Started","","Medium","The 200 man-day contract may be exceeded: 117 days consumed and 54 days approved, with additional demand and a growing backlog.","","Financial & Operational",""],
+      ["Change in Stability & BE Workflow","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","TBD","","","Not Started","","Low","Growing cross-department backlog requires transparent prioritization and scheduling.","Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","Financial & Operational",""],
+      ["Listing Medical Device - Class I & II","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","TBD","","","Not Started","","Medium","Growing cross-department backlog requires transparent prioritization and scheduling.","Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","Financial & Operational",""],
+      ["Introduce New Manufacturing Stages and Business Rules","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","TBD","","","Not Started","","Low","Postponed until impact on CPP and other services is validated with business owners.","","Financial & Operational",""],
+      ["Replace “Agent” with “Main Pharmaceutical Facility” in All Outputs and Portals","Enhancement/CR","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Sherine Elkhatib","GBM","TBD","","","Not Started","","Medium","Growing cross-department backlog requires transparent prioritization and scheduling.","Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","Financial & Operational",""],
+      ["5 Change Requests in Licensing Pharmaceutical Workflow","Enhancement/CR","Licensing Department","Sherine Elkhatib","Intertec","-","","","Completed","","Medium","","","Not Required",""],
+      ["NOC for Renewal Licensing Pharmaceutical","Enhancement/CR","Licensing Department","Sherine Elkhatib","Intertec","114000","","","Not Started","","Medium","Intertec submitted a CR that differs from the agreed solution; corrected submission and approval are required.","Request a corrected CR, obtain Service Owner approval, then obtain DT Director approval.","Financial & Operational",""],
+      ["3PL - Medical Warehouse (External Storage & Storage on Behalf of Others)","New Digital Service","Licensing Department","Sherine Elkhatib","Intertec","TBD","","","Not Started","","High","Waiting for Intertec to provide the change request.","Review the CR and obtain DT Director and Service Owner approval once received.","Financial & Operational",""],
+      ["New Types of Pharmaceutical Facilities","New Digital Service","Licensing Department","Sherine Elkhatib","Intertec","1000000","","","On Hold","","Medium","Requirements and SOW are confirmed, but the vendor estimate and delivery timeline are significantly higher.","Decide whether to implement in-house or defer until reengineering is completed.","Financial & Operational",""],
+      ["Anticipated Drug Shortage","New Digital Service","Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","Azam Farooq & Sherine Elkhatib","InHouse","-","","","On Track","","High","","","Not Required",""],
+      ["Printing Services MYQ","Infrastructure","Digital Transformation Department","Mohamed Bebars","GCG","","","","Completed","100","High","","","Not Required",""],
+      ["Meeting Rooms Booking System","Infrastructure","Digital Transformation Department","Ataa Bsharat","venturaglobal","","","","Completed","100","High","","","Not Required",""],
+      ["Attendance and Leave System","Infrastructure","Digital Transformation Department","Ataa Bsharat","GET Group","191660","","","Completed","100","High","","","Not Required",""],
+      ["ITSM, VPN & EPM Systems","Infrastructure","Digital Transformation Department","Mohamed Bebars","FOURTH Dimension Systems","1108577","","","On Track","100","Medium","","","Not Required",""],
+      ["Endpoint Detection and Response (EDR)","Infrastructure","Digital Transformation Department","Mohamed Bebars","HELP INFORMATION TECHNOLOGY CONSULTANCY - SOLE PROPRIETORSHIP LLC","750467.24","","","Completed","100","High","","","Not Required",""],
+      ["Backup and Email Archive","Infrastructure","Digital Transformation Department","Mohamed Bebars","Emirates Business Machines","850000","","","Delayed","30","High","","","Financial & Operational",""],
+      ["PAM Solution - Privilege Access Management","Infrastructure","Digital Transformation Department","Mohamed Bebars","HELP INFORMATION TECHNOLOGY CONSULTANCY - SOLE PROPRIETORSHIP LLC","1190229.61","","","On Track","40","High","","","Financial & Operational",""],
+      ["Secure DNS, DHCP and IPAM Solution","Infrastructure","Digital Transformation Department","Mohamed AbdelMaksoud","EMIRCOM","1211729","","","Delayed","10","High","","","Financial & Operational",""],
+      ["QC LAB - Network & Servers Revamp","Infrastructure","Digital Transformation Department","Mohamed Bebars","EMIRCOM","3110864.02","","","On Track","30","High","","","Financial & Operational",""],
+      ["DXB - Data Center Servers","Infrastructure","Digital Transformation Department","Mohamed Bebars","EMIRCOM","7320273","","","Delayed","10","High","Change request required for data center expansion.","","Financial & Operational","Meet with Nariman and Noora to review the CR."],
+      ["Support Services & AuraQuantic Licenses Renewal","Support & Maintenance","Digital Transformation Department","Fahad Alolama","Intertec","2640000","2026-10-01","2027-09-30","Not Started","","High","Proposal limits minor changes to 10 man-days monthly and 5 carry-forward days; vendor dependency may cause knowledge loss.","Allow unused effort to accumulate for up to six months, capped at 60 man-days.","Financial",""],
+      ["Migration of Licensing System","Migration","Digital Transformation Department","Fahad Alolama","Intertec","816564.99","","","At Risk","","High","MOHAP approval delays affect timelines and milestones.","Establish stronger executive follow-up with MOHAP.","Operational","Arrange a meeting with all stakeholders."],
+      ["Migration of Registration System","Migration","Digital Transformation Department","Fahad Alolama","GBM","657725","","","At Risk","","High","Critical activities depend on delayed MOHAP security approvals, port openings, storage expansion and network changes.","Escalate with MOHAP, assign owners and deadlines, and hold regular blocker reviews.","Operational","Change the scope of work through a CR and arrange a stakeholder meeting."],
+      ["Website Revamping and Support","Enhancement/CR","Digital Transformation Department","Fahad Alolama","AspideX","1838100","","","Delayed","","Medium","Contract milestone comments require review.","Noora and Nariman will review and respond.","Operational",""],
+      ["CRM, Knowledge Management & Agentic AI Platform","Enhancement/CR","Government Services Department","Ahmed AbdelHafez","TBD","2850000","","","Not Started","","High","Delays affect the 90-day Agentic AI implementation and call-center AI capabilities.","Apply for tender.","Operational",""],
+      ["CRM Dashboard (Power BI)","Data & Analytics","Government Services Department","Ahmed AbdelHafez","InHouse","-","","","Completed","","Medium","","","Not Required",""],
+      ["Customer Survey - Call Center","New Digital Service","Government Services Department","Ahmed AbdelHafez","InHouse","-","","","On Track","","Low","","","Not Required",""],
+      ["Agentic AI Tools & Use Cases","Agentic AI","Digital Transformation Department","Azam Farooq","InHouse","TBD","","","At Risk","","High","TDRA confirmation is pending for approved LLM, OCR/Document AI and sovereign hosting services, risking the mandated 90-day target.","","Financial & Operational","Send reminder to PMO/Noora and Nariman to obtain quotation."],
+      ["Customer Pulse Integration","Integration","Digital Transformation Department","Azam Farooq","InHouse, Intertec, GBM","-","","","Completed","","High","","","Not Required",""],
+      ["Digital Service Platform - Low Code/OutSystems License","Service Reengineering - Digital Service Platform","Digital Transformation Department","DT","Black Stone","4999995","","","On Track","","High","OutSystems licenses have been paid since 2025 while reengineering began in July 2026, creating low-ROI risk.","Explore suspending, deferring or optimizing licenses until implementation is active.","Financial",""],
+      ["Import/Export System Migration","Migration","Digital Transformation Department","Azam Farooq","InHouse","-","","","Completed","","High","","","Not Required",""],
+      ["Micro Segmentation","Infrastructure","Digital Transformation Department","Mohamed Bebars","TBD","3000000","","","Not Started","","Medium","","","Financial & Operational",""],
+      ["National Stock Surveillance – Medicines & Raw Materials","New Digital Service","Inspection & Control Department","Azam Farooq","InHouse","-","","","On Track","","Medium","","","Not Required",""],
+      ["Software Quality Services","Quality Assurance & Testing","Digital Transformation Department","DT","Q-Pros","1357400","","","On Track","","Medium","","","Not Required",""],
+      ["Data Management Platform","Data & Analytics","Digital Transformation Department","DT","TBD","15000000","","","Not Started","","High","","","Financial & Operational",""],
+      ["Import Export Enhancements","Enhancement/CR","Import & Export Department","Azam Farooq","InHouse","-","","","On Track","95","Medium","","","Not Required",""]
+    ];
+
+    const seed=[{"id":"project-1787547451344","name":"Update Minor Variation Certificates & Reg Pack & Pack Size Cancelletion","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Completed","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"Digital Transformation Department","decisionRequired":"","start":"2026-08-06","end":"2026-08-21","baselineEnd":"2026-08-21","value":0,"spent":0,"budgetLabel":"","progress":100,"scope":"The required changes in the following Certificates Templates and associated Business Rules:\n\n1- Minor Variation Certificates- to Add disclaimer in case there is an active Pricing \n2- Pack Size Cancellation Certificates- update the whole template\n3- Pack Registration Cancellation Certificates - update the whole template","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"project-1786946492600","name":"Redis License","vendor":"TBD","contract":"BPM005454","category":"Software & License","status":"Not Started","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"Financial","start":"","end":"","baselineEnd":"","value":736000,"spent":0,"budgetLabel":"","progress":0,"scope":"BPM005454 ترسية المناقصة رقم \nRedis License","strategicObjectives":"","strategicAlignment":"","risks":["Approved Budget of 2026 is 228,000.00 AED","1.\tتوفير مبلغ 1,813 درهم من ميزانية 2026 وهو الفارق بين مبلغ الطلب والعرض المالي.","2.\tالتأكيد على توفير مبلغ 235,436 درهم من ميزانية 2027","3.\tالتأكيد على توفير مبلغ 270,751 درهم من ميزانية 2028"],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"project-1786900394368","name":"SSL Certificate","vendor":"TBD","contract":"","category":"Software & License","status":"Completed","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":13952,"spent":0,"budgetLabel":"","progress":100,"scope":"paid","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"project-1786898549262","name":"Microsoft Licenses & Dynamics 365 Customer Service Enterprise (CRM) - 120 users","vendor":"Crayon Company (L.L.C.)","contract":"","category":"Software & License","status":"Completed","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"Government Services Department","decisionRequired":"","start":"","end":"","baselineEnd":"","value":850846,"spent":850846,"budgetLabel":"","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"project-1786898411060","name":"Software integration lab instruments","vendor":"TBD","contract":"","category":"Software & License","status":"Not Started","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":2500000,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"project-1786898274625","name":"EDE Website UX/UI Design & Content Development","vendor":"Digital NXT Technical Consulting","contract":"CTR007754 / 2025","category":"Managed Services","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Azam Farooq","departments":"Communications & Promotion Department","decisionRequired":"","start":"2025-12-01","end":"2026-11-30","baselineEnd":"2026-11-30","value":746666.64,"spent":560000,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"CTR007754 - EDE Web Site UXUI Design & Content Development.pdf","attachmentType":"application/pdf","attachmentSize":9219413},{"id":"project-1786897641694","name":"E-CTD Drug Registration File Reader","vendor":"Professionals Regulatory Affairs LLC","contract":"403 / 2021 (Renewal)","category":"Software & License","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","decisionRequired":"","start":"2025-11-26","end":"2026-11-25","baselineEnd":"2026-11-25","value":180830,"spent":180830,"budgetLabel":"","progress":70,"scope":"Renewal and continued operation of the E-CTD pharmaceutical registration file reader solution that supports regulatory and drug management processes at Emirates Drug Establishment (EDE), including software support, maintenance, and operational continuity services","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"تجديد عقد رقم 403-2021 القارئ.pdf","attachmentType":"application/pdf","attachmentSize":777806},{"id":"project-1786897285753","name":"Drug Registration Platform Support & License Renewal","vendor":"Gulf Business Machines (GBM)","contract":"Contract 75 / 2020 (Renewal)","category":"Support & Maintenance","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","decisionRequired":"","start":"2025-05-01","end":"2027-04-30","baselineEnd":"2027-04-30","value":9500000,"spent":6921000,"budgetLabel":"","progress":70,"scope":"Component Amount (AED Excl. VAT)\nIBM License Renewal 2,233,062\nHCL License Renewal217,770Time & Material \nSupport Services7,049,168\nDelivered renewal, maintenance, and operational support services for the Emirates Drug Establishment Drug Registration Platform, including IBM Cloud Pak for Integration, IBM Cloud Pak for Business Automation (BAW, ODM, FileNet), HCL Portal Server licensing, platform support resources, integration services, workflow automation support, application maintenance, and ongoing enhancement services.","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"75 -  تجديد عقد تطوير الخدمات الإلكترونية وملاحقه - GBM.pdf","attachmentType":"application/pdf","attachmentSize":2177747},{"id":"project-1786896381688","name":"Endpoint Detection & Response (EDR/EPP)","vendor":"HELP INFORMATION TECHNOLOGY CONSULTANCY - SOLE PROPRIETORSHIP LLC","contract":"CTR007589 / 2025","category":"Cybersecurity","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"","start":"2025-11-01","end":"2028-12-17","baselineEnd":"2028-12-17","value":750467.39,"spent":750467,"budgetLabel":"","progress":100,"scope":"SentinelOne EDR & Endpoint Protection Platform Implementation (Nov 2025 – Dec 2028): Delivered a SentinelOne-based enterprise endpoint security solution for EDE, including deployment of 550 protected endpoints (300 workstations and 250 servers), AI-powered EDR/EPP, NGAV, endpoint forensics, threat hunting, Device Control, Firewall Control, Endpoint Data Gateway integration, policy configuration, testing, documentation, training for 2 administrators, and 3-year premium support. Contract Value: AED 750,467.39","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"CTR007589 -Endpoint Detection and Response.pdf","attachmentType":"application/pdf","attachmentSize":16115573},{"id":"project-1786895591094","name":"Supply of Licenses and Installation of the SMS Messaging System","vendor":"INNOVATIVE SOLUTIONS INTERNATIONAL L.L.C","contract":"CTR007714 / 2025","category":"Managed Services","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"","start":"2025-11-20","end":"2028-11-29","baselineEnd":"2028-11-29","value":350000,"spent":250000,"budgetLabel":"","progress":0,"scope":"SMS Messaging Gateway Implementation (Nov 2025 – Nov 2028): Delivered a LinQ2 on-premises SMS Gateway solution for EDE, including SMS notifications, OTP services, bulk messaging, campaign management, API integrations with backend applications, RBAC, reporting, high availability, system implementation, testing, documentation, training, and 3-year platinum support. Contract Value: AED 350,000 (excl. VAT).","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"CTR007714  - Supply of Licenses and Installation of the SMS Messaging System.pdf","attachmentType":"application/pdf","attachmentSize":11062802},{"id":"project-1786893917091","name":"Supply & Installation of Meeting Room AV Systems","vendor":"Venture Global Technologies LLC","contract":"CTR007851 / 2025","category":"Software & License","status":"Completed","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Ataa Basharat","departments":"","decisionRequired":"","start":"2025-12-15","end":"2026-12-31","baselineEnd":"2026-12-31","value":245161,"spent":245161,"budgetLabel":"","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"project-1786893492582","name":"Pharmaceutical Registration Systems Hosting on duTech National Hypercloud","vendor":"EMIRATES INTEGRATED TELECOMMUNICATION COMPANY PJSC (DU)","contract":"CTR007955 / 2025","category":"Migration","status":"Delayed","priority":"High","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","decisionRequired":"Operational","start":"2026-05-30","end":"2027-12-30","baselineEnd":"2027-12-30","value":4021212.04,"spent":0,"budgetLabel":"","progress":30,"scope":"Pharmaceutical Registration Systems Cloud Migration & Hosting (Dec 2025 – Dec 2027): Delivered Oracle-based cloud migration and hosting services on duTech National Hypercloud for EDE pharmaceutical registration systems, including Oracle database and SOA/OSB migration, Oracle 19c upgrade, cloud network design, IAM, VPN, firewall, WAF, VM provisioning, security controls (Cloud Guard, Data Safe, VSS), backup, testing, optimization, cutover, and managed cloud hosting.","strategicObjectives":"","strategicAlignment":"","risks":["Critical activities depend on delayed MOHAP security approvals, port openings, storage expansion and network changes."],"mitigation":"","decision":"Schedule meeting with all stakeholders\nGBM to provide proposal for End-to-End  full migration","decisionDate":"2026-08-10","decisionBy":"Sara Almheiri","source":"","kpis":[],"milestones":[],"attachmentName":"CTR007955 - عقد توريد رخص وبرامج واستضافة أنظمة التسجيل الدوائي.pdf","attachmentType":"application/pdf","attachmentSize":1515795},{"id":"project-1786892862727","name":"Software Quality Services","vendor":"Q-Pros","contract":"CTR008096 / 2026","category":"Managed Services","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"Digital Transformation Department","decisionRequired":"","start":"2026-01-20","end":"2027-01-19","baselineEnd":"2027-01-19","value":1357400,"spent":0,"budgetLabel":"","progress":60,"scope":"Delivered managed QA, QC, and software testing services for Emirates Drug Establishment (EDE), including QA framework design, test strategy development, functional and non-functional testing, automation testing, performance testing, security testing (VAPT), UX validation, DevOps quality governance, business validation, and managed testing resources.","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"CTR008096 - Software Quality Services.pdf","attachmentType":"application/pdf","attachmentSize":2605340},{"id":"project-1786892026625","name":"Laptops Lease Agreement","vendor":"Emirates Business Machines LLC (EBM)","contract":"CTR04 / 2024","category":"Managed Services","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Ataa Basharat","departments":"","decisionRequired":"","start":"2024-07-30","end":"2027-07-30","baselineEnd":"2027-07-30","value":1606578.99,"spent":593008,"budgetLabel":"","progress":65,"scope":"Laptop leasing and related accessories on a purchase-order basis, including asset management and tracking of devices and serial numbers, as well as return processing and secure data wiping at the end of the lease term.","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"","kpis":[],"milestones":[],"attachmentName":"CTR04 - EDE Laptops lease agreement.pdf","attachmentType":"application/pdf","attachmentSize":6552138},{"id":"project-1786891095613","name":"Contact Center Services","vendor":"e& Emirates Telecommunications Group","contract":"633H/2002/EDE","category":"Managed Services","status":"At Risk","priority":"High","owner":"Digital Transformation Department; Government Services Department","coordinator":"Fahad Alolama","departments":"","decisionRequired":"Financial","start":"2025-08-01","end":"2026-07-31","baselineEnd":"2026-07-31","value":1777920,"spent":1777920,"budgetLabel":"","progress":100,"scope":"The contract establishes a fully managed, multilingual Contact Center service operated by Etisalat from its Ajman facility, providing EDE with:\nCustomer service operations\nOmnichannel customer communications\n10 dedicated agents + team leader\nContact center technology platform\nWorkforce management\nQuality assurance\nReporting and analytics\nBusiness continuity and operational support\nfor handling EDE customer interactions on a 7-day-per-week basis.","strategicObjectives":"","strategicAlignment":"","risks":["High Calls and  CRM Ticket volumes","Request more resources"],"mitigation":"Request for renewal\nAddendum No.1 :\n6 additional dedicated agents\nRate: 10,580 per month per agent\nperiod: 1st April 2026 till 31st July 2026\nduration: 4 months amount of 253,920.00 AED","decision":"Follow up with Noora Al Reimthi to sign the renewal","decisionDate":"2026-08-18","decisionBy":"Sara","source":"Addendum No.1 :\n6 additional dedicated agents\nRate: 10,580 per month per aagent\nperiod: 1st April 2026 till 31st July 2026\nduration: 4 months amount of 253,920.00 AED","kpis":[],"milestones":[["Contract Renewal","2026-08-01","On Track"]],"attachmentName":"عقد مركز الاتصال معتمد.pdf","attachmentType":"application/pdf","attachmentSize":2338253},{"id":"sheet-1","name":"Laboratory Information Management System (LIMS)","vendor":"VIRTUS TRADING LIMITED","contract":"CTR007601 / 2025","category":"New Digital Service","status":"On Track","priority":"Medium","owner":"Research & Laboratories Regulation Department","coordinator":"Eslam Kassab","departments":"","decisionRequired":"Financial","start":"2025-12-12","end":"2029-04-02","baselineEnd":"2029-04-02","value":985290,"spent":383800,"budgetLabel":"","progress":20,"scope":"The project delivers a fully integrated LabVantage LIMS platform for EDE covering:\n-Sample lifecycle management\n-Test & laboratory operations management\n-Inventory & consumables management\n-Instrument integration (25 instruments)\n-Interfaces with government systems\n-Dashboards & reporting\n-Audit, compliance & e-signatures\n-Training & go-live support\n-3 years of maintenance and support\n-One dedicated full-time expert for the first year after launch","strategicObjectives":"","strategicAlignment":"","risks":["Payment approval is required, not just confirmation from the business team."],"mitigation":"1777920","decision":"","decisionDate":"","decisionBy":"","source":"CTR007601 - IMPLEMETATION OF A LABORATORY INFORMATION MANAGEMENT SYSTEM (LIMS)","kpis":[],"milestones":[],"attachmentName":"CTR007601 - IMPLEMETATION OF A LABORATORY INFORMATION MANAGEMENT SYSTEM (LIMS).pdf","attachmentType":"application/pdf","attachmentSize":27560480},{"id":"sheet-2","name":"Enterprise Service Bus (ESB)","vendor":"IBM","contract":"","category":"Integration","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Eslam Kassab","departments":"","decisionRequired":"Financial","start":"2026-06-29","end":"2027-01-31","baselineEnd":"2027-01-31","value":9000000,"spent":0,"budgetLabel":"","progress":0,"scope":"Architecture & Requirements Analysis\nPerform assessment and define architecture by\nConducting workshops to identify integration needs\nDefine Integration, Deployment, Network and Security Architecture\nProject Materials:\nSolution Architecture Document\nHybrid Integration platform setup:\nInstall identified IBM webMethods components on 3 environments\nDev, UAT & Prod\nProject Materials:\nInstalled and configured webMethods DEV, UAT and PROD environments.\nInstallation Guide covering webMethods platform setup and configuration\nIntegration Service Design & Development:\n50 integration services:\nSimple: 15 Integration Services\nMedium: 20 Integration Services\nComplex: 15 Integration Services\nService Design\nDevelopment & Unit Testing\nProject Materials:\nService Design Document\nDeveloped Integration Services (Source Code)\nUnit Test Results\nTesting, Go-live Supports & Transition:\nSIT support: 5 weeks\nUAT support: 3 weeks\nPerformance testing support: 4 weeks\nGo-live and post go-live support: 4 weeks","strategicObjectives":"","strategicAlignment":"","risks":["Payment approval required for 5%."],"mitigation":"","decision":"5% Approved to send email Noora Al remaithi","decisionDate":"","decisionBy":"","source":"PPT of Kickoff dated 06.08.2026","kpis":[],"milestones":[],"attachmentName":"Emirates_Drug_Establishment_Hybrid_Integration_KickOff_v1.4.pptx","attachmentType":"application/vnd.openxmlformats-officedocument.presentationml.presentation","attachmentSize":317811},{"id":"sheet-3","name":"Inspection System","category":"New Digital Service","owner":"Inspection & Control Department","coordinator":"Eslam Kassab","vendor":"InHouse","contract":"","value":0,"spent":0,"budgetLabel":"-","start":"","end":"","baselineEnd":"","status":"Not Started","progress":0,"priority":"Medium","departments":"","decisionRequired":"Operational","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":["Should requirements gathering and validation proceed now, or be postponed until reengineering is completed to avoid rework?"],"mitigation":"Await completion of reengineering and onboarding of the new vendor to avoid duplicated effort.","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-4","name":"MOCCAE inherited services &  CRM Migration","vendor":"Black Stone","contract":"CTR007588 / 2025","category":"New Digital Service","status":"At Risk","priority":"High","owner":"Digital Transformation Department; Agricultural Medical Products Registration Department","coordinator":"Eslam Kassab","departments":"Import & Export Department; Agricultural Medical Products Registration Department; Registration & Marketing Authorizations for Veterinary Preparations","decisionRequired":"Financial & Operational","start":"2025-08-22","end":"2026-12-31","baselineEnd":"2025-12-31","value":2567000,"spent":1218430,"budgetLabel":"","progress":50,"scope":"Modernization and deployment of 34+ regulatory services, Azure-based platform architecture, integrations with external government services, data migration, testing, training, knowledge transfer, deployment, and post-go-live hypercare support.\nCRM migration from MOHAP to EDE","strategicObjectives":"","strategicAlignment":"","risks":["MOCCAE Professional API is expected in Q1 2027; LIMS and DHABI integrations are blocked; data migration remains in progress; vendor development delays and quality issues affect delivery."],"mitigation":"","decision":"Professional API: manual document upload; \nAssess impact if contract is cancelled. - 10/08/2026\n\nStop any payment - 17/08/2026","decisionDate":"2026-08-17","decisionBy":"Sara Almeheiri","source":"","kpis":[],"milestones":[],"attachmentName":"Financial_Propsal.pdf","attachmentType":"application/pdf","attachmentSize":1330446},{"id":"sheet-5","name":"Clinical Trial Service","vendor":"InHouse","contract":"","category":"New Digital Service","status":"On Track","priority":"Medium","owner":"Research & Laboratories Regulation Department","coordinator":"Maise Dahhan","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"-","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Critical requirements continue to emerge after BRD v1, causing revisions, rework and potential delays."],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-6","name":"EDE Single Sign-On Portal (UAE PASS Integration)","vendor":"InHouse","contract":"","category":"Integration","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Maise Dahhan","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"-","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-7","name":"Product Classification Service Enhancement (12 man-days + 8 man-days Customer Pulse)","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Completed","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":31500,"spent":0,"budgetLabel":"","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-8","name":"Appointment Additional Pharmaceutical Facility (56 man-days)","vendor":"GBM","contract":"","category":"New Digital Service","status":"Completed","priority":"High","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":147000,"spent":0,"budgetLabel":"","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-9","name":"36 Free Changes in Registration System Services (support contract)","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Completed","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"2026-11-15","end":"2026-08-08","baselineEnd":"2026-08-08","value":0,"spent":0,"budgetLabel":"Included","progress":95,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-10","name":"Medical Product Exclusive Marketing Approval – Temporary Solution (11 man-days)","vendor":"GBM","contract":"","category":"New Digital Service","status":"On Hold","priority":"High","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"2026-05-14","end":"2026-06-02","baselineEnd":"2026-06-02","value":28875,"spent":0,"budgetLabel":"","progress":90,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Pending ministerial decree approval; temporary solution is ready for deployment."],"mitigation":"Activate the temporary solution once the required approvals are received.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-11","name":"Medical Product Exclusive Marketing Approval – Full Solution (30 man-days)","vendor":"GBM","contract":"","category":"New Digital Service","status":"Not Started","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":97125,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Growing cross-department backlog requires transparent prioritization and scheduling."],"mitigation":"Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-12","name":"Pricing & Repricing New Procedures (30 man-days)","category":"Enhancement/CR","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","vendor":"GBM","contract":"","value":78750,"spent":0,"budgetLabel":"","start":"2026-06-24","end":"2026-08-27","baselineEnd":"2026-08-27","status":"On Track","progress":80,"priority":"High","departments":"","decisionRequired":"","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":[],"mitigation":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-13","name":"Standalone Service for Request Analysis (24 man-days)","vendor":"GBM","contract":"","category":"New Digital Service","status":"Not Started","priority":"High","owner":"National Reference Laboratories Department","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":63000,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Growing cross-department backlog requires transparent prioritization and scheduling."],"mitigation":"Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-14","name":"Changes in Analysis Service Workflow","category":"Enhancement/CR","owner":"National Reference Laboratories Department","coordinator":"Sherine Elkhatib","vendor":"GBM","contract":"","value":0,"spent":0,"budgetLabel":"-","start":"","end":"","baselineEnd":"","status":"Completed","progress":100,"priority":"High","departments":"","decisionRequired":"","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":[],"mitigation":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-15","name":"Local Factory Enhancement","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Not Started","priority":"Medium","owner":"Licensing Department","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"TBD","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["The 200 man-day contract may be exceeded: 117 days consumed and 54 days approved, with additional demand and a growing backlog."],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-16","name":"Change in Stability & BE Workflow","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Not Started","priority":"Low","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"TBD","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Growing cross-department backlog requires transparent prioritization and scheduling."],"mitigation":"Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-17","name":"Listing Medical Device - Class I & II","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Not Started","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"TBD","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Growing cross-department backlog requires transparent prioritization and scheduling."],"mitigation":"Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-18","name":"Introduce New Manufacturing Stages and Business Rules","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Not Started","priority":"Low","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"TBD","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Postponed until impact on CPP and other services is validated with business owners."],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-19","name":"Replace “Agent” with “Main Pharmaceutical Facility” in All Outputs and Portals","vendor":"GBM","contract":"","category":"Enhancement/CR","status":"Completed","priority":"Medium","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"2026-08-10","end":"2026-08-28","baselineEnd":"2026-08-28","value":0,"spent":0,"budgetLabel":"-","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Growing cross-department backlog requires transparent prioritization and scheduling."],"mitigation":"Align stakeholders on prioritization criteria and agree a capacity-based delivery schedule.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-20","name":"5 Change Requests in Licensing Pharmaceutical Workflow","vendor":"Intertec","contract":"","category":"Enhancement/CR","status":"Completed","priority":"Medium","owner":"Licensing Department","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"-","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-21","name":"NOC for Renewal Licensing Pharmaceutical","category":"Enhancement/CR","owner":"Licensing Department","coordinator":"Sherine Elkhatib","vendor":"Intertec","contract":"","value":114000,"spent":0,"budgetLabel":"","start":"","end":"","baselineEnd":"","status":"Not Started","progress":0,"priority":"Medium","departments":"","decisionRequired":"Financial & Operational","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":["Intertec submitted a CR that differs from the agreed solution; corrected submission and approval are required."],"mitigation":"Request a corrected CR, obtain Service Owner approval, then obtain DT Director approval.","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-22","name":"3PL - Medical Warehouse (External Storage & Storage on Behalf of Others)","category":"New Digital Service","owner":"Licensing Department","coordinator":"Sherine Elkhatib","vendor":"Intertec","contract":"","value":0,"spent":0,"budgetLabel":"TBD","start":"","end":"","baselineEnd":"","status":"Not Started","progress":0,"priority":"High","departments":"","decisionRequired":"Financial & Operational","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":["Waiting for Intertec to provide the change request."],"mitigation":"Review the CR and obtain DT Director and Service Owner approval once received.","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-23","name":"New Types of Pharmaceutical Facilities","vendor":"Intertec","contract":"","category":"New Digital Service","status":"On Hold","priority":"Medium","owner":"Licensing Department","coordinator":"Sherine Elkhatib","departments":"","decisionRequired":"Financial & Operational","start":"","end":"","baselineEnd":"","value":1000000,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Requirements and SOW are confirmed, but the vendor estimate and delivery timeline are significantly higher."],"mitigation":"Decide whether to implement in-house or defer until reengineering is completed.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-24","name":"Anticipated Drug Shortage","vendor":"InHouse","contract":"","category":"New Digital Service","status":"On Track","priority":"High","owner":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","coordinator":"Azam Farooq & Sherine Elkhatib & Maise Dahhan","departments":"","decisionRequired":"","start":"2026-08-01","end":"2026-08-24","baselineEnd":"2026-08-24","value":0,"spent":0,"budgetLabel":"-","progress":50,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-25","name":"Printing Services MYQ","vendor":"GCG","contract":"","category":"Managed Services","status":"Completed","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-26","name":"Meeting Rooms Booking System","vendor":"venturaglobal","contract":"","category":"Infrastructure","status":"Completed","priority":"High","owner":"Digital Transformation Department","coordinator":"Ataa Basharat","departments":"","decisionRequired":"","start":"2026-12-15","end":"2027-03-31","baselineEnd":"2027-03-31","value":245161,"spent":245161,"budgetLabel":"","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-27","name":"Attendance and Leave System","vendor":"GET Group","contract":"CTR007354 / 2025","category":"Managed Services","status":"Completed","priority":"High","owner":"Digital Transformation Department","coordinator":"Ataa Basharat","departments":"","decisionRequired":"","start":"2025-09-03","end":"2026-07-01","baselineEnd":"2026-07-01","value":191660,"spent":191660,"budgetLabel":"","progress":99,"scope":"Time Attendance & Printing Systems Implementation (2025): Delivered a biometric workforce management and identity card printing solution for Emirates Drug Establishment, including Suprema biometric devices, web and mobile attendance applications, UAE PASS and Bayanati integrations, AI-driven attendance analytics, geo-fencing, card printing infrastructure, training, commissioning, source code handover, and 1-year support services.","strategicObjectives":"","strategicAlignment":"","risks":["Waiting for Business validation"],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-28","name":"ITSM, VPN & EPM System Licenses","vendor":"Fourth Dimension Systems","contract":"CTR007590 / 2025","category":"Infrastructure","status":"On Track","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"","start":"2025-11-01","end":"2026-12-31","baselineEnd":"2028-12-14","value":1108577,"spent":959047,"budgetLabel":"","progress":70,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-30","name":"Backup System & Email Archive Solution","vendor":"Emirates Business Machines","contract":"CTR007709 / 2025","category":"Infrastructure","status":"Delayed","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"Financial & Operational","start":"2025-11-20","end":"2028-12-30","baselineEnd":"2028-12-30","value":850000,"spent":601250,"budgetLabel":"","progress":60,"scope":"Backup & Email Archive Solution (Nov 2025 – Dec 2028): Delivered a Commvault-based enterprise backup, disaster recovery, and email archiving platform for EDE, including protection of 150 VMs, Exchange, SQL, Active Directory, and file servers; deployment of 3 Lenovo HyperScaleX backup nodes with 372TB capacity; ransomware protection, MFA, SIEM integration, reporting, DR replication, documentation, knowledge transfer, and 3-year premium support. Contract value: AED 850,000 (excl. VAT).","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"CTR007709 - عقد نظام النسخ الاحتياطي والارشيف الالكتروني.pdf","attachmentType":"application/pdf","attachmentSize":18534881},{"id":"sheet-31","name":"Enterprise-wide Universal Privilege Management Solution (PAM)","vendor":"HELP INFORMATION TECHNOLOGY CONSULTANCY - SOLE PROPRIETORSHIP LLC","contract":"CTR008412 / 2026","category":"Cybersecurity","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"Financial & Operational","start":"2026-05-01","end":"2027-04-30","baselineEnd":"2027-04-30","value":1190229.61,"spent":519430,"budgetLabel":"","progress":30,"scope":"CyberArk PAM Implementation: Deployment and configuration of CyberArk PAM for 15 internal and 35 external privileged users, including onboarding of Windows, Linux, Database, Network, Security, VMware, Storage, and Web Application platforms; credential vaulting and rotation; privileged session monitoring and recording; MFA and vendor access controls; integrations with AD, Azure AD, SIEM, ticketing, and vulnerability management systems; UAT, documentation, knowledge transfer, and training for 3 administrators.","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"EDE_COMMERCIAL_PROPOSAL_Privilege_Management_Solution_v1.2.pdf","attachmentType":"application/pdf","attachmentSize":1445765},{"id":"sheet-32","name":"Secure DNS, DHCP and IPAM Solution","vendor":"EMIRCOM","contract":"","category":"Infrastructure","status":"Delayed","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed AbdelMaksoud","departments":"","decisionRequired":"Financial & Operational","start":"2026-06-01","end":"2026-12-31","baselineEnd":"2026-12-31","value":1211729,"spent":0,"budgetLabel":"","progress":10,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-33","name":"QC Laboratory Network & Servers Revamp","vendor":"EMIRCOM L.L.C.","contract":"CTR008408 / 2026","category":"Infrastructure","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"Financial & Operational","start":"2026-04-20","end":"2026-12-31","baselineEnd":"2029-04-30","value":3110864.02,"spent":0,"budgetLabel":"","progress":10,"scope":"QC Laboratory Network & Servers Revamp: Led the deployment of a modernized laboratory infrastructure for EDE, including Cisco core/access/wireless networking, Palo Alto next-generation firewalls, Dell VxRail virtualization cluster, PowerStore storage, SAN switching, CAT6A structured cabling (240 points), APC UPS systems, HLD/LLD design, installation, configuration, testing, commissioning, documentation, knowledge transfer, and 3-year managed support services.","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-34","name":"DXB - Data Center Servers","vendor":"EMIRCOM","contract":"","category":"Infrastructure","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"Financial & Operational","start":"2026-05-01","end":"2026-12-31","baselineEnd":"2026-12-31","value":7320273,"spent":0,"budgetLabel":"","progress":5,"scope":"Servers will be reached by end of August","strategicObjectives":"","strategicAlignment":"","risks":["Change request required for data center expansion."],"mitigation":"","decision":"Meet with Nariman and Noora to review the CR.","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-35","name":"Support Services & AuraQuantic Licenses Renewal","vendor":"Intertec","contract":"23 / 2023 (Renewal)","category":"Support & Maintenance","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"","decisionRequired":"Financial","start":"2025-07-01","end":"2026-09-30","baselineEnd":"2027-09-30","value":2902500,"spent":2902500,"budgetLabel":"","progress":95,"scope":"elivered managed application support and maintenance services for EDE’s digital transformation platform, including L1/L2/L3 support, incident management, troubleshooting, bug fixes, SLA management, quarterly health checks, minor enhancements, support for pharmaceutical regulatory e-services, and renewal of 200 AuraQuantic BPM licenses.","strategicObjectives":"","strategicAlignment":"","risks":["Renewal is due","Proposal limits minor changes to 10 man-days monthly and 5 carry-forward days; vendor dependency may cause knowledge loss."],"mitigation":"Allow unused effort to accumulate for up to six months, capped at 60 man-days.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-36","name":"Migration of Licensing System","vendor":"Intertec","contract":"","category":"Migration","status":"At Risk","priority":"High","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"Licensing Department","decisionRequired":"Operational","start":"","end":"","baselineEnd":"","value":600000,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["MOHAP approval delays affect timelines and milestones.","Signing Contract"],"mitigation":"Establish stronger executive follow-up with MOHAP.","decision":"Arrange a meeting with all stakeholders.\n\nFollow up with Nariman 17/08/2026","decisionDate":"2026-08-17","decisionBy":"Sara","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-37","name":"Migration of Registration System","vendor":"GBM","contract":"","category":"Migration","status":"At Risk","priority":"High","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"Registration & Marketing Authorizations for Pharmaceutical Products & Medical Devices","decisionRequired":"Operational","start":"","end":"","baselineEnd":"","value":657725,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Critical activities depend on delayed MOHAP security approvals, port openings, storage expansion and network changes."],"mitigation":"Escalate with MOHAP, assign owners and deadlines, and hold regular blocker reviews.","decision":"Change the scope of work through a CR and arrange a stakeholder meeting.\n\nWaiting for GBM to provide Proposal","decisionDate":"2026-08-17","decisionBy":"Sara","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"GBM EDE Drug Registration Platform Migration - Commercial Proposal v2.pdf","attachmentType":"application/pdf","attachmentSize":555609},{"id":"sheet-38","name":"EDE Website & Portal Revamp","vendor":"AspideX","contract":"","category":"Enhancement/CR","status":"Delayed","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"","decisionRequired":"Operational","start":"2025-12-01","end":"2026-11-30","baselineEnd":"2026-11-30","value":1841900,"spent":0,"budgetLabel":"","progress":0,"scope":"EDE Website UX/UI Design & Content Development (Dec 2025 – Nov 2026): Delivered end-to-end UX/UI design and content development for the Emirates Drug Establishment website, including user research, information architecture, wireframing, responsive web design, bilingual content creation, SEO optimization, Liferay CMS integration readiness, accessibility compliance, design system development, usability testing, training, documentation, and onsite content management services.","strategicObjectives":"","strategicAlignment":"","risks":["Contract milestone comments require review."],"mitigation":"Noora and Nariman will review and respond.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"Commercial_Proposal_EDE_Website___Portal_V1.3_26012025.pdf","attachmentType":"application/pdf","attachmentSize":1015538},{"id":"sheet-39","name":"CRM, Knowledge Management & Agentic AI Platform","vendor":"TBD","contract":"","category":"Enhancement/CR","status":"Not Started","priority":"High","owner":"Government Services Department","coordinator":"Ahmed AbdelHafez","departments":"","decisionRequired":"Financial & Operational","start":"","end":"","baselineEnd":"","value":2850000,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Delays affect the 90-day Agentic AI implementation and call-center AI capabilities."],"mitigation":"Apply for tender.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-40","name":"CRM Dashboard (Power BI)","vendor":"InHouse","contract":"","category":"Data & Analytics","status":"Completed","priority":"Medium","owner":"Government Services Department","coordinator":"Ahmed AbdelHafez","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"-","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-41","name":"Customer Survey - Call Center","category":"New Digital Service","owner":"Government Services Department","coordinator":"Ahmed AbdelHafez","vendor":"InHouse","contract":"","value":0,"spent":0,"budgetLabel":"-","start":"","end":"","baselineEnd":"","status":"On Track","progress":0,"priority":"Low","departments":"","decisionRequired":"","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":[],"mitigation":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-42","name":"Agentic AI Tools & Use Cases","vendor":"InHouse","contract":"","category":"Agentic AI","status":"At Risk","priority":"High","owner":"Digital Transformation Department","coordinator":"Azam Farooq","departments":"","decisionRequired":"Financial & Operational","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"TBD","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["TDRA confirmation is pending for approved LLM, OCR/Document AI and sovereign hosting services, risking the mandated 90-day target."],"mitigation":"","decision":"Send reminder to PMO/Noora and Nariman to obtain quotation.","decisionDate":"","decisionBy":"","source":"Send reminder to PMO/Noora and Nariman to obtain quotation.","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-43","name":"Customer Pulse Integration","vendor":"InHouse, Intertec, GBM","contract":"","category":"Integration","status":"Completed","priority":"High","owner":"Digital Transformation Department","coordinator":"Azam Farooq","departments":"","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"-","progress":100,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-44","name":"Digital Services Platform Licenses (OutSystems)","vendor":"Black Stone","contract":"CTR007970 / 2025","category":"Digital Platform-Low Code","status":"On Track","priority":"High","owner":"Digital Transformation Department","coordinator":"Fahad Alolama","departments":"","decisionRequired":"Financial","start":"2025-12-17","end":"2030-12-16","baselineEnd":"2030-12-16","value":4999995,"spent":2000000,"budgetLabel":"","progress":0,"scope":"Digital Service Platform (Dec 2025 – Dec 2030): Deployment and licensing of an enterprise OutSystems low-code platform for Emirates Drug Establishment (EDE), enabling development and management of digital services through a scalable cloud/on-premises platform supporting up to 4,000 Application Objects, 200 internal users, and 60,000 external users, including technical support, platform enablement, and digital transformation services.","strategicObjectives":"","strategicAlignment":"","risks":["OutSystems licenses have been paid since 2025 while reengineering began in July 2026, creating low-ROI risk."],"mitigation":"Explore suspending, deferring or optimizing licenses until implementation is active.","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"BAFO_-_Blackstone_eIT-Digital_Service_Platform-Commercial_Proposal_V2.pdf","attachmentType":"application/pdf","attachmentSize":2388620},{"id":"sheet-45","name":"Import/Export System Migration","vendor":"InHouse","contract":"","category":"Migration","status":"Delayed","priority":"High","owner":"Digital Transformation Department","coordinator":"Azam Farooq","departments":"Import & Export Department","decisionRequired":"","start":"","end":"","baselineEnd":"","value":0,"spent":0,"budgetLabel":"-","progress":70,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":["Dependence on Migration of Licensing  and Registration system."],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-46","name":"Micro Segmentation","vendor":"TBD","contract":"","category":"Infrastructure","status":"Not Started","priority":"Medium","owner":"Digital Transformation Department","coordinator":"Mohamed Bebars","departments":"","decisionRequired":"Financial & Operational","start":"2027-01-01","end":"","baselineEnd":"","value":3000000,"spent":0,"budgetLabel":"","progress":0,"scope":"","strategicObjectives":"","strategicAlignment":"","risks":[],"mitigation":"","decision":"","decisionDate":"","decisionBy":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-47","name":"National Stock Surveillance – Medicines & Raw Materials","category":"New Digital Service","owner":"Inspection & Control Department","coordinator":"Azam Farooq","vendor":"InHouse","contract":"","value":0,"spent":0,"budgetLabel":"-","start":"","end":"","baselineEnd":"","status":"On Track","progress":0,"priority":"Medium","departments":"","decisionRequired":"","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":[],"mitigation":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-49","name":"Data Management Platform","category":"Data & Analytics","owner":"Digital Transformation Department","coordinator":"DT","vendor":"TBD","contract":"","value":15000000,"spent":0,"budgetLabel":"","start":"","end":"","baselineEnd":"","status":"Not Started","progress":0,"priority":"High","departments":"","decisionRequired":"Financial & Operational","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":[],"mitigation":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0},{"id":"sheet-50","name":"Import Export Enhancements","category":"Enhancement/CR","owner":"Import & Export Department","coordinator":"Azam Farooq","vendor":"InHouse","contract":"","value":0,"spent":0,"budgetLabel":"-","start":"","end":"","baselineEnd":"","status":"On Track","progress":95,"priority":"Medium","departments":"","decisionRequired":"","decision":"","decisionDate":"","decisionBy":"","scope":"","risks":[],"mitigation":"","source":"Imported from DT Projects sheet","kpis":[],"milestones":[],"strategicObjectives":"","strategicAlignment":"","attachmentName":"","attachmentType":"","attachmentSize":0}];
+
+    let projects=load(),selectedId=null,editingId=null,workspaceMode='portfolio',timelineOffset=0,timelineMonthCount=9,cardFilter='',sortCol='',sortDir=1,chartFilter={status:'',category:''};
+    const expandedRows=new Set();
+
+    function normalize(p){
+      return{
+        ...p,
+        departments:p.departments||'',
+        coordinator:p.coordinator||'',
+        mitigation:p.mitigation||'',
+        decision:p.decision||'',
+        decisionDate:p.decisionDate||'',
+        decisionBy:p.decisionBy||'',
+        baselineEnd:p.baselineEnd||p.end||'',
+        spent:Number(p.spent)||0,
+        strategicObjectives:p.strategicObjectives||'',
+        strategicAlignment:p.strategicAlignment||'',
+        category:p.category||'General',
+        priority:p.priority||(p.status==='At Risk'?'High':p.status==='Completed'?'Low':'Medium'),
+        decisionRequired:p.decisionRequired||'',
+        budgetLabel:p.budgetLabel||'',
+        attachmentName:p.attachmentName||'',
+        attachmentType:p.attachmentType||'',
+        attachmentSize:p.attachmentSize||0,
+        milestones:Array.isArray(p.milestones)?p.milestones.map(m=>{
+          if(Array.isArray(m)){
+            const st=typeof m[2]==='boolean'?(m[2]?'Completed':'On Track'):(m[2]||'On Track');
+            return [m[0]||'',m[1]||'',st];
+          }
+          return [m.name||'',m.date||'',m.status||'On Track'];
+        }):[]
+      };
+    }
+
+    function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return(Array.isArray(x)&&x.length?x:structuredClone(seed)).map(normalize)}catch(e){return structuredClone(seed).map(normalize)}}
+    function persist(){localStorage.setItem(KEY,JSON.stringify(projects))}
+    
+    function attachmentDb(){
+      return new Promise((resolve,reject)=>{const r=indexedDB.open('ede-contract-files',1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})
+    }
+    async function putAttachment(id,file){const db=await attachmentDb();return new Promise((resolve,reject)=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').put(file,id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>reject(tx.error)})}
+    async function getAttachment(id){const db=await attachmentDb();return new Promise((resolve,reject)=>{const r=db.transaction('files').objectStore('files').get(id);r.onsuccess=()=>{db.close();resolve(r.result)};r.onerror=()=>reject(r.error)})}
+    async function removeAttachment(id){const db=await attachmentDb();return new Promise((resolve,reject)=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').delete(id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>reject(tx.error)})}
+    
+    function money(n){return new Intl.NumberFormat('en-AE',{style:'currency',currency:'AED',maximumFractionDigits:0}).format(Number(n)||0).replace('AED','AED ')}
+    function formatMillions(n){const val=(Number(n)||0)/1e6;return 'AED '+val.toFixed(1)+'M'}
+    function shortMoney(n){n=Number(n)||0;return n>=1e6?'AED '+(n/1e6).toFixed(1)+'M':'AED '+Math.round(n/1e3)+'k'}
+    function budgetText(p){return p.budgetLabel||money(p.value)}
+    function dateText(d){if(!d)return '—';return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
+    function statusClass(s){return (s||'').toLowerCase().replaceAll(' ','-')}
+    function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+    function kpiMet(k){const [n,a,t,u]=k;return String(u).includes('max')?Number(a)<=Number(t):Number(a)>=Number(t)}
+    
+    function decisionReqClass(d){
+      if(!d)return '';
+      const s=d.toLowerCase();
+      if(s.includes('financial')&&s.includes('operational'))return 'financial-operational';
+      if(s.includes('financial'))return 'financial';
+      if(s.includes('operational'))return 'operational';
+      if(s.includes('technical'))return 'technical';
+      return 'default';
+    }
+
+    function lookupParts(kind){return kind==='owner'?{root:ownerLookup,menu:ownerLookupMenu,label:ownerLookupLabel,input:fOwner,empty:'Select business owner(s)'}:{root:departmentsLookup,menu:departmentsLookupMenu,label:departmentsLookupLabel,input:fDepartments,empty:'Select impacted department(s)'}}
+    function selectedValues(value){return String(value||'').split(/\s*;\s*/).map(x=>x.trim()).filter(Boolean)}
+    function setupLookup(kind,value){
+      const x=lookupParts(kind),selected=selectedValues(value),options=[...DEPARTMENTS,...selected.filter(v=>!DEPARTMENTS.includes(v))];
+      x.menu.innerHTML=`<input class="lookup-search" placeholder="Search departments…" oninput="filterLookup('${kind}',this.value)">`+options.map(v=>`<label class="lookup-option"><input type="checkbox" value="${esc(v)}" ${selected.includes(v)?'checked':''} onchange="updateLookup('${kind}')"><span>${esc(v)}</span></label>`).join('');updateLookup(kind)
+    }
+    function toggleLookup(kind){const x=lookupParts(kind),opening=!x.root.classList.contains('open');document.querySelectorAll('.lookup').forEach(n=>n.classList.remove('open'));x.root.classList.toggle('open',opening);if(opening)setTimeout(()=>x.menu.querySelector('.lookup-search').focus(),0)}
+    function updateLookup(kind){const x=lookupParts(kind),selected=[...x.menu.querySelectorAll('input[type=checkbox]:checked')].map(n=>n.value);x.input.value=selected.join('; ');x.label.textContent=selected.length?selected.join(', '):x.empty;x.label.title=selected.join(', ')}
+    function filterLookup(kind,term){const q=term.toLowerCase();lookupParts(kind).menu.querySelectorAll('.lookup-option').forEach(n=>n.classList.toggle('hidden',!n.textContent.toLowerCase().includes(q)))}
+    function updateReportingDate(){reportingDate.textContent='Reporting date · '+new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
+    function syncTopScroll(){topTableScrollInner.style.width=projectTable.scrollWidth+'px';topTableScroll.scrollLeft=tableScroll.scrollLeft}
+    
+    function getExpiryBadge(endStr,status){
+      if(status==='Completed')return `<span class="tag-delivered" title="Project completed">Delivered</span>`;
+      if(status==='Cancelled')return '';
+      if(!endStr)return '';
+      const today=new Date();today.setHours(0,0,0,0);
+      const end=new Date(endStr+'T00:00:00');
+      if(isNaN(end))return '';
+      const diff=Math.ceil((end-today)/(1000*60*60*24));
+      if(diff<0)return `<span class="tag-overdue" title="Past due date by ${Math.abs(diff)} days — still open">Overdue</span>`;
+      if(diff<=30)return `<span class="tag-expiry-danger" title="Due in ${diff} days">≤${diff}d</span>`;
+      if(diff<=90)return `<span class="tag-expiry-warn" title="Due in ${diff} days">≤${diff}d</span>`;
+      return '';
+    }
+
+    const workspaceConfig={
+      portfolio:{eyebrow:'Portfolio command center',title:'Portfolio Dashboard',description:'Executive view of all projects, budgets, ownership and delivery health.',register:'Portfolio project register'},
+      register:{eyebrow:'Master data workspace',title:'Project Register',description:'Comprehensive register of digital transformation projects, contracts, spend and milestones.',register:'Complete project register'},
+      delivery:{eyebrow:'Delivery control',title:'Delivery Tracking',description:'Timeline of every project with baseline slippage and milestone health markers.',register:'Projects in delivery'},
+      risks:{eyebrow:'Governance & escalation',title:'Risks & Decisions',description:'At Risk, Delayed, or awaiting-management-decision projects only.',register:'Risk and decision register'}
+    };
+
+    function workspaceProjects(mode=workspaceMode){
+      if(mode==='risks')return projects.filter(p=>['At Risk','Delayed'].includes(p.status)||(p.decisionRequired&&!p.decision));
+      return projects;
+    }
+
+    function sortTable(col){
+      if(sortCol===col)sortDir=-sortDir;
+      else{sortCol=col;sortDir=1}
+      document.querySelectorAll('th.sortable').forEach(th=>{
+        th.classList.remove('sort-asc','sort-desc');
+        if(th.getAttribute('onclick')?.includes(`'${col}'`))th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+      });
+      render();
+    }
+
+    function resetAllFilters(){
+      const sInput=document.getElementById('search');if(sInput)sInput.value='';
+      const stF=document.getElementById('statusFilter');if(stF)stF.value='';
+      const catF=document.getElementById('categoryFilter');if(catF)catF.value='';
+      const coF=document.getElementById('coordinatorFilter');if(coF)coF.value='';
+      const prF=document.getElementById('priorityFilter');if(prF)prF.value='';
+      const decF=document.getElementById('decisionFilter');if(decF)decF.value='';
+      cardFilter='';
+      chartFilter={status:'',category:''};
+      render();
+      toast('All filters cleared');
+    }
+
+    function updateWorkspaceUi(shown){
+      const c=workspaceConfig[workspaceMode]||workspaceConfig.register;
+      const cardFilterTitles={contracts:'Contracts & Expiries — linked projects',open:'Open Projects — active initiatives',risks:'Risks — At Risk & Delayed',decision:'Decision required — awaiting management decision'};
+      const filterTitle=cardFilterTitles[cardFilter]||'';
+      workspaceEyebrow.textContent=c.eyebrow;workspaceTitle.textContent=c.title;workspaceDescription.textContent=c.description;
+      registerTitle.textContent=filterTitle||c.register;
+      
+      analyticsView.classList.toggle('hidden',workspaceMode!=='portfolio');
+      timelineView.classList.toggle('hidden',workspaceMode!=='delivery');
+      registerView.classList.toggle('hidden',workspaceMode!=='register');
+      summaryCards.classList.toggle('hidden',workspaceMode==='delivery');
+      reportingDate.classList.toggle('hidden',workspaceMode!=='portfolio');
+      
+      const cardFilterIds={contracts:'contractsCard',open:'openCard',risks:'riskCard',decision:'decisionCard'};
+      Object.entries(cardFilterIds).forEach(([key,id])=>{const el=document.getElementById(id);if(el)el.classList.toggle('active-filter',cardFilter===key)});
+      const cardFilterChips={contracts:'Contracts: Has reference / end date ×',open:'Open Projects: Not completed ×',risks:'Risks: At Risk / Delayed ×',decision:'Decision required: Awaiting decision ×'};
+      cardFilterChip.classList.toggle('hidden',!cardFilter);
+      cardFilterChip.textContent=cardFilterChips[cardFilter]||'';
+    }
+
+    function getFilteredProjects(){
+      const q=(document.getElementById('search')?.value||'').toLowerCase();
+      const status=document.getElementById('statusFilter')?.value||'';
+      const category=document.getElementById('categoryFilter')?.value||'';
+      const coordinator=document.getElementById('coordinatorFilter')?.value||'';
+      const priority=document.getElementById('priorityFilter')?.value||'';
+      const decision=document.getElementById('decisionFilter')?.value||'';
+
+      return workspaceProjects().filter(p=>{
+        const decisionMatch=!decision||(decision==='pending'&&p.decisionRequired&&!p.decision)||(decision==='decided'&&p.decision)||(decision==='not-required'&&!p.decisionRequired);
+        const cardMatch=!cardFilter||(cardFilter==='contracts'&&Boolean(p.contract||p.end))||(cardFilter==='open'&&p.status!=='Completed')||(cardFilter==='risks'&&['At Risk','Delayed'].includes(p.status))||(cardFilter==='decision'&&p.decisionRequired&&!p.decision);
+        const chartStatusMatch=!chartFilter.status||p.status===chartFilter.status;
+        const chartCategoryMatch=!chartFilter.category||p.category===chartFilter.category;
+        const searchMatch=!q||[p.name,p.vendor,p.contract,p.owner,p.coordinator,p.departments].join(' ').toLowerCase().includes(q);
+        const statusMatch=!status||p.status===status;
+        const catMatch=!category||p.category===category;
+        const coordMatch=!coordinator||p.coordinator===coordinator;
+        const prioMatch=!priority||p.priority===priority;
+
+        return searchMatch&&statusMatch&&catMatch&&coordMatch&&prioMatch&&decisionMatch&&cardMatch&&chartStatusMatch&&chartCategoryMatch;
+      });
+    }
+
+    function render(){
+      let filtered=getFilteredProjects();
+
+      if(sortCol){
+        filtered.sort((a,b)=>{
+          let vA=a[sortCol]??'',vB=b[sortCol]??'';
+          if(typeof vA==='number'&&typeof vB==='number')return (vA-vB)*sortDir;
+          return String(vA).localeCompare(String(vB),undefined,{numeric:true})*sortDir;
+        });
+      }
+
+      document.getElementById('projectRows').innerHTML=filtered.map((p,i)=>{
+        const isExpanded=expandedRows.has(p.id);
+        const decisionState=p.decision?`<span class="decision-state decided">✓ Decided</span><br>${esc(p.decision)}${p.decisionBy?`<br><small style="color:var(--muted)">By: ${esc(p.decisionBy)} ${p.decisionDate?`(${p.decisionDate})`:''}</small>`:''}`:`<span class="decision-state">${p.decisionRequired?'Awaiting decision':'No decision pending'}</span>`;
+        const expiryBadge=getExpiryBadge(p.end,p.status);
+        const spentPct=p.value>0?Math.min(100,Math.round((p.spent/p.value)*100)):0;
+        const dClass=decisionReqClass(p.decisionRequired);
+
+        const row=`<tr class="project-row" onclick="toggleRow('${p.id}')">
+          <td class="row-num">${i+1}</td>
+          <td><div class="project-cell"><span>${isExpanded?'▼':'▶'}</span><div class="project-icon" style="background:${COLORS[projects.indexOf(p)%COLORS.length]}">${esc(p.name).charAt(0)}</div><div><b>${esc(p.name)}</b><small>${esc(p.contract||'No contract number')}</small></div></div></td>
+          <td>${esc(p.category)}</td>
+          <td><b>${esc(p.owner||'—')}</b><br><small>${esc(p.departments||'No additional departments')}</small></td>
+          <td>${esc(p.coordinator||'—')}</td>
+          <td><b>${esc(p.vendor)}</b></td>
+          <td class="money">${esc(budgetText(p))}</td>
+          <td><div class="money">${money(p.spent)}</div><div class="spend-meter"><div class="bar" style="width:40px"><i style="width:${spentPct}%;background:${spentPct>100?'var(--red)':'var(--blue)'}"></i></div><span>${spentPct}%</span></div></td>
+          <td style="white-space:nowrap">${dateText(p.start)}</td>
+          <td style="white-space:nowrap">${dateText(p.end)} ${expiryBadge}</td>
+          <td><span class="status ${statusClass(p.status)}">${esc(p.status)}</span></td>
+          <td><div style="display:flex;gap:4px;align-items:center"><div class="bar"><i style="width:${Math.min(100,p.progress||0)}%"></i></div><small>${p.progress||0}%</small></div></td>
+          <td><span class="priority ${p.priority.toLowerCase()}">${esc(p.priority)}</span></td>
+          <td style="max-width:180px">${p.decisionRequired?`<span class="decision-required ${dClass}">${esc(p.decisionRequired)}</span><br>`:''}${decisionState}</td>
+          <td><div class="row-actions"><button class="iconbtn" title="View details" onclick="event.stopPropagation();openPanel('${p.id}')">↗</button><button class="iconbtn" title="Edit" onclick="event.stopPropagation();openProjectModal('${p.id}')">✎</button></div></td>
+        </tr>`;
+        
+        const detail=isExpanded?`<tr class="expand-row"><td colspan="15"><div class="expand-grid">
+          <div class="expand-block risk-block"><b>⚠ Challenges / risks</b><p>${esc((p.risks||[]).join('\n')||'None recorded')}</p></div>
+          <div class="expand-block mitigation-block"><b>✓ Mitigation / solution</b><p>${esc(p.mitigation||'None recorded')}</p></div>
+        </div></td></tr>`:'';
+        return row+detail;
+      }).join('');
+
+      document.getElementById('empty').classList.toggle('hidden',filtered.length>0);
+      document.getElementById('shownCount').textContent=`${filtered.length} of ${workspaceProjects().length} in this view`;
+      updateWorkspaceUi(filtered.length);
+      updateStats();
+      if(workspaceMode==='portfolio')renderAnalytics();
+      if(workspaceMode==='delivery')renderTimeline(filtered);
+      if(workspaceMode==='register')requestAnimationFrame(syncTopScroll);
+    }
+
+    function toggleRow(id){expandedRows.has(id)?expandedRows.delete(id):expandedRows.add(id);render()}
+    
+    function chartSubset(exclude){return projects.filter(p=>(exclude==='status'||!chartFilter.status||p.status===chartFilter.status)&&(exclude==='category'||!chartFilter.category||p.category===chartFilter.category))}
+    function tipText(head,arr){const names=arr.map(p=>p.name);const lines=names.slice(0,10).map(n=>'• '+n);if(names.length>10)lines.push('+'+(names.length-10)+' more');return head+'\n'+(lines.length?lines.join('\n'):'(none)')}
+    function tipAttr(s){return esc(s).replace(/\n/g,'&#10;')}
+    function toggleChartDim(dim,val){chartFilter[dim]=chartFilter[dim]===val?'':val;render()}
+    function clearChartDim(dim){chartFilter[dim]='';render()}
+    function clearChartFilter(){chartFilter={status:'',category:''};render()}
+    
+    function onChartClick(e){
+      const el=e.target.closest('[data-filter]');if(!el)return;
+      const parts=el.getAttribute('data-filter').split('|');
+      if(parts[0]==='status')toggleChartDim('status',parts[1]);
+      else if(parts[0]==='category')toggleChartDim('category',parts[1]);
+      else if(parts[0]==='both'){
+        const s=parts[1],c=parts[2];
+        if(chartFilter.status===s&&chartFilter.category===c){chartFilter.status='';chartFilter.category=''}
+        else{chartFilter.status=s;chartFilter.category=c}
+        render();
+      }
+    }
+    
+    function onChartMove(e){
+      const el=e.target.closest('[data-tip]');if(!el){onChartLeave();return}
+      chartTipEl.textContent=el.getAttribute('data-tip');chartTipEl.style.display='block';chartTipEl.classList.add('show');
+      const pad=12,r=chartTipEl.getBoundingClientRect();let x=e.clientX+pad,y=e.clientY+pad;
+      if(x+r.width>innerWidth-6)x=e.clientX-r.width-pad;
+      if(y+r.height>innerHeight-6)y=e.clientY-r.height-pad;
+      chartTipEl.style.left=Math.max(6,x)+'px';chartTipEl.style.top=Math.max(6,y)+'px';
+    }
+    function onChartLeave(){chartTipEl.classList.remove('show');chartTipEl.style.display='none'}
+    
+    const chartTipEl=document.createElement('div');chartTipEl.className='chart-tip';document.body.appendChild(chartTipEl);
+    
+    (function(){
+      analyticsView.addEventListener('click',onChartClick);
+      analyticsView.addEventListener('mousemove',onChartMove);
+      analyticsView.addEventListener('mouseleave',onChartLeave);
+    })();
+
+    function renderAnalytics(){
+      const statuses=['On Track','At Risk','Delayed','On Hold','Not Started','Completed'];
+      const statusColors=['#2d7d7b','#c98218','#bd2845','#7b6b97','#83929b','#2d5b88'];
+      const allCategories=[...new Set(projects.map(p=>p.category))];
+      if(chartFilter.status&&!statuses.includes(chartFilter.status))chartFilter.status='';
+      if(chartFilter.category&&!allCategories.includes(chartFilter.category))chartFilter.category='';
+      
+      const active=chartFilter.status||chartFilter.category,barContainer=document.getElementById('chartFilterContainer');
+      if(active){
+        barContainer.classList.remove('hidden');
+        const chips=[];
+        if(chartFilter.status)chips.push(`<button class="cf-chip" onclick="clearChartDim('status')">Status: <b>${esc(chartFilter.status)}</b> ✕</button>`);
+        if(chartFilter.category)chips.push(`<button class="cf-chip" onclick="clearChartDim('category')">Category: <b>${esc(chartFilter.category)}</b> ✕</button>`);
+        barContainer.innerHTML=`<div class="chart-filter-bar"><span class="cfb-label">Cross-filter Active</span>${chips.join('')}<span class="cfb-count">${getFilteredProjects().length} of ${projects.length} projects</span><button class="cf-clear" onclick="clearChartFilter()">Clear all ✕</button></div>`;
+      } else {
+        barContainer.classList.add('hidden');
+      }
+
+      // 1) Status distribution Donut/Pie Chart
+      const statusBase=chartSubset('status');
+      const counts=statuses.map(s=>statusBase.filter(p=>p.status===s).length);
+      const totalS=statusBase.length;
+
+      let cursor=0;
+      const segments=statuses.map((s,i)=>{
+        const pct=totalS?(counts[i]/totalS)*100:0;
+        const start=cursor;
+        const end=cursor+pct;
+        cursor=end;
+        return `${statusColors[i]} ${start}% ${end}%`;
+      });
+
+      const pieEl=document.getElementById('statusPie');
+      const pieCenterEl=document.getElementById('statusPieCenter');
+      const pieLegendEl=document.getElementById('statusPieLegend');
+
+      if(pieEl){
+        pieEl.style.background=totalS?`conic-gradient(${segments.join(',')})`:'#edf0ef';
+      }
+      if(pieCenterEl){
+        pieCenterEl.innerHTML=`<strong>${totalS}</strong><small>Projects</small>`;
+      }
+      if(pieLegendEl){
+        pieLegendEl.innerHTML=statuses.map((s,i)=>{
+          const sel=chartFilter.status===s,dim=chartFilter.status&&!sel;
+          const arr=statusBase.filter(p=>p.status===s);
+          const pct=totalS?Math.round((counts[i]/totalS)*100):0;
+          return `<div class="clickable ${sel?'sel':''} ${dim?'dim':''}" data-filter="status|${esc(s)}" data-tip="${tipAttr(tipText(`${s} — ${counts[i]} projects (${pct}%)`,arr))}">
+            <i style="background:${statusColors[i]}"></i>
+            <span>${s}</span>
+            <b>${counts[i]} <small style="font-weight:600;color:var(--muted);font-size:9.5px">(${pct}%)</small></b>
+          </div>`;
+        }).join('');
+      }
+
+      // 2) Ultra-Readable Budget Breakdown by Category
+      const catBase=chartSubset('category'),catBud={};
+      catBase.forEach(p=>{if((+p.value||0)>0)catBud[p.category]=(catBud[p.category]||0)+(+p.value)});
+      const catData=Object.entries(catBud).map(([n,v])=>({n,v})).sort((a,b)=>b.v-a.v),catTotal=catData.reduce((s,d)=>s+d.v,0);
+      const catMax=Math.max(...catData.map(d=>d.v),1);
+      const catColors=['#183b4d','#1d535a','#2d7d7b','#3b8d88','#4ea19c','#7b6b97','#2d5b88','#83929b'];
+      const catHost=document.getElementById('budgetCategoryList');
+      
+      if(!catData.length){
+        catHost.innerHTML='<div style="display:grid;place-items:center;height:120px;color:var(--muted);font-size:11px">No numeric budget in this view</div>';
+      } else {
+        catHost.innerHTML=catData.map((d,i)=>{
+          const name=d.n,pct=catTotal?Math.round(d.v/catTotal*100):0;
+          const sel=chartFilter.category===name,dim=chartFilter.category&&!sel;
+          const arr=catBase.filter(p=>p.category===name);
+          const color=catColors[i%catColors.length];
+          return `<div class="cat-budget-row ${sel?'sel':''} ${dim?'dim':''}" data-filter="category|${esc(name)}" data-tip="${tipAttr(tipText(`${name} — ${formatMillions(d.v)} (${pct}%)`,arr))}">
+            <div class="cat-budget-name" title="${esc(name)}">${esc(name)}</div>
+            <div class="cat-budget-track"><i style="width:${(d.v/catMax)*100}%;background:${color}"></i></div>
+            <div class="cat-budget-values">${formatMillions(d.v)}<small>${pct}%</small></div>
+          </div>`;
+        }).join('');
+      }
+      const catCount=catBase.filter(p=>(+p.value||0)>0).length;
+      document.getElementById('treemapCaption').innerHTML=`<b>${formatMillions(catTotal)}</b> numeric budget · ${catCount} of ${catBase.length} projects costed`;
+
+      // 3) Vendor exposure
+      const vendorBase=chartSubset(''),vendorMap={};
+      vendorBase.forEach(p=>{const v=p.vendor||'Unassigned';vendorMap[v]=(vendorMap[v]||0)+(+p.value||0)});
+      const vendorEntries=Object.entries(vendorMap).sort((a,b)=>b[1]-a[1]).slice(0,6),vMax=Math.max(...vendorEntries.map(v=>v[1]),1);
+      vendorBars.innerHTML=vendorEntries.map(([v,val])=>{
+        const arr=vendorBase.filter(p=>(p.vendor||'Unassigned')===v);
+        return `<div class="resource-row" data-tip="${tipAttr(tipText(`${v} — ${formatMillions(val)}`,arr))}"><span>${esc(v)}</span><div class="resource-bar"><i style="width:${(val/vMax)*100}%;background:var(--teal)"></i></div><b>${formatMillions(val).replace('AED ','')}</b></div>`;
+      }).join('');
+
+      // 4) Financial Burn / Spend by status
+      const expBase=chartSubset('status'),statusBudget=statuses.map(s=>expBase.filter(p=>p.status===s).reduce((sum,p)=>sum+(+p.value||0),0));
+      const statusSpent=statuses.map(s=>expBase.filter(p=>p.status===s).reduce((sum,p)=>sum+(+p.spent||0),0));
+      const budgetMax=Math.max(...statusBudget,1);
+      budgetStatus.innerHTML=statuses.map((s,i)=>{
+        const sel=chartFilter.status===s,dim=chartFilter.status&&!sel,arr=expBase.filter(p=>p.status===s);
+        const spentPct=statusBudget[i]>0?Math.round((statusSpent[i]/statusBudget[i])*100):0;
+        return `<div class="resource-row clickable ${sel?'sel':''} ${dim?'dim':''}" data-filter="status|${esc(s)}" data-tip="${tipAttr(tipText(`${s}\nBudget: ${money(statusBudget[i])}\nActual Spent: ${money(statusSpent[i])} (${spentPct}%)`,arr))}">
+          <span>${s}</span>
+          <div class="resource-bar"><i style="width:${statusBudget[i]/budgetMax*100}%;background:${statusColors[i]}"></i></div>
+          <div style="text-align:right"><b>${formatMillions(statusBudget[i]).replace('AED ','')}</b><br><small style="font-size:8.5px;color:var(--muted)">${formatMillions(statusSpent[i]).replace('AED ','')}</small></div>
+        </div>`;
+      }).join('');
+
+      // 5) Multi-color Enhanced Heatmap
+      const categories=allCategories,matrix=categories.map(c=>statuses.map(s=>projects.filter(p=>p.category===c&&p.status===s).length)),cellMax=Math.max(...matrix.flat(),1);
+      const statusSlug=s=>s.toLowerCase().replace(/\s+/g,'-');
+      const headRow=`<div class="heat-row"><div class="heat-cell label">Category</div>${statuses.map((s,idx)=>{const selCol=chartFilter.status===s;return `<div class="heat-cell label clickable heat-col-head ${selCol?'sel-col-label':''}" style="color:${statusColors[idx]}" data-filter="status|${esc(s)}" data-tip="${tipAttr('Filter status: '+s)}">${s.replace('Not Started','Not start.')}</div>`}).join('')}</div>`;
+      const bodyRows=categories.map((c,ri)=>{
+        const rowHl=chartFilter.category===c;
+        const cells=matrix[ri].map((n,ci)=>{
+          const s=statuses[ci],colHl=chartFilter.status===s,cellSel=rowHl&&colHl,arr=projects.filter(p=>p.category===c&&p.status===s);
+          const lvl=n?`lvl-${Math.max(1,Math.ceil(n/cellMax*4))}`:'';
+          const cls=['heat-cell',lvl?`st-${statusSlug(s)} ${lvl}`:'','clickable',colHl?'col-hl':'',cellSel?'cell-sel':''].filter(Boolean).join(' ');
+          return `<div class="${cls}" data-filter="both|${esc(s)}|${esc(c)}" data-tip="${tipAttr(tipText(`${c} · ${s} — ${n} project${n===1?'':'s'}`,arr))}">${n||''}</div>`;
+        }).join('');
+        return `<div class="heat-row ${rowHl?'hl':''}"><div class="heat-cell label clickable ${rowHl?'sel-row-label':''}" data-filter="category|${esc(c)}" data-tip="${tipAttr('Filter category: '+c)}">${esc(c)}</div>${cells}</div>`;
+      }).join('');
+      statusHeatmap.innerHTML=headRow+bodyRows;
+    }
+
+    function shiftTimeline(months){timelineOffset+=months;render()}
+    function resetTimeline(){timelineOffset=0;timelineMonthCount=9;timelineMonths.value='9';render()}
+    function changeTimelineMonths(){timelineMonthCount=+timelineMonths.value;render()}
+    
+    function renderTimeline(filteredItems){
+      const items=filteredItems||getFilteredProjects(),today=new Date();today.setHours(0,0,0,0);
+      const viewStart=new Date(today.getFullYear(),today.getMonth()-2+timelineOffset,1);
+      const viewEnd=new Date(viewStart.getFullYear(),viewStart.getMonth()+timelineMonthCount,0,23,59,59);
+      const span=viewEnd-viewStart,pct=d=>(d-viewStart)/span*100,monthNames=[];
+      for(let i=0;i<timelineMonthCount;i++){const d=new Date(viewStart.getFullYear(),viewStart.getMonth()+i,1);monthNames.push(d.toLocaleDateString('en-GB',{month:'short',year:'2-digit'}))}
+      timelineRange.textContent=`${monthNames[0]} — ${monthNames.at(-1)}`;
+      const todayVisual=today>=viewStart&&today<=viewEnd?`<i class="gantt-today" style="left:${pct(today)}%"></i>`:'';
+
+      const rows=items.map(p=>{
+        const start=p.start?new Date(p.start+'T00:00:00'):null;
+        const end=p.end?new Date(p.end+'T00:00:00'):null;
+        const baseEnd=p.baselineEnd?new Date(p.baselineEnd+'T00:00:00'):null;
+        const hasStart=start&&!isNaN(start),hasEnd=end&&!isNaN(end),critical=['At Risk','Delayed'].includes(p.status);
+        
+        let visual='<span class="gantt-no-date">Dates not set · click to add dates and milestones</span>';
+        let baselineVisual='';
+
+        if(hasStart&&hasEnd){
+          if(end<viewStart)visual='<span class="gantt-early">Completed / scheduled before this view</span>';
+          else if(start>viewEnd)visual='<span class="gantt-early">Scheduled after this view</span>';
+          else{
+            const left=Math.max(0,pct(start)),right=Math.min(100,pct(end)),width=Math.max(.6,right-left);
+            visual=`<div class="gantt-plan ${critical?'critical':''}" style="left:${left}%;width:${width}%"><div class="gantt-progress" style="width:${Math.min(100,p.progress||0)}%"></div></div>`;
+            if(baseEnd&&!isNaN(baseEnd)&&baseEnd<end){
+              const bLeft=Math.max(0,pct(start)),bRight=Math.min(100,pct(baseEnd)),bWidth=Math.max(.4,bRight-bLeft);
+              baselineVisual=`<div class="gantt-baseline" style="left:${bLeft}%;width:${bWidth}%" title="Original baseline target"></div>`;
+            }
+          }
+        }
+        
+        const milestones=(p.milestones||[]).filter(m=>m[1]).map(m=>{
+          const d=new Date(m[1]+'T00:00:00');
+          if(d>=viewStart&&d<=viewEnd){
+            const stCls=m[2]==='Completed'?'done':m[2]==='At Risk'?'risk':m[2]==='Delayed'?'delay':'';
+            return `<i class="gantt-milestone ${stCls}" title="${esc(m[0])} · ${dateText(m[1])} (${m[2]})" style="left:${pct(d)}%"></i>`;
+          }
+          return '';
+        }).join('');
+
+        return`<div class="gantt-row" onclick="openMilestoneEditor('${p.id}')">
+          <div class="gantt-name"><b title="${esc(p.name)}">${esc(p.name)}</b><small>${p.start?dateText(p.start):'Start not set'} → ${p.end?dateText(p.end):'End not set'}</small></div>
+          <div class="gantt-track" style="--month-width:${100/timelineMonthCount}%">${todayVisual}${baselineVisual}${visual}${milestones}</div>
+        </div>`;
+      }).join('');
+
+      timelineContent.innerHTML=`<div class="gantt-axis"><div class="gantt-project-head">Project · click to edit</div><div class="gantt-months" style="grid-template-columns:repeat(${timelineMonthCount},1fr)">${monthNames.map(m=>`<div class="gantt-month">${m}</div>`).join('')}</div></div><div class="gantt-list">${rows}</div><div class="gantt-legend"><span><i class="legend-plan"></i>Active schedule (dark = % complete)</span><span><i class="legend-critical"></i>At Risk / Delayed</span><span><i class="gantt-baseline" style="position:static;display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:3px"></i>Original baseline</span><span><i class="legend-diamond"></i>Milestone</span><span style="color:#ed4161">│ Today</span></div>`;
+    }
+
+    function updateStats(){
+      const total=projects.reduce((s,p)=>s+(+p.value||0),0);
+      const totalSpent=projects.reduce((s,p)=>s+(+p.spent||0),0);
+      const openProjects=projects.filter(p=>p.status!=='Completed').length;
+      const risks=projects.filter(p=>['At Risk','Delayed'].includes(p.status)).length;
+      const awaiting=projects.filter(p=>p.decisionRequired&&!p.decision).length;
+      const contracts=projects.filter(p=>p.contract).length;
+      
+      const today=new Date();today.setHours(0,0,0,0);
+      const expiringSoon=projects.filter(p=>{
+        if(!p.end)return false;
+        const d=new Date(p.end+'T00:00:00');
+        const diff=Math.ceil((d-today)/(1000*60*60*24));
+        return diff>=0&&diff<=90;
+      }).length;
+
+      stat1Label.textContent='Total Projects';stat1Value.textContent=projects.length;stat1Note.textContent='portfolio records';
+      stat2Label.textContent='Open Projects';stat2Value.textContent=openProjects;stat2Note.textContent='active initiatives';
+      stat3Label.textContent='Risks';stat3Value.textContent=risks;stat3Note.textContent='At Risk and Delayed';
+      stat4Label.textContent='Decision required';stat4Value.textContent=awaiting;stat4Note.textContent='awaiting management decision';
+      stat5Label.textContent='Budget & Spend';stat5Value.textContent=formatMillions(total);stat5Note.textContent=`Spent: ${formatMillions(totalSpent)} (${total?Math.round(totalSpent/total*100):0}%)`;
+      stat6Label.textContent='Contracts & Expiries';stat6Value.textContent=contracts;stat6Note.textContent=`${expiringSoon} expiring in ≤90 days`;
+    }
+
+    function fillFilters(){
+      const fill=(id,label,values)=>{const s=document.getElementById(id),old=s.value;if(!s)return;s.innerHTML=`<option value="">All ${label}</option>`+values.filter(Boolean).sort().map(v=>`<option>${esc(v)}</option>`).join('');s.value=old};
+      fill('categoryFilter','categories',[...new Set(projects.map(p=>p.category))]);
+      fill('coordinatorFilter','coordinators',[...new Set(projects.map(p=>p.coordinator))]);
+    }
+
+    function showCardProjects(type){
+      cardFilter=type;
+      setWorkspace('register');
+      setTimeout(()=>{
+        const rView=document.getElementById('registerView');
+        if(rView)rView.scrollIntoView({behavior:'smooth',block:'start'});
+      },60);
+    }
+    function clearCardFilter(){cardFilter='';render()}
+    function setWorkspace(mode,button){
+      workspaceMode=mode;
+      document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+      if(button)button.classList.add('active');
+      else{
+        const navBtn=document.querySelector(`.nav[data-workspace="${mode}"]`);
+        if(navBtn)navBtn.classList.add('active');
+      }
+      window.scrollTo({top:0,behavior:'smooth'});
+      render();
+    }
+
+    function openPanel(id){
+      selectedId=id;const p=projects.find(x=>x.id===id);if(!p)return;
+      const met=(p.kpis||[]).filter(kpiMet).length,total=(p.kpis||[]).length;
+      const spentPct=p.value>0?Math.round((p.spent/p.value)*100):0;
+      const dClass=decisionReqClass(p.decisionRequired);
+
+      document.getElementById('panel').innerHTML=`<div class="panel-head"><div class="panel-head-top"><div><span class="status ${statusClass(p.status)}">${esc(p.status)}</span><h2>${esc(p.name)}</h2><p>${esc(p.vendor)} · ${esc(p.contract||'No contract reference')}</p></div><button class="close" onclick="closePanel()">×</button></div></div><div class="panel-body">
+        <div class="detail-stats">
+          <div class="detail-stat"><span>Budget</span><b>${esc(budgetText(p))}</b></div>
+          <div class="detail-stat"><span>Actual Spend</span><b>${money(p.spent)}</b><small>${spentPct}% of budget</small></div>
+          <div class="detail-stat"><span>Progress</span><b>${p.progress||0}%</b></div>
+          <div class="detail-stat"><span>KPI health</span><b>${met}/${total} on target</b></div>
+        </div>
+        <div class="section"><div class="section-title"><b>Contract & Schedule overview</b></div><p class="scope">${esc(p.scope||'No scope entered.')}</p>
+          <span class="tag">Category: ${esc(p.category)}</span><span class="tag">Priority: ${esc(p.priority)}</span><span class="tag">Owner: ${esc(p.owner||'Unassigned')}</span><span class="tag">Coordinator: ${esc(p.coordinator||'Unassigned')}</span><span class="tag">Impacted: ${esc(p.departments||'Not specified')}</span>
+          <span class="tag">Start: ${dateText(p.start)}</span><span class="tag">End: ${dateText(p.end)}</span>
+        </div>
+        <div class="section"><div class="section-title"><b>Strategic alignment</b></div><div class="decision-grid"><div class="decision"><b>Strategic objectives</b>${esc(p.strategicObjectives||'No strategic objectives recorded.')}</div><div class="decision"><b>Alignment / contribution</b>${esc(p.strategicAlignment||'No strategic alignment recorded.')}</div></div></div>
+        <div class="section"><div class="section-title"><b>Performance KPIs</b><button class="btn light small" onclick="openProjectModal('${p.id}')">Edit KPIs</button></div>${(p.kpis||[]).map(k=>{const pct=k[2]?Math.min(100,Math.round((+k[1]/+k[2])*100)):0;return `<div class="kpi"><div class="kpi-name"><b>${esc(k[0])}</b><small>Target: ${esc(k[2])} ${esc(k[3])}</small><div class="kpi-track"><i style="width:${pct}%;background:${kpiMet(k)?'var(--teal)':'var(--amber)'}"></i></div></div><div class="kpi-value"><strong>${esc(k[1])} ${esc(k[3]).replace(' max','')}</strong><small>${kpiMet(k)?'On target':'Below target'}</small></div></div>`}).join('')||'<p class="scope">No KPIs defined.</p>'}</div>
+        <div class="section"><div class="section-title"><b>Milestones & Health</b><button class="btn light small" onclick="openMilestoneEditor('${p.id}')">◆ Add / edit</button></div>${(p.milestones||[]).map(m=>`<div class="milestone"><i class="mile-dot ${m[2]==='Completed'?'done':m[2]==='At Risk'?'risk':m[2]==='Delayed'?'delay':''}"></i><div><b>${esc(m[0])}</b><small>${dateText(m[1])}</small></div><span class="status ${statusClass(m[2]||'On Track')}">${m[2]||'On Track'}</span></div>`).join('')||'<p class="scope">No milestones entered.</p>'}</div>
+        <div class="section"><div class="section-title"><b>Risks & dependencies</b></div>${(p.risks||[]).map(r=>`<div class="risk">${esc(r)}</div>`).join('')||'<p class="scope">No risks recorded.</p>'}</div>
+        <div class="section"><div class="section-title"><b>Actions & Governance Decisions</b></div><div class="decision-grid"><div class="decision"><b>Mitigation plan / solution</b>${esc(p.mitigation||'No mitigation plan recorded.')}</div><div class="decision"><b>Management decision</b>${esc(p.decision||'No management decision recorded.')}${p.decisionBy?`<br><br><small><b>Decided by:</b> ${esc(p.decisionBy)} ${p.decisionDate?`(${p.decisionDate})`:''}</small>`:''}</div></div></div>
+        <div class="section"><div class="section-title"><b>Contract document</b></div>${p.attachmentName?`<div class="attachment"><div><b>${esc(p.attachmentName)}</b><small>${Math.ceil((p.attachmentSize||0)/1024)} KB · Stored in this browser</small></div><button class="btn light small" onclick="downloadAttachment('${p.id}')">Open / download</button></div>`:'<p class="scope">No contract file uploaded. Use Edit project data to attach one.</p>'}</div>
+        <div class="section"><div class="section-title"><b>Source note</b></div><div class="source">${esc(p.source||'No source note entered.')}</div></div>
+        <div class="panel-actions"><button class="btn primary" onclick="openProjectModal('${p.id}')">Edit project data</button><button class="btn light" onclick="duplicateProject('${p.id}')">Duplicate</button></div></div>`;
+      document.getElementById('panel').classList.add('open');document.getElementById('scrim').classList.add('open');
+    }
+    function closePanel(){document.getElementById('panel').classList.remove('open');document.getElementById('scrim').classList.remove('open')}
+    function openMilestoneEditor(id){closePanel();openProjectModal(id);setTimeout(()=>milestoneSection.scrollIntoView({behavior:'smooth',block:'center'}),80)}
+
+    function openProjectModal(id){
+      editingId=id||null;const p=id?projects.find(x=>x.id===id):null;
+      document.getElementById('modalTitle').textContent=p?'Edit project':'Add project';
+      document.getElementById('deleteBtn').classList.toggle('hidden',!p);
+      
+      const fields={
+        fName:p?.name||'',fVendor:p?.vendor||'',fContract:p?.contract||'',fCategory:p?.category||'General',
+        fStatus:p?.status||'Not Started',fPriority:p?.priority||'Medium',fOwner:p?.owner||'',fCoordinator:p?.coordinator||'',
+        fDepartments:p?.departments||'',fDecisionRequired:p?.decisionRequired||'',fStart:p?.start||'',fEnd:p?.end||'',
+        fBaselineEnd:p?.baselineEnd||p?.end||'',fValue:p?.budgetLabel||p?.value||'',fSpent:p?.spent||'',fProgress:p?.progress??0,
+        fScope:p?.scope||'',fStrategicObjectives:p?.strategicObjectives||'',fStrategicAlignment:p?.strategicAlignment||'',
+        fRisks:(p?.risks||[]).join('\n'),fMitigation:p?.mitigation||'',fDecision:p?.decision||'',
+        fDecisionDate:p?.decisionDate||'',fDecisionBy:p?.decisionBy||'',fSource:p?.source||''
+      };
+      Object.entries(fields).forEach(([id,v])=>document.getElementById(id).value=v);
+      setupLookup('owner',fields.fOwner);setupLookup('departments',fields.fDepartments);
+      
+      document.getElementById('kpiEditor').innerHTML='';(p?.kpis||[]).forEach(k=>addKpiRow(k));if(!p)addKpiRow();
+      document.getElementById('milestoneEditor').innerHTML='';(p?.milestones||[]).forEach(m=>addMilestoneRow(m));if(!p)addMilestoneRow();
+      
+      fContractFile.value='';
+      currentContractFile.textContent=p?.attachmentName?`Current file: ${p.attachmentName}. Choose a new file to replace it.`:'PDF, Word, Excel or image. Stored in this browser.';
+      document.getElementById('projectModal').classList.add('open');
+    }
+    function closeModal(){document.getElementById('projectModal').classList.remove('open')}
+
+    function addKpiRow(k=['',0,0,'%']){
+      const d=document.createElement('div');d.className='repeat-row kpi-edit';
+      d.innerHTML=`<input placeholder="KPI name" value="${esc(k[0])}"><input type="number" step="0.1" placeholder="Actual" value="${esc(k[1])}"><input type="number" step="0.1" placeholder="Target" value="${esc(k[2])}"><input placeholder="Unit" value="${esc(k[3])}"><button type="button" class="iconbtn" onclick="this.parentElement.remove()">×</button>`;
+      document.getElementById('kpiEditor').appendChild(d);
+    }
+    function addMilestoneRow(m=['','','On Track']){
+      const d=document.createElement('div');d.className='milestone-edit-row';
+      const st=typeof m[2]==='boolean'?(m[2]?'Completed':'On Track'):(m[2]||'On Track');
+      d.innerHTML=`<input placeholder="Milestone name" value="${esc(m[0])}"><input type="date" value="${esc(m[1])}"><select><option ${st==='On Track'?'selected':''}>On Track</option><option ${st==='Completed'?'selected':''}>Completed</option><option ${st==='At Risk'?'selected':''}>At Risk</option><option ${st==='Delayed'?'selected':''}>Delayed</option></select><button type="button" class="iconbtn" onclick="this.parentElement.remove()">×</button>`;
+      milestoneEditor.appendChild(d);
+    }
+
+    async function saveProject(e){
+      e.preventDefault();
+      const prior=editingId?projects.find(p=>p.id===editingId):null;
+      const kpis=[...document.querySelectorAll('.kpi-edit')].map(r=>{const i=r.querySelectorAll('input');return[i[0].value.trim(),+i[1].value,+i[2].value,i[3].value.trim()||'%']}).filter(k=>k[0]);
+      const milestones=[...document.querySelectorAll('.milestone-edit-row')].map(r=>{const i=r.querySelectorAll('input');return[i[0].value.trim(),i[1].value,r.querySelector('select').value]}).filter(m=>m[0]);
+      const file=fContractFile.files[0],budgetRaw=fValue.value.trim().replaceAll(',',''),budgetNumber=Number(budgetRaw);
+      
+      const p={
+        id:prior?.id||'project-'+Date.now(),
+        name:fName.value.trim(),
+        vendor:fVendor.value.trim(),
+        contract:fContract.value.trim(),
+        category:fCategory.value.trim()||'General',
+        status:fStatus.value,
+        priority:fPriority.value,
+        owner:fOwner.value.trim(),
+        coordinator:fCoordinator.value.trim(),
+        departments:fDepartments.value.trim(),
+        decisionRequired:fDecisionRequired.value,
+        start:fStart.value,
+        end:fEnd.value,
+        baselineEnd:fBaselineEnd.value||fEnd.value,
+        value:budgetRaw&&Number.isFinite(budgetNumber)?budgetNumber:0,
+        spent:Number(fSpent.value)||0,
+        budgetLabel:budgetRaw&&!Number.isFinite(budgetNumber)?fValue.value.trim():'',
+        progress:+fProgress.value||0,
+        scope:fScope.value.trim(),
+        strategicObjectives:fStrategicObjectives.value.trim(),
+        strategicAlignment:fStrategicAlignment.value.trim(),
+        risks:fRisks.value.split('\n').map(x=>x.trim()).filter(Boolean),
+        mitigation:fMitigation.value.trim(),
+        decision:fDecision.value.trim(),
+        decisionDate:fDecisionDate.value,
+        decisionBy:fDecisionBy.value.trim(),
+        source:fSource.value.trim(),
+        kpis,
+        milestones,
+        attachmentName:file?.name||prior?.attachmentName||'',
+        attachmentType:file?.type||prior?.attachmentType||'',
+        attachmentSize:file?.size||prior?.attachmentSize||0
+      };
+
+      if(file){try{await putAttachment(p.id,file)}catch(err){toast('Could not store contract file');return}}
+      if(prior)projects[projects.indexOf(prior)]=p;else projects.unshift(p);
+      persist();fillFilters();render();closeModal();closePanel();toast(prior?'Project updated':'Project added');
+    }
+
+    async function deleteProject(){
+      if(!editingId||!confirm('Delete this project? This cannot be undone.'))return;
+      projects=projects.filter(p=>p.id!==editingId);
+      persist();await removeAttachment(editingId).catch(()=>{});
+      fillFilters();render();closeModal();closePanel();toast('Project deleted');
+    }
+
+    function duplicateProject(id){
+      const p=projects.find(x=>x.id===id);if(!p)return;
+      const copy=structuredClone(p);copy.id='project-'+Date.now();copy.name+=' (Copy)';copy.status='Not Started';copy.attachmentName='';copy.attachmentType='';copy.attachmentSize=0;
+      projects.unshift(copy);persist();fillFilters();render();closePanel();toast('Project duplicated');
+    }
+
+    async function downloadAttachment(id){
+      const p=projects.find(x=>x.id===id);
+      try{
+        const file=await getAttachment(id);if(!file)throw new Error();
+        const url=URL.createObjectURL(file),a=document.createElement('a');
+        a.href=url;a.download=p?.attachmentName||'contract';a.target='_blank';a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),5000);
+      }catch(err){toast('Contract file is not available in this browser')}
+    }
+
+    function exportData(){
+      const payload={version:8,exportedAt:new Date().toISOString(),projects};
+      const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
+      a.download=`EDE-project-portfolio-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href);
+      toast('Portfolio data exported');
+    }
+
+    function exportCsv(){
+      const headers=["Project Name","Category","Vendor","Contract Ref","Status","Priority","Progress (%)","Budget (AED)","Actual Spend (AED)","Start Date","End Date","Baseline End Date","Business Owner","Coordinator","Impacted Depts","Decision Required","Decision Outcome","Decision Date","Decided By","Risks","Mitigation"];
+      const rows=projects.map(p=>[
+        `"${(p.name||'').replace(/"/g,'""')}"`,
+        `"${(p.category||'').replace(/"/g,'""')}"`,
+        `"${(p.vendor||'').replace(/"/g,'""')}"`,
+        `"${(p.contract||'').replace(/"/g,'""')}"`,
+        p.status||'',
+        p.priority||'',
+        p.progress||0,
+        p.value||0,
+        p.spent||0,
+        p.start||'',
+        p.end||'',
+        p.baselineEnd||'',
+        `"${(p.owner||'').replace(/"/g,'""')}"`,
+        `"${(p.coordinator||'').replace(/"/g,'""')}"`,
+        `"${(p.departments||'').replace(/"/g,'""')}"`,
+        `"${(p.decisionRequired||'').replace(/"/g,'""')}"`,
+        `"${(p.decision||'').replace(/"/g,'""')}"`,
+        p.decisionDate||'',
+        `"${(p.decisionBy||'').replace(/"/g,'""')}"`,
+        `"${((p.risks||[]).join('; ')).replace(/"/g,'""')}"`,
+        `"${(p.mitigation||'').replace(/"/g,'""')}"`
+      ]);
+      const csvContent="\uFEFF"+[headers.join(','),...rows.map(r=>r.join(','))].join('\r\n');
+      const blob=new Blob([csvContent],{type:'text/csv;charset=utf-8;'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download=`EDE-project-portfolio-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href);
+      toast('Portfolio exported to CSV');
+    }
+
+    async function importData(event){
+      const file=event.target.files[0];if(!file)return;
+      try{
+        const parsed=JSON.parse(await file.text()),records=Array.isArray(parsed)?parsed:parsed.projects;
+        if(!Array.isArray(records))throw new Error();
+        if(!confirm(`Replace current portfolio with ${records.length} imported projects?`))return;
+        projects=records.map(normalize);persist();fillFilters();render();toast('Portfolio imported successfully');
+      }catch(err){toast('Invalid portfolio file')}finally{event.target.value=''}
+    }
+
+    function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closePanel()}});
+    document.addEventListener('click',e=>{if(!e.target.closest('.lookup'))document.querySelectorAll('.lookup').forEach(n=>n.classList.remove('open'))});
+    topTableScroll.addEventListener('scroll',()=>tableScroll.scrollLeft=topTableScroll.scrollLeft);tableScroll.addEventListener('scroll',()=>topTableScroll.scrollLeft=tableScroll.scrollLeft);window.addEventListener('resize',syncTopScroll);
+    updateReportingDate();setInterval(updateReportingDate,60000);fillFilters();render();
+  </script>
+</body>
+</html>
