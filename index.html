@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EDE | Personal Medicine Permit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0d293c;
+      --navy-2: #2e435b;
+      --teal: #3d8080;
+      --teal-dark: #286767;
+      --teal-light: #e8f3f2;
+      --ink: #162a3a;
+      --muted: #667784;
+      --line: #dfe7e8;
+      --surface: #fff;
+      --page: #f4f7f6;
+      --success: #157347;
+      --warning: #a65d05;
+      --danger: #b33a3a;
+      --purple: #7046b7;
+      --shadow: 0 10px 28px rgba(13, 41, 60, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Manrope, Arial, sans-serif; color: var(--ink); background: var(--page); }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--navy) 0 65%, var(--teal) 65%); }
+    header { height: 76px; display: flex; align-items: center; padding: 0 5vw; background: #fff; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark { width: 46px; height: 46px; border-radius: 50%; background: var(--navy); color: #fff; display: grid; place-items: center; font-weight: 800; letter-spacing: -2px; position: relative; }
+    .brand-mark:after { content: ""; position: absolute; inset: 5px; border: 2px solid var(--teal); border-radius: 50%; }
+    .brand-name { font-weight: 800; color: var(--navy); line-height: 1.1; }
+    .brand-name small { display: block; font-weight: 500; font-size: 10px; color: var(--teal); margin-top: 4px; letter-spacing: .5px; }
+    .header-actions { margin-left: auto; display: flex; align-items: center; gap: 18px; color: var(--muted); font-size: 13px; }
+    .lang { background: transparent; border: 0; color: var(--navy); font-weight: 700; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--teal-light); color: var(--teal); display: grid; place-items: center; font-weight: 800; }
+    nav { height: 46px; display: flex; align-items: center; gap: 28px; padding: 0 5vw; background: #fff; box-shadow: 0 2px 8px rgba(13,41,60,.04); font-size: 13px; }
+    nav button { color: var(--muted); text-decoration: none; height: 46px; display: flex; align-items: center; border: 0; background: transparent; padding: 0; font-size: 13px; }
+    nav button.active { color: var(--teal); font-weight: 700; border-bottom: 3px solid var(--teal); }
+    nav .officer-link { margin-left: auto; color: var(--navy); font-weight: 700; }
+    .shell { max-width: 1260px; margin: 0 auto; padding: 34px 28px 60px; }
+    .breadcrumb { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+    .breadcrumb b { color: var(--teal); }
+    .hero { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 25px; }
+    .eyebrow { color: var(--teal); text-transform: uppercase; font-size: 11px; font-weight: 800; letter-spacing: 1.6px; }
+    h1 { color: var(--navy); margin: 7px 0; font-size: clamp(26px, 3vw, 38px); line-height: 1.15; }
+    .subtitle { color: var(--muted); font-size: 14px; margin: 0; max-width: 700px; line-height: 1.6; }
+    .secure-pill { white-space: nowrap; color: var(--success); background: #e8f5ed; border: 1px solid #cce7d6; padding: 9px 13px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .workspace { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .steps { background: var(--navy); border-radius: 16px; color: #fff; padding: 25px 18px; position: sticky; top: 18px; box-shadow: var(--shadow); }
+    .steps-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: #9db3c1; margin: 0 10px 20px; }
+    .step { display: flex; gap: 12px; padding: 12px 10px; border-radius: 9px; margin: 4px 0; color: #aebdc7; font-size: 12px; align-items: center; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #506676; display: grid; place-items: center; font-weight: 700; flex: none; }
+    .step.active { color: #fff; background: rgba(61,128,128,.26); }
+    .step.active .step-num { background: var(--teal); border-color: var(--teal); }
+    .step.done { color: #dce5e8; }
+    .step.done .step-num { color: #fff; background: var(--success); border-color: var(--success); }
+    .ai-side { margin-top: 24px; border-top: 1px solid #314c5e; padding: 20px 10px 0; }
+    .ai-side b { display: flex; gap: 8px; align-items: center; font-size: 12px; }
+    .spark { color: #bd98ff; }
+    .ai-side p { font-size: 10px; line-height: 1.6; color: #9db3c1; margin: 8px 0 0; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; min-height: 610px; }
+    .panel-head { padding: 23px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+    .panel-head h2 { margin: 0 0 5px; font-size: 20px; color: var(--navy); }
+    .panel-head p { margin: 0; font-size: 12px; color: var(--muted); }
+    .step-badge { background: var(--teal-light); color: var(--teal-dark); border-radius: 15px; padding: 7px 11px; font-size: 10px; font-weight: 800; white-space: nowrap; }
+    .content { padding: 28px; }
+    .page { display: none; }
+    .page.active { display: block; animation: rise .25s ease; }
+    @keyframes rise { from { opacity: .2; transform: translateY(5px); } }
+    .ai-callout { border: 1px solid #d9caf4; background: #f8f4ff; border-radius: 12px; padding: 15px 17px; display: flex; gap: 13px; margin-bottom: 24px; }
+    .ai-icon { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; background: var(--purple); color: #fff; flex: none; }
+    .ai-callout b { font-size: 12px; color: #4a267d; }
+    .ai-callout p { margin: 4px 0 0; font-size: 11px; line-height: 1.55; color: #715791; }
+    .question { margin-bottom: 24px; }
+    .label { display: block; font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 9px; }
+    .req { color: var(--danger); }
+    .choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .choice { position: relative; border: 1.5px solid var(--line); border-radius: 11px; padding: 16px; display: flex; gap: 12px; align-items: center; cursor: pointer; min-height: 72px; }
+    .choice:hover { border-color: #94bebe; }
+    .choice.selected { border-color: var(--teal); background: #f3fafa; box-shadow: inset 0 0 0 1px var(--teal); }
+    .choice input { position: absolute; opacity: 0; }
+    .radio-dot { width: 18px; height: 18px; border: 2px solid #adb9bf; border-radius: 50%; flex: none; }
+    .selected .radio-dot { border: 5px solid var(--teal); }
+    .choice b { display: block; font-size: 12px; color: var(--navy); }
+    .choice small { color: var(--muted); font-size: 10px; display: block; margin-top: 4px; line-height: 1.4; }
+    .classification { background: var(--navy); color: #fff; border-radius: 12px; padding: 17px 20px; display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+    .class-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; }
+    .classification small { display: block; color: #acc0cb; font-size: 10px; margin-bottom: 3px; }
+    .classification b { font-size: 15px; }
+    .classification span:last-child { margin-left: auto; font-size: 10px; color: #9fcaca; }
+    .footer-actions { display: flex; justify-content: space-between; padding: 20px 28px; border-top: 1px solid var(--line); background: #fbfcfc; }
+    .btn { border: 0; border-radius: 8px; padding: 11px 19px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { color: #fff; background: var(--teal); }
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-secondary { color: var(--navy); background: #fff; border: 1px solid var(--line); }
+    .btn-ghost { color: var(--muted); background: transparent; }
+    .upload-zone { border: 1.5px dashed #9cb9ba; border-radius: 13px; background: #f7fbfb; text-align: center; padding: 27px; cursor: pointer; transition: .2s; }
+    .upload-zone:hover { background: var(--teal-light); border-color: var(--teal); }
+    .upload-symbol { width: 48px; height: 48px; border-radius: 50%; background: var(--teal-light); color: var(--teal); display: grid; place-items: center; font-size: 22px; margin: 0 auto 12px; }
+    .upload-zone b { display: block; font-size: 13px; color: var(--navy); }
+    .upload-zone p { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+    .file-card { display: none; align-items: center; gap: 13px; border: 1px solid var(--line); border-radius: 11px; padding: 13px; margin-top: 12px; }
+    .file-card.visible { display: flex; }
+    .file-icon { width: 38px; height: 38px; border-radius: 8px; background: #fceceb; color: #ba3e38; display: grid; place-items: center; font-size: 10px; font-weight: 800; }
+    .file-name { font-size: 11px; font-weight: 700; }
+    .file-meta { color: var(--muted); font-size: 9px; margin-top: 3px; }
+    .file-ok { margin-left: auto; color: var(--success); font-weight: 800; font-size: 11px; }
+    .extracting { display: none; margin-top: 17px; border: 1px solid #d9caf4; background: #faf7ff; border-radius: 10px; padding: 14px; }
+    .extracting.visible { display: block; }
+    .scan-line { height: 5px; background: #e9ddfa; border-radius: 3px; overflow: hidden; margin-top: 10px; }
+    .scan-line:after { content: ""; display: block; width: 35%; height: 100%; background: var(--purple); animation: scan 1.1s infinite; border-radius: inherit; }
+    @keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(360%); } }
+    .medicine-card { border: 1px solid var(--line); border-radius: 12px; margin-top: 18px; overflow: hidden; }
+    .medicine-title { padding: 13px 16px; background: #f8faf9; display: flex; align-items: center; font-size: 11px; font-weight: 800; color: var(--navy); border-bottom: 1px solid var(--line); }
+    .ai-tag { margin-left: auto; font-size: 9px; color: var(--purple); background: #efe7fa; border-radius: 10px; padding: 4px 8px; }
+    .form-grid { padding: 17px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .field label { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+    .confidence { color: var(--success); font-size: 8px; }
+    .field input, .field select { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 10px 11px; font-size: 11px; color: var(--navy); background: #fff; outline: 0; }
+    .field input:focus, .field select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(61,128,128,.1); }
+    .span-2 { grid-column: span 2; }
+    .add-med { color: var(--teal); border: 1px dashed #9bbebe; background: #f7fbfb; width: 100%; border-radius: 9px; padding: 11px; font-size: 11px; font-weight: 700; margin-top: 13px; }
+    .identity-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
+    .identity-banner { background: #eaf6ef; border: 1px solid #cae7d5; color: var(--success); border-radius: 11px; padding: 13px 15px; font-size: 11px; font-weight: 700; margin-bottom: 19px; display: flex; gap: 9px; }
+    .review-section { border: 1px solid var(--line); border-radius: 11px; margin-bottom: 14px; overflow: hidden; }
+    .review-title { background: #f8faf9; padding: 12px 15px; font-size: 11px; font-weight: 800; color: var(--navy); display: flex; justify-content: space-between; }
+    .review-title button { border: 0; background: transparent; color: var(--teal); font-size: 10px; font-weight: 700; }
+    .summary-grid { padding: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .summary-grid small { color: var(--muted); font-size: 8px; display: block; margin-bottom: 4px; }
+    .summary-grid b { font-size: 10px; color: var(--navy); }
+    .checklist { display: grid; gap: 8px; padding: 14px 15px; }
+    .check-row { display: flex; align-items: center; gap: 9px; font-size: 10px; }
+    .check { width: 19px; height: 19px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; color: #fff; background: var(--success); }
+    .terms { font-size: 10px; color: var(--muted); display: flex; gap: 9px; align-items: start; margin: 17px 0 3px; }
+    .decision-head { text-align: center; margin-bottom: 24px; }
+    .decision-icon { width: 60px; height: 60px; display: grid; place-items: center; border-radius: 50%; margin: 0 auto 12px; background: #fff3df; color: var(--warning); font-size: 28px; }
+    .decision-head h3 { margin: 0; color: var(--navy); font-size: 22px; }
+    .decision-head p { margin: 7px auto 0; color: var(--muted); max-width: 590px; font-size: 11px; line-height: 1.6; }
+    .decision-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+    .metric { border: 1px solid var(--line); border-radius: 10px; padding: 14px; text-align: center; }
+    .metric strong { display: block; color: var(--navy); font-size: 19px; }
+    .metric small { color: var(--muted); font-size: 9px; }
+    .decision-med { border: 1px solid var(--line); border-radius: 11px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+    .med-symbol { width: 38px; height: 38px; border-radius: 9px; background: var(--teal-light); color: var(--teal); display: grid; place-items: center; }
+    .decision-med b { font-size: 11px; display: block; }
+    .decision-med small { color: var(--muted); font-size: 9px; }
+    .outcome { margin-left: auto; border-radius: 12px; padding: 6px 9px; font-size: 9px; font-weight: 800; white-space: nowrap; }
+    .auto { color: var(--success); background: #e7f5ed; }
+    .hitl { color: var(--warning); background: #fff1dc; }
+    .reasons { margin: 8px 0 0; padding-left: 15px; color: #765527; font-size: 9px; line-height: 1.55; }
+    .application-number { margin-top: 20px; background: var(--navy); border-radius: 11px; color: #fff; padding: 16px 18px; display: flex; align-items: center; }
+    .application-number small { color: #9fb2bd; display: block; font-size: 9px; }
+    .application-number b { font-size: 13px; }
+    .application-number span:last-child { margin-left: auto; color: #a5d1d1; font-size: 10px; }
+    .uaepass-card { max-width: 540px; margin: 58px auto; text-align: center; padding: 20px; }
+    .uaepass-button { width: min(100%,360px); min-height: 54px; justify-content: center; border: 0; border-radius: 14px; background: #050505; color: #fff; padding: 11px 22px; font-size: 20px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
+    .uaepass-button:hover { background: #171717; }
+    .fingerprint { width: 29px; height: 29px; color: #69d0c7; }
+    .uaepass-card p { margin: 10px auto 0; max-width: 360px; color: #111; font-size: 15px; line-height: 1.35; }
+    .privacy-note { margin-top: 16px; color: var(--muted); font-size: 9px; }
+    .identity-upload { display: none; margin: 20px 0; border-top: 1px solid var(--line); padding-top: 20px; }
+    .identity-upload.visible { display: block; }
+    .extracted-identity { display: none; margin-top: 12px; padding: 15px; border: 1px solid #cce7d6; background: #f1faf5; border-radius: 11px; }
+    .extracted-identity.visible { display: block; }
+    .extract-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; text-align: left; }
+    .extract-grid small { display: block; color: var(--muted); font-size: 8px; margin-bottom: 3px; }
+    .extract-grid b { font-size: 10px; color: var(--navy); }
+    .document-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+    .document-tile { border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .document-tile.required { border-top: 3px solid var(--teal); }
+    .document-tile h4 { margin: 0 0 4px; font-size: 12px; color: var(--navy); }
+    .document-tile p { margin: 0 0 12px; min-height: 29px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+    .mini-upload { width: 100%; border: 1px dashed #9cb9ba; background: #f7fbfb; color: var(--teal); border-radius: 8px; padding: 10px; font-size: 10px; font-weight: 700; }
+    .upload-status { display: none; margin-top: 9px; color: var(--success); font-size: 9px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .upload-status.visible { display: block; }
+    .medicine-actions { margin-left: auto; display: flex; gap: 6px; }
+    .icon-btn { border: 1px solid var(--line); background: #fff; color: var(--muted); border-radius: 6px; padding: 5px 8px; font-size: 9px; font-weight: 700; }
+    .icon-btn.danger { color: var(--danger); }
+    .empty-medicines { display: none; padding: 24px; text-align: center; color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 11px; margin-top: 16px; }
+    .field input:disabled, .field select:disabled { background: #f1f4f4; color: #4f626e; border-color: #e5e9ea; cursor: not-allowed; }
+    .portal-view { display: none; }
+    .portal-view.active { display: block; }
+    .dashboard-hero { background: var(--navy); border-radius: 16px; color: #fff; padding: 30px; display: flex; justify-content: space-between; align-items: center; gap: 24px; overflow: hidden; position: relative; }
+    .dashboard-hero:after { content:"EDE"; position:absolute; right:20px; top:-25px; font-size:130px; font-weight:800; color:rgba(255,255,255,.035); pointer-events:none; }
+    .dashboard-hero > * { position:relative; z-index:1; }
+    .dashboard-hero h1 { color:#fff; font-size:27px; margin:4px 0 7px; }
+    .dashboard-hero p { color:#b7c6ce; font-size:11px; margin:0; }
+    .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:20px 0; }
+    .kpi-card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px; }
+    .kpi-card strong { display:block; font-size:24px; color:var(--navy); }
+    .kpi-card small { color:var(--muted); font-size:9px; }
+    .table-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); }
+    .table-head { padding:17px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+    .table-head h3 { margin:0; color:var(--navy); font-size:14px; }
+    table { width:100%; border-collapse:collapse; font-size:10px; }
+    th { text-align:left; color:var(--muted); background:#f8faf9; font-size:8px; text-transform:uppercase; letter-spacing:.5px; }
+    th,td { padding:13px 16px; border-bottom:1px solid #edf0f0; }
+    tr:last-child td { border-bottom:0; }
+    .status { display:inline-flex; border-radius:12px; padding:5px 8px; font-size:8px; font-weight:800; }
+    .status.review { background:#fff1dc; color:var(--warning); }
+    .status.approved { background:#e7f5ed; color:var(--success); }
+    .officer-shell { max-width:1400px; margin:0 auto; padding:28px; }
+    .officer-layout { display:grid; grid-template-columns:350px minmax(0,1fr); gap:18px; align-items:start; }
+    .queue, .case-detail { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); }
+    .queue-item { padding:15px 17px; border-bottom:1px solid var(--line); cursor:pointer; }
+    .queue-item:hover,.queue-item.active { background:#f3f9f8; border-left:3px solid var(--teal); }
+    .queue-item b { display:block; color:var(--navy); font-size:11px; margin-bottom:4px; }
+    .queue-item small { color:var(--muted); font-size:8px; }
+    .case-header { padding:20px 22px; background:var(--navy); color:#fff; display:flex; justify-content:space-between; align-items:center; }
+    .case-header h2 { margin:0 0 4px; font-size:17px; }
+    .case-header p { margin:0; color:#b4c4cd; font-size:9px; }
+    .case-body { padding:22px; }
+    .case-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+    .case-stat { border:1px solid var(--line); border-radius:9px; padding:12px; }
+    .case-stat small { display:block; color:var(--muted); font-size:8px; margin-bottom:4px; }
+    .case-stat b { font-size:10px; color:var(--navy); }
+    .rule-alert { border-left:3px solid var(--warning); background:#fff8ed; padding:12px 14px; margin:8px 0; border-radius:0 8px 8px 0; font-size:9px; color:#6f4a1b; }
+    .officer-actions { display:flex; gap:9px; justify-content:flex-end; padding-top:18px; border-top:1px solid var(--line); margin-top:18px; }
+    .toast { position: fixed; right: 24px; bottom: 24px; padding: 13px 16px; background: var(--navy); color: #fff; border-radius: 9px; font-size: 11px; box-shadow: var(--shadow); transform: translateY(80px); opacity: 0; transition: .3s; z-index: 10; }
+    .toast.show { transform: none; opacity: 1; }
+    @media (max-width: 800px) {
+      .workspace { grid-template-columns: 1fr; }
+      .steps { position: static; display: flex; overflow-x: auto; padding: 12px; }
+      .steps-title, .ai-side { display: none; }
+      .step { min-width: max-content; }
+      .hero { align-items: start; }
+      .secure-pill { display: none; }
+      .choice-grid, .identity-grid, .form-grid { grid-template-columns: 1fr; }
+      .document-grid, .extract-grid { grid-template-columns: 1fr; }
+      .span-2 { grid-column: auto; }
+      .summary-grid { grid-template-columns: repeat(2,1fr); }
+      .decision-strip { grid-template-columns: 1fr; }
+      nav button:not(.active):not(.officer-link) { display: none; }
+      .kpi-grid { grid-template-columns:repeat(2,1fr); }
+      .officer-layout { grid-template-columns:1fr; }
+      .case-grid { grid-template-columns:1fr; }
+      .header-actions span { display: none; }
+      .content, .panel-head { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topline"></div>
+  <header>
+    <div class="brand">
+      <div class="brand-mark">EDE</div>
+      <div class="brand-name">Emirates Drug Establishment<small>مؤسسة الإمارات للدواء</small></div>
+    </div>
+    <div class="header-actions"><span>Help & support</span><button class="lang">العربية</button><div class="avatar">SA</div></div>
+  </header>
+  <nav id="mainNav" style="display:none"><button onclick="showDashboard(this)">Dashboard</button><button onclick="startApplication(this)">New application</button><button onclick="showDashboard(this)">Certificates</button><button class="officer-link" onclick="showOfficerPortal(this)">Officer review portal ↗</button></nav>
+
+  <main class="shell portal-view active" id="applicationView">
+    <div class="breadcrumb">Home &nbsp;/&nbsp; Services &nbsp;/&nbsp; <b>Personal medicine permit</b></div>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Smart service · AI assisted</div>
+        <h1>Import medicines for personal use</h1>
+        <p class="subtitle">Apply for permission to bring personal medication into the UAE. Our AI assistant extracts your documents and checks eligibility as you go.</p>
+      </div>
+      <div class="secure-pill" id="securePill" style="display:none">✓ UAE PASS verified session</div>
+    </section>
+
+    <div class="workspace">
+      <aside class="steps">
+        <div class="steps-title">Your application</div>
+        <div class="step active" data-step="1"><span class="step-num">1</span><span>UAE PASS</span></div>
+        <div class="step" data-step="2"><span class="step-num">2</span><span>Applicant</span></div>
+        <div class="step" data-step="3"><span class="step-num">3</span><span>Patient identity</span></div>
+        <div class="step" data-step="4"><span class="step-num">4</span><span>Documents & medicines</span></div>
+        <div class="step" data-step="5"><span class="step-num">5</span><span>Review</span></div>
+        <div class="step" data-step="6"><span class="step-num">6</span><span>AI decision</span></div>
+        <div class="ai-side"><b><span class="spark">✦</span> EDE AI Assistant</b><p>Checks each medicine against EDE rules. Final decisions can be reviewed by an authorised officer.</p></div>
+      </aside>
+
+      <section class="panel">
+        <div class="page active" id="page-1">
+          <div class="panel-head"><div><h2>Sign in with UAE PASS</h2><p>Verify your identity to begin the application.</p></div><span class="step-badge">Step 1 of 6</span></div>
+          <div class="content"><div class="uaepass-card"><button class="btn uaepass-button" id="signInButton" onclick="signIn(this)"><svg class="fingerprint" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 15c0-5 3.4-9 8-9s8 4 8 9"/><path d="M5 15C5 8.3 9.7 3 16 3s11 5.3 11 12"/><path d="M11 16c0-3.1 2.2-5.5 5-5.5s5 2.4 5 5.5c0 6-1.7 9.6-4.2 13"/><path d="M8 19c.4 5-1.5 7.5-2.2 8.5M14 16c0 6-1 9-2.8 12.5M18 16c0 5.5-1.2 9-3.2 13"/></svg><span>Sign in with UAE PASS</span></button><p>A single trusted digital identity for all citizens,<br>residents and visitors</p><div class="privacy-note">🔒 EDE does not store your UAE PASS credentials</div></div></div>
+        </div>
+
+        <div class="page" id="page-2">
+          <div class="panel-head"><div><h2>Tell us about the patient</h2><p>This determines identity requirements and medicine supply limits.</p></div><span class="step-badge">Step 2 of 6</span></div>
+          <div class="content">
+            <div class="identity-banner">✓ Signed in with UAE PASS as Sara Ahmed Al Mansoori</div>
+            <div class="ai-callout"><div class="ai-icon">✦</div><div><b>Smart applicant classification</b><p>I’ll classify this application as Resident or Traveller using your answers.</p></div></div>
+            <div class="question"><span class="label">Who are you applying for? <span class="req">*</span></span><div class="choice-grid" data-choice="applyingFor"><label class="choice selected"><input type="radio" name="applyingFor" value="myself" checked><span class="radio-dot"></span><span><b>Myself</b><small>I am the patient</small></span></label><label class="choice"><input type="radio" name="applyingFor" value="other"><span class="radio-dot"></span><span><b>Someone else</b><small>Relative, guardian or caregiver</small></span></label></div></div>
+            <div class="question"><span class="label">Is the patient a UAE resident? <span class="req">*</span></span><div class="choice-grid" data-choice="resident"><label class="choice selected"><input type="radio" name="resident" value="yes" checked><span class="radio-dot"></span><span><b>Yes</b><small>Patient has UAE residence</small></span></label><label class="choice"><input type="radio" name="resident" value="no"><span class="radio-dot"></span><span><b>No</b><small>Patient is visiting the UAE</small></span></label></div></div>
+            <div class="classification"><span class="class-icon">✓</span><span><small>AI classification</small><b id="classValue">Resident applicant</b></span><span id="classRule">BR-01 applied</span></div>
+          </div>
+          <div class="footer-actions"><button class="btn btn-ghost" onclick="saveDraft()">Save draft</button><button class="btn btn-primary" onclick="continueApplicant()">Continue to identity →</button></div>
+        </div>
+
+        <div class="page" id="page-3">
+          <div class="panel-head"><div><h2>Confirm patient identity</h2><p id="identitySubtitle">Your identity is already available from UAE PASS.</p></div><span class="step-badge">Step 3 of 6</span></div>
+          <div class="content">
+            <div id="selfIdentity"><div class="identity-banner">✓ Patient identity pre-filled from your UAE PASS profile</div></div>
+            <div class="identity-upload" id="otherIdentity">
+              <div class="ai-callout"><div class="ai-icon">▣</div><div><b id="identityDocTitle">Upload patient Emirates ID</b><p id="identityDocHelp">Upload the front or a clear PDF. AI will extract the patient details for you to confirm.</p></div></div>
+              <input type="file" id="identityFile" accept=".pdf,.png,.jpg,.jpeg" hidden>
+              <div class="upload-zone" onclick="document.getElementById('identityFile').click()"><div class="upload-symbol">↥</div><b id="identityUploadLabel">Upload Emirates ID</b><p>PDF, JPG or PNG · maximum 40 MB</p></div>
+              <div class="extracting" id="identityExtracting"><b style="font-size:11px;color:#4a267d">✦ AI is reading the identity document…</b><div class="scan-line"></div></div>
+            </div>
+            <div id="patientFields"><div class="identity-banner" id="patientFieldsBanner">✓ Patient identity pre-filled and ready to confirm</div><div class="identity-grid"><div class="field"><label>Patient full name</label><input id="patientName" value="Sara Ahmed Al Mansoori"></div><div class="field"><label>Date of birth</label><input id="patientDob" type="date" value="1991-05-14"></div><div class="field"><label id="documentNumberLabel">Emirates ID number</label><input id="patientDocumentNumber" value="784-1991-1234567-1"></div><div class="field"><label>Nationality</label><input id="patientNationality" value="United Arab Emirates"></div></div></div>
+          </div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(2)">← Back</button><button class="btn btn-primary" onclick="continueIdentity()">Continue to documents →</button></div>
+        </div>
+
+        <div class="page" id="page-4">
+          <div class="panel-head"><div><h2>Documents and medicines</h2><p>Upload supporting documents, then confirm every extracted medicine.</p></div><span class="step-badge">Step 4 of 6</span></div>
+          <div class="content">
+            <div class="ai-callout"><div class="ai-icon">▣</div><div><b>Document intelligence</b><p>AI extracts medicines from the prescription. You remain in control: edit, delete, or add medicines before submission.</p></div></div>
+            <div class="document-grid">
+              <div class="document-tile required"><h4>Prescription <span class="req">*</span></h4><p>Valid prescription from a medical professional.</p><input type="file" id="prescriptionFile" accept=".pdf,.png,.jpg,.jpeg" hidden><button class="mini-upload" onclick="document.getElementById('prescriptionFile').click()">↥ Upload prescription</button><div class="upload-status" id="prescriptionStatus"></div></div>
+              <div class="document-tile"><h4>Medical report</h4><p>Required for controlled medicines; must be issued within 365 days.</p><input type="file" id="medicalFile" accept=".pdf,.png,.jpg,.jpeg" hidden><button class="mini-upload" onclick="document.getElementById('medicalFile').click()">↥ Upload medical report</button><div class="upload-status" id="medicalStatus"></div></div>
+              <div class="document-tile"><h4>Additional documents</h4><p>Doctor declaration, supporting letter, or other evidence if required.</p><input type="file" id="additionalFile" accept=".pdf,.png,.jpg,.jpeg" multiple hidden><button class="mini-upload" onclick="document.getElementById('additionalFile').click()">＋ Add documents</button><div class="upload-status" id="additionalStatus"></div></div>
+            </div>
+            <div class="extracting" id="extracting"><b style="font-size:11px;color:#4a267d">✦ AI is extracting medicine details…</b><div class="scan-line"></div></div>
+            <div id="medicineList"></div><div class="empty-medicines" id="emptyMedicines">No medicines added yet. Upload a prescription or add one manually.</div>
+            <button class="add-med" onclick="addMedicine()">＋ Add another medicine</button>
+          </div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(3)">← Back</button><button class="btn btn-primary" onclick="confirmMedicines()">Confirm medicines →</button></div>
+        </div>
+
+        <div class="page" id="page-5">
+          <div class="panel-head"><div><h2>Review your application</h2><p>Check all information before the AI eligibility assessment.</p></div><span class="step-badge">Step 5 of 6</span></div>
+          <div class="content">
+            <div class="review-section"><div class="review-title">Applicant & patient <button onclick="go(2)">Edit</button></div><div class="summary-grid"><span><small>Classification</small><b id="reviewClass">Resident</b></span><span><small>Applying for</small><b id="reviewFor">Myself</b></span><span><small>Patient</small><b id="reviewPatient">Sara Ahmed Al Mansoori</b></span><span><small>Identity document</small><b id="reviewDocument">784-1991-•••••••-1</b></span><span><small>Nationality</small><b id="reviewNationality">United Arab Emirates</b></span><span><small>Identity</small><b style="color:var(--success)">✓ Confirmed</b></span></div></div>
+            <div class="review-section"><div class="review-title">Medicine details <button onclick="go(4)">Edit</button></div><div class="summary-grid" id="reviewMeds"></div></div>
+            <div class="review-section"><div class="review-title">AI pre-submission checks <span style="color:var(--purple)">✦ Live</span></div><div class="checklist"><div class="check-row"><span class="check">✓</span> UAE PASS applicant verification succeeded</div><div class="check-row"><span class="check">✓</span> Patient identity document confirmed</div><div class="check-row"><span class="check">✓</span> Required prescription uploaded</div><div class="check-row"><span class="check">✓</span> No active or recent application found</div></div></div>
+            <label class="terms"><input id="terms" type="checkbox"> <span>I confirm the information is accurate and accept the general terms and conditions for this service.</span></label>
+          </div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="go(4)">← Back</button><button class="btn btn-primary" onclick="submitApplication()">Submit for AI assessment ✦</button></div>
+        </div>
+
+        <div class="page" id="page-6">
+          <div class="panel-head"><div><h2>Application decision</h2><p>Transparent eligibility results for every medicine.</p></div><span class="step-badge">Complete</span></div>
+          <div class="content">
+            <div class="decision-head"><div class="decision-icon" id="decisionIcon">◐</div><h3 id="decisionTitle">Mixed application</h3><p id="decisionText">Eligible medicines can be permitted immediately, while medicines requiring human review are securely routed to an EDE officer.</p></div>
+            <div class="decision-strip"><div class="metric"><strong id="autoCount">1</strong><small>Auto-approved</small></div><div class="metric"><strong id="reviewCount">1</strong><small>Officer review</small></div><div class="metric"><strong id="permitCount">1</strong><small>Permit available now</small></div></div>
+            <div id="decisionList"></div>
+            <div class="application-number"><span><small>Application number</small><b>EDE-PMU-2026-0814027</b></span><span id="processingLabel">Partial permit ready · review in progress</span></div>
+          </div>
+          <div class="footer-actions"><button class="btn btn-secondary" onclick="restart()">Start another application</button><button class="btn btn-primary" onclick="downloadPermit()">↓ Download available permit</button></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <main class="shell portal-view" id="dashboardView">
+    <section class="dashboard-hero"><div><div class="eyebrow" style="color:#89c3c3">Applicant dashboard</div><h1>Welcome back, Sara</h1><p>Track applications, download permits, or start a new personal medicine import request.</p></div><button class="btn btn-primary" onclick="startApplication()">＋ New application</button></section>
+    <div class="kpi-grid"><div class="kpi-card"><strong>3</strong><small>Total applications</small></div><div class="kpi-card"><strong id="reviewKpi">1</strong><small>Awaiting officer review</small></div><div class="kpi-card"><strong id="permitKpi">2</strong><small>Permits issued</small></div><div class="kpi-card"><strong>0</strong><small>Actions required</small></div></div>
+    <section class="table-card"><div class="table-head"><h3>My recent applications</h3><button class="btn btn-secondary" onclick="startApplication()">New application</button></div><div style="overflow-x:auto"><table><thead><tr><th>Application</th><th>Submitted</th><th>Patient</th><th>Medicines</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td><b>EDE-PMU-2026-0814027</b></td><td>14 Aug 2026</td><td>Sara Ahmed Al Mansoori</td><td>3</td><td><span class="status review" id="dashboardApplicationStatus">PARTIAL · IN REVIEW</span></td><td id="dashboardApplicationAction"><button class="icon-btn" onclick="showApplication();go(6)">View details</button></td></tr><tr><td><b>EDE-PMU-2026-0621182</b></td><td>21 Jun 2026</td><td>Sara Ahmed Al Mansoori</td><td>1</td><td><span class="status approved">PERMIT ISSUED</span></td><td><button class="icon-btn" onclick="toast('Permit download started')">Download</button></td></tr><tr><td><b>EDE-PMU-2026-0310044</b></td><td>10 Mar 2026</td><td>Omar Khalid Al Nuaimi</td><td>2</td><td><span class="status approved">PERMIT ISSUED</span></td><td><button class="icon-btn" onclick="toast('Permit download started')">Download</button></td></tr></tbody></table></div></section>
+  </main>
+
+  <main class="portal-view" id="officerView">
+    <div class="officer-shell">
+      <div class="hero" style="margin-bottom:20px"><div><div class="eyebrow">EDE internal · Human in the loop</div><h1>Officer review portal</h1><p class="subtitle">Review AI-routed medicines, supporting evidence, and the business rules that triggered human oversight.</p></div><button class="btn btn-secondary" onclick="showDashboard()">Exit officer portal</button></div>
+      <div class="officer-layout">
+        <aside class="queue"><div class="table-head"><h3>Review queue</h3><span class="status review" id="pendingCount">3 PENDING</span></div><div class="queue-item active" onclick="selectCase(this,'EDE-PMU-2026-0814027','Sara Ahmed Al Mansoori','Clonazepam 0.5 mg','Controlled Drug (CD)','BR-21 · Controlled medicines cannot be auto-approved')"><b>EDE-PMU-2026-0814027</b><small>Sara Ahmed Al Mansoori · 1 medicine flagged</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813988','Maya Elena Santos','Adalimumab 40 mg','Prescription Only Medicine (POM)','BR-11 · Injectable product form requires officer review')"><b>EDE-PMU-2026-0813988</b><small>Maya Elena Santos · Injectable medicine</small></div><div class="queue-item" onclick="selectCase(this,'EDE-PMU-2026-0813761','Omar Khalid Al Nuaimi','Unmatched medicine','N/A','BR-09 · Product not matched in the EDE registry')"><b>EDE-PMU-2026-0813761</b><small>Omar Khalid Al Nuaimi · Registry mismatch</small></div></aside>
+        <section class="case-detail"><div class="case-header"><div><h2 id="caseNumber">EDE-PMU-2026-0814027</h2><p>Submitted 14 Aug 2026 · AI confidence 98%</p></div><span class="status review" id="officerCaseStatus">OFFICER REVIEW</span></div><div class="case-body">
+          <div class="case-grid"><div class="case-stat"><small>Patient</small><b id="casePatient">Sara Ahmed Al Mansoori</b></div><div class="case-stat"><small>Classification</small><b>Resident</b></div><div class="case-stat"><small>Identity validation</small><b style="color:var(--success)">✓ Matched</b></div><div class="case-stat"><small>Medicine</small><b id="caseMedicine">Clonazepam 0.5 mg</b></div><div class="case-stat"><small>Dispensing mode</small><b id="caseMode">Controlled Drug (CD)</b></div><div class="case-stat"><small>Requested supply</small><b>30 tablets · 30 days</b></div></div>
+          <div class="review-section"><div class="review-title">AI routing explanation <span style="color:var(--purple)">✦ Auditable</span></div><div style="padding:12px 15px"><div class="rule-alert" id="caseRule"><b>BR-21</b> · Controlled medicines cannot be auto-approved</div><div class="check-row" style="margin-top:12px"><span class="check">✓</span> Prescription issued within 90 days</div><div class="check-row" style="margin-top:8px"><span class="check">✓</span> Medical report issued within 365 days</div><div class="check-row" style="margin-top:8px"><span class="check">✓</span> Quantity and duration within Resident limits</div></div></div>
+          <div class="review-section"><div class="review-title">Supporting documents</div><div class="checklist"><div class="check-row"><span class="file-icon">PDF</span> Prescription_Sara_2026.pdf <button class="icon-btn" style="margin-left:auto" onclick="toast('Opening prescription preview')">View</button></div><div class="check-row"><span class="file-icon">PDF</span> Medical_Report_2026.pdf <button class="icon-btn" style="margin-left:auto" onclick="toast('Opening medical report preview')">View</button></div></div></div>
+          <div class="field"><label>Officer notes</label><input id="officerNotes" placeholder="Add a note for the audit trail or applicant"></div><div class="officer-actions"><button class="btn btn-secondary" onclick="officerAction('correction')">Request correction</button><button class="btn" style="background:#fbeaea;color:var(--danger)" onclick="officerAction('reject')">Reject</button><button class="btn btn-primary" onclick="officerAction('approve')">Approve medicine</button></div>
+        </div></section>
+      </div>
+    </div>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script>
+    const modes = [
+      ["CD-Narcotic", false, true], ["Controlled Drug (CD)", false, true], ["SCD-OPH-H/C", false, true],
+      ["Semi Controlled Drug (SCD)", false, true], ["Hospitals Only", true, false],
+      ["POM-R (Dispense maximum for 2 weeks)", true, false], ["POM-R (Dispense maximum for one month)", true, false],
+      ["POM-R (Gyn & Hospital)", true, false], ["POM-R (Hospital only)", true, false],
+      ["POM-R (Specialist Gastro)", true, false], ["POM-R (Specialist Ophthalmic)", true, false],
+      ["Prescription Only Medicine (POM)", true, false], ["OTC-General Sale (OTC-G)", true, false],
+      ["OTC-Pharmacy Medicine (OTC-P)", true, false], ["Pharmacist Only Medicine (Ph-OM)", true, false],
+      ["Pharmacy Only (P)", true, false], ["General sale / hypermarket only", true, false],
+      ["General Sale Supermarket GS(s)", true, false], ["Health Care Professional's Only", true, false], ["N/A", true, false]
+    ];
+    const registryProducts = [
+      {name:"Lipitor 20 mg", ingredient:"Atorvastatin", mode:11},
+      {name:"Panadol Extra", ingredient:"Paracetamol / Caffeine", mode:12},
+      {name:"Clonazepam 0.5 mg", ingredient:"Clonazepam", mode:1},
+      {name:"Adalimumab 40 mg", ingredient:"Adalimumab", mode:11},
+      {name:"Augmentin 625 mg", ingredient:"Amoxicillin / Clavulanic acid", mode:11},
+      {name:"Ventolin Inhaler", ingredient:"Salbutamol", mode:11}
+    ];
+    let medicines = [];
+    let medicineId = 0;
+    let identityUploaded = false;
+    let prescriptionUploaded = false;
+    let isAuthenticated = false;
+
+    document.querySelectorAll(".choice-grid").forEach(group => group.addEventListener("change", e => {
+      group.querySelectorAll(".choice").forEach(c => c.classList.toggle("selected", c.contains(e.target)));
+      updateClassification();
+    }));
+
+    function activateView(id, navButton) {
+      document.querySelectorAll(".portal-view").forEach(view => view.classList.toggle("active", view.id === id));
+      document.querySelectorAll("#mainNav button").forEach(button => button.classList.toggle("active", button === navButton));
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+    function showApplication(button) { activateView("applicationView", button || document.querySelectorAll("#mainNav button")[1]); }
+    function startApplication(button) {
+      if (!isAuthenticated) return showApplication(button);
+      showApplication(button);
+      go(2);
+    }
+    function showDashboard(button) {
+      if (!isAuthenticated) return showApplication();
+      activateView("dashboardView", button || document.querySelectorAll("#mainNav button")[0]);
+    }
+    function showOfficerPortal(button) {
+      if (!isAuthenticated) return toast("Sign in with UAE PASS first");
+      activateView("officerView", button || document.querySelector(".officer-link"));
+    }
+
+    function updateClassification() {
+      const resident = document.querySelector('[name="resident"]:checked').value === "yes";
+      document.getElementById("classValue").textContent = resident ? "Resident applicant" : "Traveller applicant";
+      document.getElementById("classRule").textContent = resident ? "BR-01 applied" : "BR-02 applied";
+    }
+
+    function signIn(button) {
+      button.innerHTML = "<span>Verifying securely…</span>";
+      button.disabled = true;
+      setTimeout(() => {
+        button.textContent = "✓ Verified";
+        isAuthenticated = true;
+        document.getElementById("mainNav").style.display = "flex";
+        document.getElementById("securePill").style.display = "block";
+        toast("UAE PASS verification successful");
+        showDashboard();
+      }, 850);
+    }
+
+    function continueApplicant() {
+      const other = document.querySelector('[name="applyingFor"]:checked').value === "other";
+      const resident = document.querySelector('[name="resident"]:checked').value === "yes";
+      document.getElementById("selfIdentity").style.display = other ? "none" : "block";
+      document.getElementById("otherIdentity").classList.toggle("visible", other);
+      document.getElementById("patientFields").style.display = other ? "none" : "block";
+      identityUploaded = !other;
+      document.getElementById("identitySubtitle").textContent = other ? `Upload the patient's ${resident ? "Emirates ID" : "passport"} for secure extraction.` : "Your identity is already available from UAE PASS.";
+      document.getElementById("identityDocTitle").textContent = resident ? "Upload patient Emirates ID" : "Upload patient passport";
+      document.getElementById("identityUploadLabel").textContent = resident ? "Upload Emirates ID" : "Upload passport";
+      document.getElementById("identityDocHelp").textContent = `Upload a clear image or PDF. AI will extract the ${resident ? "Emirates ID number" : "passport number"}, name, date of birth, and nationality.`;
+      document.getElementById("documentNumberLabel").textContent = resident ? "Emirates ID number" : "Passport number";
+      if (!other) {
+        document.getElementById("patientName").value = "Sara Ahmed Al Mansoori";
+        document.getElementById("patientDob").value = "1991-05-14";
+        document.getElementById("patientDocumentNumber").value = "784-1991-1234567-1";
+        document.getElementById("patientNationality").value = "United Arab Emirates";
+      }
+      go(3);
+    }
+
+    document.getElementById("identityFile").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!validFile(file)) return;
+      const resident = document.querySelector('[name="resident"]:checked').value === "yes";
+      const loader = document.getElementById("identityExtracting");
+      loader.classList.add("visible");
+      setTimeout(() => {
+        loader.classList.remove("visible");
+        identityUploaded = true;
+        const details = resident
+          ? {number:"784-2014-7654321-8", name:"Omar Khalid Al Nuaimi", dob:"2014-09-22", dobLabel:"22 September 2014", nationality:"United Arab Emirates"}
+          : {number:"P78420591", name:"Maya Elena Santos", dob:"1988-02-11", dobLabel:"11 February 1988", nationality:"Philippines"};
+        document.getElementById("patientDocumentNumber").value = details.number;
+        document.getElementById("patientName").value = details.name;
+        document.getElementById("patientDob").value = details.dob;
+        document.getElementById("patientNationality").value = details.nationality;
+        document.getElementById("patientFieldsBanner").textContent = "✓ Patient details extracted — please confirm";
+        document.getElementById("patientFields").style.display = "block";
+        toast("Patient identity extracted — please confirm");
+      }, 1100);
+    });
+
+    function continueIdentity() {
+      if (!identityUploaded) return toast("Please upload the patient's identity document");
+      go(4);
+    }
+
+    function go(step) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById("page-" + step).classList.add("active");
+      document.querySelectorAll(".step").forEach(s => {
+        const n = +s.dataset.step;
+        s.classList.toggle("active", n === step);
+        s.classList.toggle("done", n < step);
+        s.querySelector(".step-num").textContent = n < step ? "✓" : n;
+      });
+      if (step === 5) populateReview();
+      window.scrollTo({top: 100, behavior: "smooth"});
+    }
+
+    document.getElementById("prescriptionFile").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!validFile(file)) return;
+      prescriptionUploaded = true;
+      showUpload("prescriptionStatus", file.name);
+      document.getElementById("extracting").classList.add("visible");
+      setTimeout(() => {
+        document.getElementById("extracting").classList.remove("visible");
+        if (!medicines.length) {
+          addMedicine({name:"Lipitor 20 mg", ingredient:"Atorvastatin", mode:11, quantity:90, unit:"Tablets", duration:90, form:"Tablet", registered:"yes", extracted:true, editing:false});
+          addMedicine({name:"Panadol Extra", ingredient:"Paracetamol / Caffeine", mode:12, quantity:24, unit:"Tablets", duration:7, form:"Tablet", registered:"yes", extracted:true, editing:false});
+          addMedicine({name:"Clonazepam 0.5 mg", ingredient:"Clonazepam", mode:1, quantity:30, unit:"Tablets", duration:30, form:"Tablet", registered:"yes", extracted:true, editing:false});
+        }
+        toast("AI extracted 3 medicines — review each item");
+      }, 1200);
+    });
+
+    document.getElementById("medicalFile").addEventListener("change", e => {
+      const file = e.target.files[0]; if (validFile(file)) showUpload("medicalStatus", file.name);
+    });
+    document.getElementById("additionalFile").addEventListener("change", e => {
+      const files = [...e.target.files]; if (!files.length) return;
+      showUpload("additionalStatus", `${files.length} document${files.length > 1 ? "s" : ""} added`);
+    });
+
+    function validFile(file) {
+      if (!file) return false;
+      if (file.size > 40 * 1024 * 1024) { toast("File exceeds the 40 MB limit"); return false; }
+      return true;
+    }
+    function showUpload(id, name) {
+      const el = document.getElementById(id); el.textContent = `✓ ${name}`; el.classList.add("visible");
+    }
+
+    function addMedicine(data = {}) {
+      const med = {id:++medicineId, name:"", ingredient:"", mode:11, quantity:1, unit:"Tablets", duration:30, form:"Tablet", registered:"no", extracted:false, editing:true, ...data};
+      medicines.push(med);
+      renderMedicines();
+      if (med.editing) setTimeout(() => document.querySelector(`[data-med-id="${med.id}"] .med-name`).focus(), 0);
+    }
+    function deleteMedicine(id) {
+      medicines = medicines.filter(m => m.id !== id);
+      renderMedicines();
+      toast("Medicine removed");
+    }
+    function editMedicine(id) {
+      const med = medicines.find(m => m.id === id);
+      if (!med) return;
+      med.editing = !med.editing;
+      renderMedicines();
+      if (med.editing) {
+        document.querySelector(`[data-med-id="${id}"] .med-name`).focus();
+        toast("Medicine fields unlocked for editing");
+      } else toast("Medicine changes saved");
+    }
+    function syncMedicine(id, field, value) {
+      const med = medicines.find(m => m.id === id);
+      if (med) med[field] = ["mode","quantity","duration"].includes(field) ? +value : value;
+    }
+    function searchRegistry(id, field, value, input) {
+      const med = medicines.find(m => m.id === id);
+      if (!med) return;
+      med[field] = value;
+      const normalized = value.trim().toLowerCase();
+      const product = registryProducts.find(item => item.name.toLowerCase() === normalized || item.ingredient.toLowerCase() === normalized);
+      med.registered = product ? "yes" : "no";
+      med.mode = product ? product.mode : 19;
+      if (field === "name" && product) {
+        med.ingredient = product.ingredient;
+        input.closest(".form-grid").querySelector(".ingredient-search").value = product.ingredient;
+      }
+      if (field === "ingredient" && product && !med.name) {
+        med.name = product.name;
+        input.closest(".form-grid").querySelector(".med-name").value = product.name;
+      }
+      input.closest(".form-grid").querySelector(".mode-field").value = med.mode;
+      const status = input.closest(".form-grid").querySelector(".registry-status");
+      status.value = product ? "Matched in EDE Register" : "No record found";
+      status.style.color = product ? "var(--success)" : "var(--warning)";
+    }
+    function renderMedicines() {
+      const modeOptions = modes.map((m,i) => `<option value="${i}">${esc(m[0])}</option>`).join("");
+      document.getElementById("medicineList").innerHTML = medicines.map((m,index) => `<div class="medicine-card" data-med-id="${m.id}">
+        <div class="medicine-title">Medicine ${index + 1}${m.extracted ? '<span class="ai-tag">✦ AI extracted</span>' : '<span class="ai-tag">Manually added</span>'}<span class="medicine-actions"><button class="icon-btn" onclick="editMedicine(${m.id})">${m.editing ? "Done editing" : "Edit"}</button><button class="icon-btn danger" onclick="deleteMedicine(${m.id})">Delete</button></span></div>
+        <div class="form-grid">
+          <div class="field span-2"><label>Search medicine in EDE Register ${m.extracted ? '<span class="confidence">98% confidence</span>' : ""}</label><input class="med-name" list="medicineRegistry-${m.id}" value="${attr(m.name)}" oninput="searchRegistry(${m.id},'name',this.value,this)" placeholder="Search or type medicine name" ${m.editing?"":"disabled"}><datalist id="medicineRegistry-${m.id}">${registryProducts.map(item=>`<option value="${attr(item.name)}">${esc(item.ingredient)}</option>`).join("")}</datalist></div>
+          <div class="field"><label>Search active ingredient</label><input class="ingredient-search" list="ingredientRegistry-${m.id}" value="${attr(m.ingredient)}" oninput="searchRegistry(${m.id},'ingredient',this.value,this)" placeholder="Search or type active ingredient" ${m.editing?"":"disabled"}><datalist id="ingredientRegistry-${m.id}">${registryProducts.map(item=>`<option value="${attr(item.ingredient)}">${esc(item.name)}</option>`).join("")}</datalist></div>
+          <div class="field"><label>Dispensing mode <span class="confidence">EDE Register</span></label><select class="mode-field" disabled>${modeOptions.replace(`value="${m.mode}"`,`value="${m.mode}" selected`)}</select></div>
+          <div class="field"><label>Quantity</label><input type="number" min="1" value="${m.quantity}" oninput="syncMedicine(${m.id},'quantity',this.value)" ${m.editing?"":"disabled"}></div>
+          <div class="field"><label>Unit</label><select onchange="syncMedicine(${m.id},'unit',this.value)" ${m.editing?"":"disabled"}>${["Tablets","Capsules","Vials","Ampoules","Millilitres"].map(x=>`<option${x===m.unit?" selected":""}>${x}</option>`).join("")}</select></div>
+          <div class="field"><label>Prescribed duration (days)</label><input type="number" min="1" value="${m.duration}" oninput="syncMedicine(${m.id},'duration',this.value)" ${m.editing?"":"disabled"}></div>
+          <div class="field"><label>Product form</label><select onchange="syncMedicine(${m.id},'form',this.value)" ${m.editing?"":"disabled"}>${["Tablet","Capsule","Liquid","Injectable","Vial","Ampoule"].map(x=>`<option${x===m.form?" selected":""}>${x}</option>`).join("")}</select></div>
+          <div class="field"><label>Registry match</label><input class="registry-status" value="${m.registered==="yes"?"Matched in EDE Register":"No record found"}" style="color:${m.registered==="yes"?"var(--success)":"var(--warning)"};font-weight:700" disabled></div>
+        </div></div>`).join("");
+      document.getElementById("emptyMedicines").style.display = medicines.length ? "none" : "block";
+    }
+    function confirmMedicines() {
+      if (!prescriptionUploaded) return toast("Please upload a prescription");
+      if (!medicines.length) return toast("Add at least one medicine");
+      if (medicines.some(m => !m.name.trim())) return toast("Enter a name for every medicine");
+      go(5);
+    }
+    function populateReview() {
+      const resident = document.querySelector('[name="resident"]:checked').value === "yes";
+      const applying = document.querySelector('[name="applyingFor"]:checked').value;
+      document.getElementById("reviewClass").textContent = resident ? "Resident" : "Traveller";
+      document.getElementById("reviewFor").textContent = applying === "myself" ? "Myself" : "Someone else";
+      document.getElementById("reviewPatient").textContent = document.getElementById("patientName").value;
+      document.getElementById("reviewDocument").textContent = document.getElementById("patientDocumentNumber").value;
+      document.getElementById("reviewNationality").textContent = document.getElementById("patientNationality").value;
+      document.getElementById("reviewMeds").innerHTML = medicines.map((m,i) => `<span><small>Medicine ${i+1}</small><b>${esc(m.name)}</b></span><span><small>Dispensing mode</small><b>${esc(modes[m.mode][0])}</b></span><span><small>Supply</small><b>${m.quantity} ${esc(m.unit)} · ${m.duration} days</b></span>`).join("");
+    }
+
+    function evaluateMedicine(med) {
+      const selectedMode = modes[med.mode];
+      const reasons = [];
+      if (!selectedMode[1]) reasons.push("Dispensing mode requires mandatory officer review (BR-03, BR-21)");
+      if (med.duration > 90) reasons.push("Duration exceeds 90 days (BR-06)");
+      if (med.quantity > 180) reasons.push("Quantity exceeds 180 units (BR-07)");
+      if (med.registered === "no") reasons.push("Medicine is unmatched in the EDE registry (BR-09)");
+      if (["Injectable","Vial","Ampoule"].includes(med.form)) reasons.push("Product form requires officer review (BR-11)");
+      return { name: med.name, reasons, auto: reasons.length === 0 };
+    }
+
+    function submitApplication() {
+      if (!document.getElementById("terms").checked) return toast("Please accept the terms and conditions");
+      const results = medicines.map(evaluateMedicine);
+      const autos = results.filter(r => r.auto).length;
+      const reviews = results.length - autos;
+      document.getElementById("autoCount").textContent = autos;
+      document.getElementById("reviewCount").textContent = reviews;
+      document.getElementById("permitCount").textContent = autos;
+      const title = reviews === 0 ? "Application auto-approved" : autos === 0 ? "Officer review required" : "Mixed application";
+      document.getElementById("decisionTitle").textContent = title;
+      document.getElementById("decisionIcon").textContent = reviews === 0 ? "✓" : autos === 0 ? "⌛" : "◐";
+      document.getElementById("decisionText").textContent = reviews === 0
+        ? "All medicines passed the configured auto-approval gates. Your permit is ready to download."
+        : autos === 0 ? "All medicines require review by an authorised EDE officer. You will be notified if an action is required."
+        : "Eligible medicines can be permitted immediately, while medicines requiring human review are securely routed to an EDE officer.";
+      document.getElementById("processingLabel").textContent = reviews === 0 ? "Permit ready" : autos === 0 ? "Officer review in progress" : "Partial permit ready · review in progress";
+      document.getElementById("decisionList").innerHTML = results.map(r => `<div class="decision-med"><span class="med-symbol">${r.auto ? "✓" : "!"}</span><span><b>${esc(r.name)}</b><small>${r.auto ? "All auto-approval gates passed" : "Human-in-the-loop safeguards applied"}</small>${r.reasons.length ? `<ul class="reasons">${r.reasons.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>` : ""}</span><span class="outcome ${r.auto ? "auto" : "hitl"}">${r.auto ? "AUTO-APPROVED" : "OFFICER REVIEW"}</span></div>`).join("");
+      go(6);
+    }
+
+    function saveDraft() { toast("Draft saved securely"); }
+    function downloadPermit() {
+      if (+document.getElementById("permitCount").textContent === 0) return toast("A permit will be available after officer approval");
+      const text = `EDE PERSONAL MEDICINE IMPORT PERMIT\nApplication: EDE-PMU-2026-0814027\nStatus: Approved (prototype)\nPatient: Sara Ahmed Al Mansoori\nGenerated: ${new Date().toLocaleString()}`;
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], {type:"text/plain"}));
+      a.download = "EDE-Permit-EDE-PMU-2026-0814027.txt";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast("Prototype permit downloaded");
+    }
+    function restart() {
+      medicines = [];
+      medicineId = 0;
+      identityUploaded = false;
+      prescriptionUploaded = false;
+      document.getElementById("terms").checked = false;
+      document.querySelectorAll(".upload-status").forEach(el => el.classList.remove("visible"));
+      renderMedicines();
+      showApplication();
+      go(2);
+    }
+    function selectCase(item, number, patient, medicine, mode, rule) {
+      document.querySelectorAll(".queue-item").forEach(row => row.classList.remove("active"));
+      item.classList.add("active");
+      document.getElementById("caseNumber").textContent = number;
+      document.getElementById("casePatient").textContent = patient;
+      document.getElementById("caseMedicine").textContent = medicine;
+      document.getElementById("caseMode").textContent = mode;
+      document.getElementById("caseRule").textContent = rule;
+      document.getElementById("officerNotes").value = "";
+      const status = document.getElementById("officerCaseStatus");
+      status.className = "status review";
+      status.textContent = "OFFICER REVIEW";
+      document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = false);
+    }
+    function officerAction(action) {
+      const note = document.getElementById("officerNotes").value.trim();
+      if (action !== "approve") {
+        const message = action === "correction" ? "Correction requested" : "Application rejected";
+        toast(message + (note ? " · note saved" : ""));
+        return;
+      }
+      const status = document.getElementById("officerCaseStatus");
+      status.className = "status approved";
+      status.textContent = "APPLICATION COMPLETED";
+      document.querySelectorAll(".officer-actions button").forEach(button => button.disabled = true);
+      const selected = document.querySelector(".queue-item.active");
+      if (selected) selected.remove();
+      const remaining = document.querySelectorAll(".queue-item").length;
+      document.getElementById("pendingCount").textContent = `${remaining} PENDING`;
+      if (document.getElementById("caseNumber").textContent === "EDE-PMU-2026-0814027") {
+        const dashboardStatus = document.getElementById("dashboardApplicationStatus");
+        dashboardStatus.className = "status approved";
+        dashboardStatus.textContent = "COMPLETED · PERMIT ISSUED";
+        document.getElementById("dashboardApplicationAction").innerHTML = '<button class="icon-btn" onclick="downloadPermit()">Download permit</button>';
+        document.getElementById("reviewKpi").textContent = "0";
+        document.getElementById("permitKpi").textContent = "3";
+        document.getElementById("processingLabel").textContent = "Application completed · all permits issued";
+        document.getElementById("decisionTitle").textContent = "Application completed";
+      }
+      toast("Application completed and permit issued" + (note ? " · note saved" : ""));
+    }
+    function toast(message) {
+      const el = document.getElementById("toast");
+      el.textContent = message; el.classList.add("show");
+      clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+    function esc(value) { const d = document.createElement("div"); d.textContent = value; return d.innerHTML; }
+    function attr(value) { return esc(value).replace(/"/g,"&quot;"); }
+    renderMedicines();
+  </script>
+</body>
+</html>
