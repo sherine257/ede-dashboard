@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+data/*.db
+data/*.db-*
+data/uploads/
+**/ede-permit.db
+**/ede-permit.db-*
+src/EdePermit.Api/data/
+*.user
+.dotnet/
