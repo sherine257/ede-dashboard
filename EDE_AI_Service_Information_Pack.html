@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حزمة معلومات خدمات الذكاء الاصطناعي | تصريح استيراد الأدوية للاستخدام الشخصي | مؤسسة الإمارات للدواء</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --navy:#102f43; --teal:#2d7d7b; --page:#f3f5f6; --ink:#173044; --muted:#5c6b75; --line:#ccd7d8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--page); color:var(--ink); font-family:Cairo, Manrope, Arial, sans-serif; }
+  .wrap { max-width:980px; margin:0 auto; padding:28px 20px 64px; }
+  header { background:#fff; border-bottom:3px solid var(--navy); padding:18px 24px; display:flex; justify-content:space-between; align-items:center; }
+  .brand { font-weight:800; color:var(--navy); line-height:1.3; }
+  .brand small { display:block; color:var(--teal); font-size:12px; font-weight:600; }
+  .meta { font-size:12px; color:var(--muted); text-align:left; direction:ltr; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-top:16px; box-shadow:0 8px 24px rgba(16,47,67,.06); }
+  h1 { font-size:22px; margin:0 0 8px; color:var(--navy); }
+  h2 { font-size:17px; color:var(--navy); margin:0 0 10px; padding-bottom:8px; border-bottom:2px solid var(--teal); }
+  h3 { font-size:14px; color:var(--teal); margin:16px 0 8px; }
+  p, li { font-size:14px; line-height:1.75; }
+  .en { direction:ltr; text-align:left; font-family:Manrope, Arial, sans-serif; color:#3d5360; font-size:13px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin:10px 0 4px; }
+  th { background:#102f43; color:#fff; padding:9px 10px; font-weight:700; }
+  td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f7faf9; }
+  .note { background:#fff8e8; border:1px solid #ead7a8; border-radius:10px; padding:12px 14px; font-size:13px; }
+  .tag { display:inline-block; background:#e8f5f4; color:var(--teal); font-size:11px; font-weight:800; padding:3px 8px; border-radius:10px; margin-left:6px; }
+  ul { padding-right:18px; }
+  .ltr-table { direction:ltr; text-align:left; font-family:Manrope, Arial, sans-serif; }
+  footer { margin-top:22px; color:var(--muted); font-size:12px; }
+  @media print { body { background:#fff; } .card { box-shadow:none; break-inside:avoid; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">مؤسسة الإمارات للدواء<small>خدمة تصريح استيراد الأدوية للاستخدام الشخصي — حزمة معلومات الذكاء الاصطناعي</small></div>
+  <div class="meta">EDE · Digital Transformation<br>Version 1.0 · Aug 2026<br>Confidential — for authority review</div>
+</header>
+<div class="wrap">
+
+<div class="card">
+  <h1>رد الفريق المختص على طلب تزويد الهيئة بالمعلومات</h1>
+  <p>أُعدّ هذا المستند لتزويد الهيئة بالمعلومات المطلوبة لدعم تنفيذ الخدمة الذكية لـ<strong>تصريح استيراد الأدوية للاستخدام الشخصي</strong>، ويغطي: النماذج اللغوية الكبيرة، حجم الاستخدام والسعات، متطلبات Document AI، منصة الذكاء الاصطناعي المساعد (Agentic AI)، والمكوّنات التي تتطلب موارد حوسبة متخصصة.</p>
+  <p class="en">This pack answers the authority’s request for LLM choices, expected usage/capacity, Document AI requirements, the agentic AI platform under consideration, and any components that need specialised compute.</p>
+  <div class="note">الأرقام أدناه <strong>تقديرات تخطيطية</strong> لتصميم السعة، وليست أرقام تشغيل فعلية. يُفضَّل استبدالها بإحصاءات الهيئة (حركة المسافرين، طلبات التصاريح التاريخية، مواسم الذروة) قبل اعتماد الميزانية النهائية.</div>
+</div>
+
+<div class="card">
+  <h2>1) النماذج اللغوية الكبيرة (LLMs) قيد النظر</h2>
+  <p>يُقترح نموذج تشغيلي <strong>سيادي / داخل المنطقة</strong> (دولة الإمارات أو منطقة سحابية معتمدة للجهات الحكومية)، مع فصل واضح بين نماذج المحادثة ونماذج الاستدلال على القواعد.</p>
+  <table>
+    <tr><th>الاستخدام</th><th>النموذج المقترح (أساسي)</th><th>بديل قيد التقييم</th><th>المبرر</th></tr>
+    <tr>
+      <td>مساعد المتقدم (محادثة عربية/إنجليزية + الأسئلة الشائعة)</td>
+      <td>Azure OpenAI GPT-4.1 / GPT-4o<br><span class="tag">داخل Azure UAE / سيادي</span></td>
+      <td>نماذج عربية مؤسسية: Jais / ALLaM / Fanar عبر مزود سيادي (G42 / Core42 / هيئة محلية)</td>
+      <td>جودة ثنائية اللغة، التزام بالتعليمات، إمكانية الاستضافة الإقليمية</td>
+    </tr>
+    <tr>
+      <td>تصنيف الطلب (مقيم / مسافر) وشرح القواعد BR</td>
+      <td>GPT-4.1 mini / GPT-4o mini للمسارات القصيرة</td>
+      <td>نموذج استدلال أصغر مستضاف ذاتياً إن لزم عدم الخروج من الشبكة</td>
+      <td>زمن استجابة منخفض وتكلفة أقل للمهام المحددة</td>
+    </tr>
+    <tr>
+      <td>توصية الضابط: موافقة / رفض / طلب استكمال</td>
+      <td>GPT-4.1 مع استدعاء أدوات (function calling) على محرك القواعد</td>
+      <td>نفس المنصة مع تقييد المخرجات JSON Schema</td>
+      <td>القرار النهائي للضابط؛ النموذج يقترح فقط وفق القواعد والوثائق</td>
+    </tr>
+    <tr>
+      <td>توليد ملخص التدقيق وملاحظات التصريح</td>
+      <td>GPT-4.1 mini</td>
+      <td>—</td>
+      <td>نصوص قصيرة منظمة</td>
+    </tr>
+  </table>
+  <h3>مبادئ اختيار النماذج</h3>
+  <ul>
+    <li>عدم تخزين بيانات الهوية أو الوصفات في تدريب النماذج.</li>
+    <li>تفضيل <strong>Azure OpenAI في منطقة الإمارات / اشتراك حكومي</strong> للتكامل مع منظومة مايكروسوفت القائمة لدى الهيئة (التقارير ولوحات المعلومات).</li>
+    <li>إبقاء محرك القواعد (Business Rules) خارج النموذج: BR-01، BR-02، BR-06، BR-07، BR-09، BR-11، BR-21 تُنفَّذ برمجياً، والنموذج يشرح النتيجة فقط.</li>
+    <li>دعم العربية والإنجليزية في واجهة المساعد.</li>
+  </ul>
+  <p class="en"><strong>LLMs under consideration:</strong> Primary conversational and officer-assist model: Azure OpenAI GPT-4.1 / GPT-4o in a UAE-sovereign or government-approved region. Smaller GPT-4.1 mini for classification and summaries. Arabic-specialised alternatives (Jais / ALLaM / Fanar) remain in evaluation for FAQ chat if a national model mandate applies. Business rules are executed in code; the LLM does not decide eligibility on its own.</p>
+</div>
+
+<div class="card">
+  <h2>2) حجم الاستخدام والسعات المتوقعة</h2>
+  <p>السيناريو التشغيلي: خدمة إلكترونية على مدار الساعة للمقيمين والمسافرين، مع ذروة مرتبطة بالمواسم السياحية والإجازات.</p>
+  <table>
+    <tr><th>المؤشر</th><th>سنة 1 (إطلاق)</th><th>سنة 2–3 (استقرار)</th><th>ذروة يومية</th></tr>
+    <tr><td>طلبات تصريح جديدة</td><td>8,000 – 15,000 / سنة</td><td>20,000 – 40,000 / سنة</td><td>150 – 400 طلب</td></tr>
+    <tr><td>جلسات المساعد الذكي (محادثة)</td><td>1.2 – 1.5 لكل طلب</td><td>1.2 لكل طلب</td><td>200 – 600 جلسة</td></tr>
+    <tr><td>رسائل المحادثة</td><td>4 – 8 رسائل / جلسة</td><td>3 – 6</td><td>—</td></tr>
+    <tr><td>استدعاءات LLM (شامل المساعد + الضابط)</td><td>80 ألف – 180 ألف / سنة</td><td>200 ألف – 450 ألف / سنة</td><td>2,000 – 6,000 استدعاء</td></tr>
+    <tr><td>حجم الرموز التقريبي (tokens)</td><td>40 – 90 مليون / سنة</td><td>100 – 250 مليون / سنة</td><td>—</td></tr>
+    <tr><td>نسبة الإحالة لضابط (HITL)</td><td>25 – 40%</td><td>20 – 35%</td><td>—</td></tr>
+    <tr><td>مستخدمون متزامنون مستهدفون</td><td>50 – 100</td><td>150 – 300</td><td>500 في الذروة</td></tr>
+    <tr><td>اتفاقية الخدمة المستهدفة</td><td colspan="3">توفر 99.5% · زمن استجابة المساعد &lt; 3 ثوانٍ (P95) · استخراج وثيقة &lt; 20 ثانية (P95)</td></tr>
+  </table>
+  <p>سعة LLM المقترحة عند الإطلاق: <strong>حد 60–120 طلب/دقيقة</strong> للنموذج الأساسي، مع سياسة إعادة المحاولة وطابور، وتوسيع تلقائي في المواسم.</p>
+  <p class="en"><strong>Capacity (planning):</strong> Year-1 8k–15k applications; steady state 20k–40k/year; peak 150–400 applications/day. About 80k–180k LLM calls in year 1 (40–90M tokens), growing to 200k–450k calls. 25–40% of cases go to officer review (controlled, injectable, unmatched). Target 99.5% availability, chat P95 &lt; 3s, document extraction P95 &lt; 20s. Concurrent users 50–100 at launch, 150–300 later.</p>
+</div>
+
+<div class="card">
+  <h2>3) متطلبات خدمات Document AI</h2>
+  <p>تشمل استخراج البيانات من الوثائق، التحقق من الاكتمال (وصفة خلال 3 أشهر، تقرير طبي خلال سنة)، ومطابقة الدواء/المادة الفعالة مع سجل الهيئة.</p>
+
+  <h3>أنواع المستندات</h3>
+  <table>
+    <tr><th>نوع المستند</th><th>الصيغ</th><th>الحد الأقصى</th><th>ما يُستخرج</th><th>حجم متوقع / طلب</th></tr>
+    <tr><td>هوية الإمارات</td><td>JPG, PNG, PDF</td><td>40 ميغابايت</td><td>الاسم، الرقم، الجنسية، تاريخ الميلاد</td><td>1–2 صفحة / 0.5–4 ميغابايت</td></tr>
+    <tr><td>جواز السفر</td><td>JPG, PNG, PDF</td><td>40 ميغابايت</td><td>الاسم، رقم الجواز، الجنسية، تاريخ الميلاد</td><td>1–2 صفحة / 0.5–5 ميغابايت</td></tr>
+    <tr><td>الوصفة الطبية (إلزامية عند الحاجة لتصريح)</td><td>JPG, PNG, PDF <strong>وليس JPEG</strong></td><td>40 ميغابايت</td><td>اسم الدواء، المادة الفعالة، الكمية، المدة، تاريخ الإصدار، ختم الجهة المرخّصة</td><td>1–4 صفحات / 1–8 ميغابايت</td></tr>
+    <tr><td>التقرير الطبي (إلزامي للخاضع للرقابة / غير المدرج)</td><td>JPG, PNG, PDF</td><td>40 ميغابايت</td><td>التشخيص المختصر، التاريخ (≤ 12 شهراً)، الختم</td><td>1–10 صفحات / 1–12 ميغابايت</td></tr>
+    <tr><td>مرفقات إضافية</td><td>JPG, PNG, PDF</td><td>40 ميغابايت لكل ملف</td><td>تصنيف نوع المرفق فقط</td><td>0–3 ملفات</td></tr>
+    <tr><td>تصريح صادر (مخرجات النظام)</td><td>PDF مع رمز QR</td><td>—</td><td>توليد وليس استخراج</td><td>~0.2 ميغابايت</td></tr>
+  </table>
+
+  <h3>حجم المعالجة المتوقع</h3>
+  <table>
+    <tr><th>البند</th><th>سنة 1</th><th>سنة 2–3</th><th>الذروة</th></tr>
+    <tr><td>وثائق تُعالج (صفحات)</td><td>40,000 – 90,000 صفحة / سنة</td><td>100,000 – 220,000</td><td>800 – 2,000 صفحة / يوم</td></tr>
+    <tr><td>حجم تخزين الوثائق</td><td>0.4 – 1.2 تيرابايت (مشفّر)</td><td>1.5 – 4 تيرابايت</td><td>—</td></tr>
+    <tr><td>عمليات OCR + استخراج منظم</td><td>25,000 – 50,000</td><td>60,000 – 130,000</td><td>400 – 1,200 / يوم</td></tr>
+    <tr><td>اللغات</td><td colspan="3">العربية والإنجليزية (وربما لغات الوصفات الأجنبية: إنجليزي/هندي/فلبيني كنص مطبوع)</td></tr>
+  </table>
+
+  <h3>خدمات Document AI المقترحة</h3>
+  <ul>
+    <li><strong>Azure AI Document Intelligence</strong> (Read + Layout + نماذج مخصّصة للوصفة والتقرير الطبي + نموذج هوية).</li>
+    <li>طبقة تحقق لاحقة: تاريخ الوصفة ≤ 90 يوماً، التقرير ≤ 365 يوماً، وجود ختم/ترخيص، مطابقة الاسم مع UAE PASS.</li>
+    <li>مطابقة الدواء عبر سجل الهيئة (بحث الاسم والمادة الفعالة؛ إن لم يوجد: «No Record Found» ثم إدخال يدوي + مراجعة تنظيمية — BR-09).</li>
+    <li>لا يُعتمد الاستخراج إلا بعد تأكيد المستخدم؛ الضابط يرى الأصل والمستخرج معاً.</li>
+  </ul>
+  <p class="en"><strong>Document AI:</strong> Emirates ID, passport, prescription (JPG/PNG/PDF only, not JPEG), medical report (within 1 year), optional supporting letters. Year-1 ~40k–90k pages, 25k–50k extraction jobs, 0.4–1.2 TB encrypted storage. Stack: Azure Document Intelligence (Read/Layout/custom) plus rule checks and EDE medicine registry matching. Applicant confirms extracted fields; officer sees source + extraction.</p>
+</div>
+
+<div class="card">
+  <h2>4) منصة الذكاء الاصطناعي المساعد (Agentic AI Platform)</h2>
+  <p>المنصة قيد النظر هي منصة وكلاء متعددة الأدوات، وليست نموذجاً لغوياً وحده. الوكيل ينفّذ خطوات محددة مع بقاء الإنسان في الحلقة.</p>
+  <table>
+    <tr><th>المكوّن</th><th>الخيار الأساسي</th><th>بديل</th></tr>
+    <tr><td>منصة الوكلاء</td><td>Azure AI Foundry — Agent Service + Azure AI Studio</td><td>Microsoft Copilot Studio للمسارات البسيطة؛ LangGraph / Semantic Kernel للاستضافة الخاصة</td></tr>
+    <tr><td>تنسيق الأدوات</td><td>Semantic Kernel أو Azure Functions كأدوات: قواعد BR، سجل الأدوية، UAE PASS (قراءة الملف الشخصي فقط)، Document Intelligence</td><td>نفس الأدوات عبر API Gateway داخلي</td></tr>
+    <tr><td>الوكلاء</td><td>1) وكيل المتقدم (FAQ + توجيه الخطوة)<br>2) وكيل الوثائق (استخراج + اكتمال الملف)<br>3) وكيل الأهلية (تشغيل القواعد)<br>4) وكيل الضابط (توصية موافقة/رفض/استكمال)</td><td>دمج 3 و4 في وكيل واحد مع صلاحيات مختلفة</td></tr>
+    <tr><td>الذاكرة / المعرفة</td><td>Azure AI Search (RAG) على الأسئلة الشائعة المعتمدة وسجل الأدوية — بدون تدريب على بيانات الأفراد</td><td>قاعدة معرفية داخل الشبكة</td></tr>
+    <tr><td>الهوية والدخول</td><td>UAE PASS للمتقدم · هوية مؤسسية (Entra ID) للضابط</td><td>—</td></tr>
+    <tr><td>التدقيق</td><td>سجل قرارات: المدخلات، القاعدة المشغّلة، توصية الذكاء الاصطناعي، قرار الضابط، الختم الزمني</td><td>SIEM / Microsoft Purview</td></tr>
+  </table>
+  <h3>ضوابط الوكيل (ملزمة)</h3>
+  <ul>
+    <li>لا موافقة تلقائية على الأدوية الخاضعة للرقابة (BR-21) أو الحقن (BR-11) أو غير المدرجة دون مستندات كاملة (BR-09).</li>
+    <li>التوصية للضابط: <strong>موافقة فقط إذا استُوفيت كل القواعد</strong>؛ <strong>طلب استكمال</strong> عند نقص المستند؛ <strong>رفض</strong> عند مخالفة الكمية/المدة.</li>
+    <li>المخرجات مقيّدة JSON؛ يُمنع تنفيذ دفع أو إصدار تصريح إلا عبر خدمة خلفية مصرّح بها.</li>
+  </ul>
+  <p class="en"><strong>Agentic platform:</strong> Azure AI Foundry Agent Service (primary), with Semantic Kernel / Azure Functions tools for business rules, medicine registry, UAE PASS profile read, and Document Intelligence. Four agents: applicant assistant, document agent, eligibility/rules agent, officer recommendation agent. Knowledge via Azure AI Search RAG on approved FAQs and the registry only. UAE PASS for applicants, Entra ID for officers. Full audit trail. No auto-approval of controlled, injectable, or unmatched products.</p>
+</div>
+
+<div class="card">
+  <h2>5) مكوّنات وتقنيات تتطلب موارد حوسبة متخصصة</h2>
+  <table>
+    <tr><th>المكوّن</th><th>هل يحتاج GPU / حوسبة خاصة؟</th><th>التوصية</th></tr>
+    <tr><td>Azure OpenAI / نماذج كخدمة</td><td>لا داخل مركز بيانات الهيئة</td><td>استهلاك API في منطقة معتمدة — لا شراء GPU للإطلاق</td></tr>
+    <tr><td>استضافة نموذج عربي محلي (Jais وأشباهه) — إن فُرض</td><td><strong>نعم — GPU</strong></td><td>2× GPU فئة A100/H100 أو ما يعادلها في السحابة السيادية، مع HA؛ يُؤجَّل لما بعد الإطلاق ما لم يكن إلزامياً</td></tr>
+    <tr><td>Document Intelligence OCR</td><td>خدمة مدارة (حوسبة لدى المزود)</td><td>لا GPU محلي؛ يُحسب بعدد الصفحات</td></tr>
+    <tr><td>Azure AI Search (المتجهات)</td><td>CPU + ذاكرة، بدون GPU إلزامي</td><td>مستوى Standard؛ فهرس صغير (FAQ + سجل أدوية)</td></tr>
+    <tr><td>تخزين الوثائق المشفّر + النسخ الاحتياطي</td><td>تخزين كائنات S3/Blob</td><td>تشفير، سياسات احتفاظ، منع التدريب على المحتوى</td></tr>
+    <tr><td>توليد PDF للتصريح + QR</td><td>CPU خفيف</td><td>خدمة تطبيق عادية — لا موارد خاصة</td></tr>
+    <tr><td>كشف التلاعب بالصور / جودة المسح (اختياري لاحقاً)</td><td>قد يحتاج GPU خفيف أو خدمة رؤية</td><td>مرحلة ثانية: Azure AI Vision</td></tr>
+    <tr><td>بيئة الاختبار المعزولة</td><td>CPU</td><td>اشتراك منفصل بدون بيانات إنتاج</td></tr>
+  </table>
+  <h3>خلاصة البنية التحتية عند الإطلاق (بدون GPU محلي)</h3>
+  <ul>
+    <li>تطبيق ويب + واجهات برمجية (App Service / AKS) — حوسبة عامة.</li>
+    <li>قاعدة بيانات علائقية للطلبات + Blob للوثائق.</li>
+    <li>Azure OpenAI + Document Intelligence + AI Search في منطقة حكومية/إماراتية.</li>
+    <li>مراقبة: سجلات، تكلفة الرموز، زمن الاستخراج، نسبة توصيات الضابط المقبولة.</li>
+  </ul>
+  <p class="en"><strong>Specialised compute:</strong> Launch on managed Azure OpenAI + Document Intelligence — no on-prem GPU. GPU (A100/H100 class, HA pair) only if a sovereign Arabic model must be self-hosted. Vector search, PDF/QR generation, and app hosting are standard CPU. Optional later: image-integrity / vision models.</p>
+</div>
+
+<div class="card">
+  <h2>ملخص تنفيذي للرد على الهيئة</h2>
+  <table>
+    <tr><th>البند المطلوب</th><th>الرد المختصر</th></tr>
+    <tr><td>LLMs</td><td>Azure OpenAI GPT-4.1 / GPT-4o (أساسي) و GPT-4.1 mini للمهام القصيرة؛ نماذج عربية سيادية قيد التقييم</td></tr>
+    <tr><td>حجم الاستخدام والسعات</td><td>8–15 ألف طلب في سنة الإطلاق؛ 80–180 ألف استدعاء LLM؛ 50–100 مستخدم متزامن؛ توسيع إلى 20–40 ألف طلب سنوياً</td></tr>
+    <tr><td>Document AI</td><td>هوية/جواز، وصفة، تقرير طبي، مرفقات؛ 40–90 ألف صفحة/سنة؛ Azure Document Intelligence + قواعد الاكتمال</td></tr>
+    <tr><td>منصة Agentic AI</td><td>Azure AI Foundry Agent Service مع وكلاء للمتقدم والوثائق والأهلية والضابط؛ الإنسان في الحلقة</td></tr>
+    <tr><td>حوسبة متخصصة</td><td>لا GPU عند الإطلاق؛ GPU فقط إذا طُلب استضافة نموذج عربي محلي</td></tr>
+  </table>
+</div>
+
+<footer>
+  مؤسسة الإمارات للدواء — إدارة التحول الرقمي · خدمة تصريح استيراد الأدوية للاستخدام الشخصي · معلومات تخطيطية لدعم تنفيذ الخدمة · لا تُستخدم كتعاقد شراء دون اعتماد التشغيل والإحصاءات الرسمية.
+</footer>
+</div>
+</body>
+</html>
