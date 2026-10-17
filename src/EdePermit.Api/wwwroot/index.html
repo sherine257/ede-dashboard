@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EDE | Personal Medicine Permit Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="app">
+    <header class="hdr">
+      <div class="mark">EDE</div>
+      <div class="brand">Emirates Drug Establishment<small>Personal medicine import · AI assistant</small></div>
+      <div class="hdr-actions">
+        <span class="status" id="regStatus"></span>
+        <button class="uae" id="uaeBtn" type="button">
+          <svg width="18" height="18" viewBox="0 0 32 32" fill="none" stroke="#69d0c7" stroke-width="1.8"><path d="M8 15c0-5 3.4-9 8-9s8 4 8 9"/><path d="M5 15C5 8.3 9.7 3 16 3s11 5.3 11 12"/><path d="M11 16c0-3.1 2.2-5.5 5-5.5s5 2.4 5 5.5"/></svg>
+          <span class="full">Sign in with UAE PASS</span>
+        </button>
+        <a class="link" href="/officer.html">Officer portal</a>
+      </div>
+    </header>
+    <main class="chat">
+      <div class="stream" id="stream"></div>
+      <div class="composer">
+        <div class="files" id="files"></div>
+        <div class="box">
+          <textarea id="input" placeholder="Send all required details in one message, or use the microphone…"></textarea>
+          <div class="tools">
+            <input type="file" id="file" hidden accept=".pdf,.png,.jpg,.jpeg">
+            <select id="docType">
+              <option value="prescription">Prescription</option>
+              <option value="medical-report">Medical report</option>
+              <option value="doctor-declaration">Doctor declaration</option>
+              <option value="emirates-id">Emirates ID</option>
+              <option value="passport">Passport</option>
+              <option value="additional">Additional</option>
+            </select>
+            <button class="icon" id="attach" type="button">Attach</button>
+            <button class="icon" id="mic" type="button">Voice</button>
+            <button class="send" id="send" type="button">Send</button>
+          </div>
+        </div>
+        <div class="hint">Conversational only · medicines are checked against ALL_REG_PACKS.xlsx · rules run in code, not in the model</div>
+      </div>
+    </main>
+  </div>
+  <script src="/js/chat.js"></script>
+</body>
+</html>
