@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EDE Officer Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="hdr">
+      <div class="mark">EDE</div>
+      <div class="brand">Officer portal<small>HITL review · conversations · register checks · analytics</small></div>
+      <div class="hdr-actions">
+        <a class="link" href="/">Applicant chat</a>
+        <button class="link" id="logout" type="button">Sign out</button>
+      </div>
+    </header>
+    <div id="loginView" class="login">
+      <h1>Officer sign-in</h1>
+      <p class="hint">Review chats, extracted data, documents, medicine matches, and rule results. Demo password is in README.</p>
+      <input id="password" type="password" placeholder="Officer password">
+      <button class="send" id="loginBtn" type="button">Enter portal</button>
+      <div class="hint" id="loginErr"></div>
+    </div>
+    <div id="portal" style="display:none">
+      <div class="tabs">
+        <button class="on" id="tabQueue" type="button">Review queue</button>
+        <button id="tabAnalytics" type="button">Analytics dashboard</button>
+      </div>
+      <div id="queueView" class="layout">
+        <aside class="queue" id="queue"></aside>
+        <section class="case" id="case">Select a request.</section>
+      </div>
+      <div id="analyticsView" style="display:none"></div>
+    </div>
+  </div>
+  <script src="/js/officer.js"></script>
+</body>
+</html>
